@@ -1,0 +1,117 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>SharpBullet Yardım Dökümanı</title>
+	</head>
+	<body>
+	
+	<h1>Giriş</h1>
+	
+	<p>SharpBullet temel olarak bir object relational mapping(orm) framework'üdür. Yani c# objelerini veritabanına 
+	kaydetmek ve veritabanındaki kayıtları objeler olarak okumak için kullanılır. (Kod yazarken dataset veya datatable	
+	yerine class'ları kullanmak bir çok açıdan faydalıdır. Bunu yapabilmek için
+    ORM framework'leri kullanılır.)
+	</p>
+	
+	<p>Bunun yanında SharpBullet içinde kod yazmayı kolaylaştırma için çeşitli fonksiyonlar ve hazır bazı komponentler
+	bulunur. Yardımcı fonksiyonlar daha çok System namespace'i altında toplanmıştır. Örneğin SecurityHelper, ReflectionHelper,
+	... gibi.
+	</p>
+	
+	<h1>SharpBullet'ın ORM Yapısı</h1>
+	
+	<p>SharpBullet'ın ORM yapısı aşağıdaki mantıksal katmanlardan oluşur. Bu katmanları tek tek inceleyelim.</p>
+	    <ul>
+	        <li>ActiveRecord</li>
+	        <li>OAL, object access layer</li>
+	        <li>DAL, data access layer</li>
+	        <li>System</li>
+	    </ul>
+	
+	<h2>ActiveRecord Katmanı</h2>
+	
+	<p>ActiveRecord katmanı opsiyonel bir katmandır.</p>
+	
+	<p>ORM ile çalışmaktaki amacımızın veritabanındaki kayıtlara c# objeleri olarak erişmek olduğunu söylemiştik.
+	C# tarafında veritabanında kaydedilen ve okunan class'lar genel olarak "entity" olarak isimlendirilirler.
+	</p>
+	
+	<p>
+	Bir entity'nin (yani c# class'ının) SharpBullet tarafından veritabanına kaydedilip okunabilmesi için bazı temel
+	özelliklerin ayarlanmış olması gerekir. Bunlar primary key ve optimistic locking ile ilgili bazı attribute'lardır.
+	ActiveRecord katmanının görevlerinden birisi bunları hazırlanmış olarak sunmasıdır. Bu katmanın avantajlarından
+	faydalanmak için entity'lerimizi bu katmanda bulunan ActiveRecordBase class'ından türetmemiz yeterli olur.
+	</p>
+	
+	<p>Bu katmanın görevlerinden bir diğeri, "ActiveRecord" patternini kullanmak için temel teşkil etmesi ve bu konuda
+	yönlendiriyor olmasıdır. ActiveRecord pattern'i kısaca şöyle tanımlanır:
+	</p>
+	<pre>
+		"Veritabanındaki bir tablo, view veya bir satıra karşılık gelen bir class'tır.
+		Veritabanına erişmeyi sağlar ve bu verilerin üzerinde iş kurallarının çalışmasını
+		sağlar."
+	</pre>
+	
+	
+	<p>ActiveRecord ile ilgili daha detaylı bilgi için kitaplara ve internete bakılabilir. Bizim açımızdan nasıl kullanıldığına
+	dair öne çıkan özelliklerini şöyle sıralayabiliriz:
+	</p>
+	    <ul>
+	        <li>Veritabanındaki her tabloya karşılık gelen bir sınıf vardır.</li>
+	        <li>Bir tablodaki sütunlar, o tablonun class'ında birer property olarak yazılır.</li>
+	        <li>Tüm tabloyu ilgilendiren işlemler için, ilgili class'a static metodlar yazılır.</li>
+	        <li>Sadece bir kayıtla ilgili işlemler için instace metodları(statik olmayan) yazılır.</li>
+	    </ul>
+	    Bu maddelerin herbirini aşağıdaki örnek üzerinde görelim:
+	    <pre>
+	        //Veritabanındaki Fatura tablosuna karşılık Fatura class'ı
+	        public class Fatura 
+	        {
+	            //Tablodaki sütunlara karşılık gelen property'ler
+	            public string EvrakNo { get; set; }
+	            public DateTime Tarih { get; set; }
+	            public Decimal ToplamTutar { get; set; }
+	            ...
+	            
+	            public object GetFaturadaGecenUrunler()
+	            {
+	                //Faturada geçen ürünleri veritabanından sorgularken
+	                //bu faturanın evrakno değerini kullanabiliriz.
+	                //Yani bu metod bizzat bu fatura kaydıyla ilgili, bu
+	                //yüzden de statik değil
+	            }
+	            
+	            public static Fatura[] GetBuAykiFaturalar()
+	            {
+	                //Bu metod tüm fatura tablosundan sorgulama yapacağı
+	                //için statik olarak yazılmalıdır.
+	            }
+	        }
+	    </pre>
+	
+	<h2>OAL Katmanı</h2>
+	
+	<p>OAL, Object Acces Layer. Bu katman tüm veritabanı işlemlerimiz için kullanacağımız bir katmandır. Verilere hem object
+	olarak erişmeyi hem de veritabanına sql ile erişmeyi sağlar. Bu katmanın kullanımı için iki class'ı bilmek yeterlidir.
+	Bu class'lar:
+	</p>	
+	    <ul>
+	        <li>Persistence</li>
+	        <li>Transaction</li>
+	    </ul>
+	
+	<p>Persistence class'ı objeler üzerinde işlemler yapan metodları içerir. Örneğin bir veya daha çok kaydı obje olarak okumak,
+	bir objeyi veritabanına kaydetmek gibi...
+	</p>
+	
+	<p>Transaction class'ı ise veritabanına sql kullanarak ulaşmayı ve sonuçları DataTable vb. veri yapıları kullanarak almayı sağlayan
+	metodlar içerir. Bu class singleton olarak tasarlandığından üzerindeki metodlara "Transaction.Instance.***" şeklinde ulaşılır.
+	</p>
+	
+	<i>Bu class'ların metodlarına api dökümantasyonu kısmında bakılabilir.</i>
+	
+	
+	
+	
+	</body>
+</html>

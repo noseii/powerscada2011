@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Form23OlenlerinYasDagilimiDataSet" targetNamespace="http://tempuri.org/Form23OlenlerinYasDagilimiDataSet.xsd" xmlns:mstns="http://tempuri.org/Form23OlenlerinYasDagilimiDataSet.xsd" xmlns="http://tempuri.org/Form23OlenlerinYasDagilimiDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Form23OlenlerinYasDagilimiDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="Form23OlenlerinYasDagilimiDataSet" msprop:Generator_UserDSName="Form23OlenlerinYasDagilimiDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="OlenlerinYasDagilimiDataTable" msprop:Generator_TableClassName="OlenlerinYasDagilimiDataTableDataTable" msprop:Generator_TableVarName="tableOlenlerinYasDagilimiDataTable" msprop:Generator_TablePropName="OlenlerinYasDagilimiDataTable" msprop:Generator_RowDeletingName="OlenlerinYasDagilimiDataTableRowDeleting" msprop:Generator_UserTableName="OlenlerinYasDagilimiDataTable" msprop:Generator_RowChangingName="OlenlerinYasDagilimiDataTableRowChanging" msprop:Generator_RowEvHandlerName="OlenlerinYasDagilimiDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="OlenlerinYasDagilimiDataTableRowDeleted" msprop:Generator_RowEvArgName="OlenlerinYasDagilimiDataTableRowChangeEvent" msprop:Generator_RowChangedName="OlenlerinYasDagilimiDataTableRowChanged" msprop:Generator_RowClassName="OlenlerinYasDagilimiDataTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SifirYediGun" msdata:Caption="DataColumn1" msprop:Generator_ColumnVarNameInTable="columnSifirYediGun" msprop:Generator_ColumnPropNameInRow="SifirYediGun" msprop:Generator_ColumnPropNameInTable="SifirYediGunColumn" msprop:Generator_UserColumnName="SifirYediGun" type="xs:string" minOccurs="0" />
+              <xs:element name="BirDortGun" msdata:Caption="DataColumn2" msprop:Generator_ColumnVarNameInTable="columnBirDortGun" msprop:Generator_ColumnPropNameInRow="BirDortGun" msprop:Generator_ColumnPropNameInTable="BirDortGunColumn" msprop:Generator_UserColumnName="BirDortGun" type="xs:string" minOccurs="0" />
+              <xs:element name="YirmidokuzUcYuzAltmisDort" msdata:Caption="DataColumn1" msprop:Generator_ColumnVarNameInTable="columnYirmidokuzUcYuzAltmisDort" msprop:Generator_ColumnPropNameInRow="YirmidokuzUcYuzAltmisDort" msprop:Generator_ColumnPropNameInTable="YirmidokuzUcYuzAltmisDortColumn" msprop:Generator_UserColumnName="YirmidokuzUcYuzAltmisDort" type="xs:string" minOccurs="0" />
+              <xs:element name="BirDortYil" msdata:Caption="DataColumn2" msprop:Generator_ColumnVarNameInTable="columnBirDortYil" msprop:Generator_ColumnPropNameInRow="BirDortYil" msprop:Generator_ColumnPropNameInTable="BirDortYilColumn" msprop:Generator_UserColumnName="BirDortYil" type="xs:string" minOccurs="0" />
+              <xs:element name="BesDokuzYil" msprop:Generator_ColumnVarNameInTable="columnBesDokuzYil" msprop:Generator_ColumnPropNameInRow="BesDokuzYil" msprop:Generator_ColumnPropNameInTable="BesDokuzYilColumn" msprop:Generator_UserColumnName="BesDokuzYil" type="xs:string" minOccurs="0" />
+              <xs:element name="OnOnDortYil" msdata:Caption="DataColumn1" msprop:Generator_ColumnVarNameInTable="columnOnOnDortYil" msprop:Generator_ColumnPropNameInRow="OnOnDortYil" msprop:Generator_ColumnPropNameInTable="OnOnDortYilColumn" msprop:Generator_UserColumnName="OnOnDortYil" type="xs:string" minOccurs="0" />
+              <xs:element name="OnBesYirmiDortYil" msdata:Caption="DataColumn2" msprop:Generator_ColumnVarNameInTable="columnOnBesYirmiDortYil" msprop:Generator_ColumnPropNameInRow="OnBesYirmiDortYil" msprop:Generator_ColumnPropNameInTable="OnBesYirmiDortYilColumn" msprop:Generator_UserColumnName="OnBesYirmiDortYil" type="xs:string" minOccurs="0" />
+              <xs:element name="YirmiBesKirkDortYil" msprop:Generator_ColumnVarNameInTable="columnYirmiBesKirkDortYil" msprop:Generator_ColumnPropNameInRow="YirmiBesKirkDortYil" msprop:Generator_ColumnPropNameInTable="YirmiBesKirkDortYilColumn" msprop:Generator_UserColumnName="YirmiBesKirkDortYil" type="xs:string" minOccurs="0" />
+              <xs:element name="KirkBesKirkDokuzYil" msdata:Caption="DataColumn1" msprop:Generator_ColumnVarNameInTable="columnKirkBesKirkDokuzYil" msprop:Generator_ColumnPropNameInRow="KirkBesKirkDokuzYil" msprop:Generator_ColumnPropNameInTable="KirkBesKirkDokuzYilColumn" msprop:Generator_UserColumnName="KirkBesKirkDokuzYil" type="xs:string" minOccurs="0" />
+              <xs:element name="ElliAltmisDortYil" msdata:Caption="DataColumn2" msprop:Generator_ColumnVarNameInTable="columnElliAltmisDortYil" msprop:Generator_ColumnPropNameInRow="ElliAltmisDortYil" msprop:Generator_ColumnPropNameInTable="ElliAltmisDortYilColumn" msprop:Generator_UserColumnName="ElliAltmisDortYil" type="xs:string" minOccurs="0" />
+              <xs:element name="AltmisBesUstu" msprop:Generator_ColumnVarNameInTable="columnAltmisBesUstu" msprop:Generator_ColumnPropNameInRow="AltmisBesUstu" msprop:Generator_ColumnPropNameInTable="AltmisBesUstuColumn" msprop:Generator_UserColumnName="AltmisBesUstu" type="xs:string" minOccurs="0" />
+              <xs:element name="Cinsiyeti" msprop:Generator_ColumnVarNameInTable="columnCinsiyeti" msprop:Generator_ColumnPropNameInRow="Cinsiyeti" msprop:Generator_ColumnPropNameInTable="CinsiyetiColumn" msprop:Generator_UserColumnName="Cinsiyeti" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

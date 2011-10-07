@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Form13AsilarDataSet" targetNamespace="http://tempuri.org/Form13AsilarDataSet.xsd" xmlns:mstns="http://tempuri.org/Form13AsilarDataSet.xsd" xmlns="http://tempuri.org/Form13AsilarDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Form13AsilarDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="Form13AsilarDataSet" msprop:Generator_UserDSName="Form13AsilarDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Form13AsilarDataTable" msprop:Generator_TableClassName="Form13AsilarDataTableDataTable" msprop:Generator_TableVarName="tableForm13AsilarDataTable" msprop:Generator_TablePropName="Form13AsilarDataTable" msprop:Generator_RowDeletingName="Form13AsilarDataTableRowDeleting" msprop:Generator_UserTableName="Form13AsilarDataTable" msprop:Generator_RowChangingName="Form13AsilarDataTableRowChanging" msprop:Generator_RowEvHandlerName="Form13AsilarDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="Form13AsilarDataTableRowDeleted" msprop:Generator_RowEvArgName="Form13AsilarDataTableRowChangeEvent" msprop:Generator_RowChangedName="Form13AsilarDataTableRowChanged" msprop:Generator_RowClassName="Form13AsilarDataTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Adi" msprop:Generator_ColumnVarNameInTable="columnAdi" msprop:Generator_ColumnPropNameInRow="Adi" msprop:Generator_ColumnPropNameInTable="AdiColumn" msprop:Generator_UserColumnName="Adi" type="xs:string" minOccurs="0" />
+              <xs:element name="AsiSira" msprop:Generator_ColumnVarNameInTable="columnAsiSira" msprop:Generator_ColumnPropNameInRow="AsiSira" msprop:Generator_ColumnPropNameInTable="AsiSiraColumn" msprop:Generator_UserColumnName="AsiSira" type="xs:string" minOccurs="0" />
+              <xs:element name="SifirYas" msprop:Generator_ColumnVarNameInTable="columnSifirYas" msprop:Generator_ColumnPropNameInRow="SifirYas" msprop:Generator_ColumnPropNameInTable="SifirYasColumn" msprop:Generator_UserColumnName="SifirYas" type="xs:string" minOccurs="0" />
+              <xs:element name="BirYas" msprop:Generator_ColumnVarNameInTable="columnBirYas" msprop:Generator_ColumnPropNameInRow="BirYas" msprop:Generator_ColumnPropNameInTable="BirYasColumn" msprop:Generator_UserColumnName="BirYas" type="xs:string" minOccurs="0" />
+              <xs:element name="İkiDortYaş" msprop:Generator_ColumnVarNameInTable="columnİkiDortYaş" msprop:Generator_ColumnPropNameInRow="İkiDortYaş" msprop:Generator_ColumnPropNameInTable="İkiDortYaşColumn" msprop:Generator_UserColumnName="İkiDortYaş" type="xs:string" minOccurs="0" />
+              <xs:element name="BesDokuzYaş" msprop:Generator_ColumnVarNameInTable="columnBesDokuzYaş" msprop:Generator_ColumnPropNameInRow="BesDokuzYaş" msprop:Generator_ColumnPropNameInTable="BesDokuzYaşColumn" msprop:Generator_UserColumnName="BesDokuzYaş" type="xs:string" minOccurs="0" />
+              <xs:element name="OnOndortYaş" msprop:Generator_ColumnVarNameInTable="columnOnOndortYaş" msprop:Generator_ColumnPropNameInRow="OnOndortYaş" msprop:Generator_ColumnPropNameInTable="OnOndortYaşColumn" msprop:Generator_UserColumnName="OnOndortYaş" type="xs:string" minOccurs="0" />
+              <xs:element name="OnBesYaş" msprop:Generator_ColumnVarNameInTable="columnOnBesYaş" msprop:Generator_ColumnPropNameInRow="OnBesYaş" msprop:Generator_ColumnPropNameInTable="OnBesYaşColumn" msprop:Generator_UserColumnName="OnBesYaş" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
