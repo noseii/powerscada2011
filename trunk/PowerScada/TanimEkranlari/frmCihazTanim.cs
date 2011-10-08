@@ -9,7 +9,9 @@ using mymodel;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using SharpBullet.OAL;
-using PowerScada;
+using PowerScada.DataGridViewAutoFilter;
+using PowerScada.DataGridViewAutoFilter;
+
 
 namespace PowerScada
 {
@@ -62,16 +64,25 @@ namespace PowerScada
 
         protected  void InitdataControl()
         {
-            
 
-//                   Grid.SetGridStyle(
-//                 @" <Style>
-//                        <Column Name='id' HeaderText='Id' Width='40' DisplayIndex='0' Visible='false' ReadOnly='false'/>
-//                        <Column Name='Adi' HeaderText='İzlem Adi' Width='100' DisplayIndex='1'  Visible='true' ReadOnly='false'/>
-//                        <Column Name='IzlemSıraNo' HeaderText='İzlem No' Width='75' DisplayIndex='2'  Visible='true' ReadOnly='true'/>
-//                        <Column Name='IlkIzlemdenSonrakiSure' HeaderText='Süre' Width='75' DisplayIndex='3' Visible='true' ReadOnly='false'/>
-//                     </Style>");
-                   
+           
+
+           
+
+            //listTable = PbiOrder.GetOrderedList();
+            //listTable.RowChanged += new DataRowChangeEventHandler(listTable_RowChanged);
+            //bindingSource1.DataSource = listTable;
+            GridAdresler.SetGridStyle(
+                @"<Style>
+                    <Column Name='Id' HeaderText='Id' Width='49' DisplayIndex='0' />
+                    <Column Name='Adres_Id' HeaderText='Adres_Id' Width='100' DisplayIndex='1' Visible='false'/>                    
+                    <Column Name='AdresAdi' HeaderText='Adres Adı' Width='60' DisplayIndex='2' />
+                    <Column Name='AdresSec' HeaderText='Adres Seçiniz' Width='150' DisplayIndex='3' />
+                    <Column Name='Cihaz_Id' HeaderText='İstek' Width='563' DisplayIndex='4' Visible='false'/>
+                    <Column Name='CihazAdi' HeaderText='Cihaz Adı' Width='563' DisplayIndex='5' />
+                    <Column Name='CihazSec' HeaderText='Cihaz Seçiniz' Width='150' DisplayIndex='6'  type == 'Button'/>
+                    <Column Name='Formul' HeaderText='Formül' Width='115' DisplayIndex='7' />                 
+                </Style>");
         }
 
         protected override Entity getNewEntity()

@@ -1,3 +1,113 @@
+#region Datagridview filter örneði kodlarý
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using SharpBullet.OAL;
+using KargoScrumModel;
+using SharpBullet.UI;
+
+namespace SüratScrum
+{
+    public partial class PbiOrderForm : ScrumBaseForm
+    {
+        DataTable listTable;
+
+        public PbiOrderForm()
+        {            
+            InitializeComponent();
+            dataGridView1.DataSource = bindingSource1;
+
+            Commands.Add(new Command() { Name = "Kaydet", ExecuteMethod = CommandKaydet });
+
+            listTable = PbiOrder.GetOrderedList();
+            listTable.RowChanged += new DataRowChangeEventHandler(listTable_RowChanged);
+            bindingSource1.DataSource = listTable;
+            dataGridView1.SetGridStyle(
+                @"<Style>
+                    <Column Name='Pbi_Id' HeaderText='Id' Width='49' DisplayIndex='0' />
+                    <Column Name='OrderNo' HeaderText='Sýra' Width='42' DisplayIndex='1' />
+                    <Column Name='Priority' HeaderText='Acil' Width='60' DisplayIndex='2' />
+                    <Column Name='AssignedTo' HeaderText='Kim' Width='100' DisplayIndex='3' />
+                    <Column Name='CustomerName' HeaderText='Þirket' Width='100' DisplayIndex='4' />
+                    <Column Name='AsAUser' HeaderText='Rol' Width='115' DisplayIndex='5' />
+                    <Column Name='IWantTo' HeaderText='Ýstek' Width='563' DisplayIndex='6' />
+                    <Column Name='SoThat' HeaderText='Fayda' Width='553' DisplayIndex='7' />
+                 
+                </Style>");
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+            {
+                if (col.Name == "IWantTo" || col.Name == "SoThat" || col.Name == "Pbi_Id"
+                    || col.Name == "OrderNo") continue;
+                col.HeaderCell = new
+                    DataGridViewAutoFilter.DataGridViewAutoFilterColumnHeaderCell(col.HeaderCell);
+            }
+
+            dataGridView1.Sort(dataGridView1.Columns["OrderNo"], ListSortDirection.Ascending);
+        }
+
+        public void CommandKaydet(object sender)
+        {
+            progressBar1.Maximum = listTable.Rows.Count;
+            progressBar1.Value = 0;
+
+            foreach (DataRow row in listTable.Rows)
+            {
+                PbiOrder.SetOrder((int)row["Id"], (int)row["OrderNo"]);
+                progressBar1.Value += 1;
+            }
+
+            progressBar1.Value = 0;
+        }
+
+        void listTable_RowChanged(object sender, DataRowChangeEventArgs e)
+        {            
+        }
+
+        private void bindingSource1_CurrentItemChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void bindingSource1_CurrentChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void dataGridView1_CurrentCellChanged(object sender, EventArgs e)
+        {            
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if(dataGridView1.Columns[e.ColumnIndex].Name != "OrderNo") return;
+
+            int oldSiraNo = (int)dataGridView1.Rows[e.RowIndex].Cells["OrderNo"].Value;
+            int newSiraNo = Convert.ToInt32(e.FormattedValue);
+            if (newSiraNo == oldSiraNo) return;
+
+            int id = (int)((DataRowView)dataGridView1.Rows[e.RowIndex].DataBoundItem)["Id"];
+
+            foreach (DataRow row in listTable.Rows)
+            {
+                if(((int)row["Id"])==id) continue;
+                if (((int)row["OrderNo"]) >= newSiraNo)
+                {
+                    row["OrderNo"] = (int)row["OrderNo"] + 1;
+                }
+            }
+        }
+    }
+}
+
+
+
+#endregion
+
 --int alanlarýn long çevrilmesi 
 
 

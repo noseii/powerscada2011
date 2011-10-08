@@ -412,56 +412,56 @@ namespace PowerScada
 
         #region GridStylar
 
-        public static string GetGridStyle(this DataGridView grid)
-        {
-            string result = "";
-            result += " <Style>" + Environment.NewLine;
-            foreach (DataGridViewColumn column in grid.Columns)
-            {
-                result += string.Format(@"    <Column Name='{0}' HeaderText='{1}' Width='{2}' DisplayIndex='{3}' />" + Environment.NewLine,
-                    column.Name, column.HeaderText, column.Width, column.DisplayIndex);
-            }
-            result += " </Style>";
+        //public static string GetGridStyle(this DataGridView grid)
+        //{
+        //    string result = "";
+        //    result += " <Style>" + Environment.NewLine;
+        //    foreach (DataGridViewColumn column in grid.Columns)
+        //    {
+        //        result += string.Format(@"    <Column Name='{0}' HeaderText='{1}' Width='{2}' DisplayIndex='{3}' />" + Environment.NewLine,
+        //            column.Name, column.HeaderText, column.Width, column.DisplayIndex);
+        //    }
+        //    result += " </Style>";
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public static void SetGridStyle(this DataGridView grid, string style)
-        {
-            grid.AutoGenerateColumns = false;
-            grid.Columns.Clear();
+        //public static void SetGridStyle(this DataGridView grid, string style)
+        //{
+        //    grid.AutoGenerateColumns = false;
+        //    grid.Columns.Clear();
 
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(style);
+        //    XmlDocument doc = new XmlDocument();
+        //    doc.LoadXml(style);
 
-            XmlNodeList columns = doc.DocumentElement.GetElementsByTagName("Column");
-            foreach (XmlNode columnNode in columns)
-            {
-                string name = columnNode.Attributes["Name"].InnerText;
+        //    XmlNodeList columns = doc.DocumentElement.GetElementsByTagName("Column");
+        //    foreach (XmlNode columnNode in columns)
+        //    {
+        //        string name = columnNode.Attributes["Name"].InnerText;
 
-                string type = columnNode.Attributes["Type"] != null ? columnNode.Attributes["Type"].InnerText : "";
-                string text = columnNode.Attributes["Text"] != null ? columnNode.Attributes["Text"].InnerText : "";
-                if (type == "CheckBox")
-                    grid.Columns.Add(new DataGridViewCheckBoxColumn() { Name = name, HeaderText = name });
-                else if (type == "ComboBox")
-                    grid.Columns.Add(new DataGridViewComboBoxColumn() { Name = name, HeaderText = name });
-                else if (type == "Button")
-                    grid.Columns.Add(new DataGridViewButtonColumn() { Name = name, HeaderText = name, Text = text, UseColumnTextForButtonValue = true });
-                else
-                    grid.Columns.Add(name, name);
-            }
-            foreach (XmlNode columnNode in columns)
-            {
-                string name = columnNode.Attributes["Name"].InnerText;
-                DataGridViewColumn column = grid.Columns[name];
-                column.DataPropertyName = name;
-                column.HeaderText = columnNode.Attributes["HeaderText"] != null ? columnNode.Attributes["HeaderText"].InnerText : "";
-                column.Width = int.Parse(columnNode.Attributes["Width"].InnerText);
-                column.ReadOnly = bool.Parse(columnNode.Attributes["ReadOnly"].InnerText);
-                column.Visible = bool.Parse(columnNode.Attributes["Visible"].InnerText);
-                column.DisplayIndex = int.Parse(columnNode.Attributes["DisplayIndex"].InnerText);
-            }
-        }
+        //        string type = columnNode.Attributes["Type"] != null ? columnNode.Attributes["Type"].InnerText : "";
+        //        string text = columnNode.Attributes["Text"] != null ? columnNode.Attributes["Text"].InnerText : "";
+        //        if (type == "CheckBox")
+        //            grid.Columns.Add(new DataGridViewCheckBoxColumn() { Name = name, HeaderText = name });
+        //        else if (type == "ComboBox")
+        //            grid.Columns.Add(new DataGridViewComboBoxColumn() { Name = name, HeaderText = name });
+        //        else if (type == "Button")
+        //            grid.Columns.Add(new DataGridViewButtonColumn() { Name = name, HeaderText = name, Text = text, UseColumnTextForButtonValue = true });
+        //        else
+        //            grid.Columns.Add(name, name);
+        //    }
+        //    foreach (XmlNode columnNode in columns)
+        //    {
+        //        string name = columnNode.Attributes["Name"].InnerText;
+        //        DataGridViewColumn column = grid.Columns[name];
+        //        column.DataPropertyName = name;
+        //        column.HeaderText = columnNode.Attributes["HeaderText"] != null ? columnNode.Attributes["HeaderText"].InnerText : "";
+        //        column.Width = int.Parse(columnNode.Attributes["Width"].InnerText);
+        //        column.ReadOnly = bool.Parse(columnNode.Attributes["ReadOnly"].InnerText);
+        //        column.Visible = bool.Parse(columnNode.Attributes["Visible"].InnerText);
+        //        column.DisplayIndex = int.Parse(columnNode.Attributes["DisplayIndex"].InnerText);
+        //    }
+        //}
 
         //public static void SetGridStyle(this DevExpress.XtraGrid.GridControl grid, string style)
         //{

@@ -13,34 +13,39 @@ using System.Windows.Forms;
 using System.Reflection;
 using DevExpress.XtraEditors;
 using PowerScada.Properties;
+using System.Xml;
+using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraGrid.Columns;
+using DevExpress.XtraGrid.Views.Grid;
 
 namespace PowerScada
 {
-    public class Utility
+    public  class Utility
     {
-        public class DateTimeFormatter : IFormatProvider, ICustomFormatter
-        {
-            public object GetFormat(Type formatType)
-            {
-                if (formatType == typeof(ICustomFormatter))
-                    return this;
-                else
-                    return null;
-            }
+        //public static class DateTimeFormatter : IFormatProvider, ICustomFormatter
+        //{
+        //    public object GetFormat(Type formatType)
+        //    {
+        //        if (formatType == typeof(ICustomFormatter))
+        //            return this;
+        //        else
+        //            return null;
+        //    }
 
-            public string Format(string format, object arg, IFormatProvider provider)
-            {
-                string inputDate = Convert.ToString(arg);
-                return string.Format("{0}/{1}/{2} {3}:{4}:{5}",
-                    inputDate.Substring(4, 2),
-                    inputDate.Substring(6, 2),
-                    inputDate.Substring(0, 4),
-                    inputDate.Substring(8, 2),
-                    inputDate.Substring(10, 2),
-                    inputDate.Substring(12, 2));
-            }
+        //    public string Format(string format, object arg, IFormatProvider provider)
+        //    {
+        //        string inputDate = Convert.ToString(arg);
+        //        return string.Format("{0}/{1}/{2} {3}:{4}:{5}",
+        //            inputDate.Substring(4, 2),
+        //            inputDate.Substring(6, 2),
+        //            inputDate.Substring(0, 4),
+        //            inputDate.Substring(8, 2),
+        //            inputDate.Substring(10, 2),
+        //            inputDate.Substring(12, 2));
+        //    }
 
-        }
+        //}
         public static long GetGridToInt(DataRowView currentrow,string columnname)
         {
             long Id = 0;
@@ -191,7 +196,7 @@ namespace PowerScada
                 return (false);
         }
 
-        public bool CheckTcId(string tc, ref string mesaj)
+        public static bool CheckTcId(string tc, ref string mesaj)
         {
             Int64 tmp, tek_toplam, cift_toplam, deger1, deger2, toplam;
 
@@ -914,5 +919,13 @@ namespace PowerScada
 
 //            return randevu;
 //        }
+
+
+
+     
     }
+
+
+   
+
 }

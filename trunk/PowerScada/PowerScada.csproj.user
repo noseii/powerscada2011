@@ -9,7 +9,7 @@
     <ErrorReportUrlHistory />
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup>
     <ReferencePath>C:\Program Files (x86)\DevExpress 2010.1\Components\Sources\DevExpress.DLL\</ReferencePath>
