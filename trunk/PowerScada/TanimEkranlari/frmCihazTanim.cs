@@ -11,105 +11,179 @@ using DevExpress.XtraGrid.Columns;
 using SharpBullet.OAL;
 using PowerScada.DataGridViewAutoFilter;
 using PowerScada.DataGridViewAutoFilter;
+using DevExpress.XtraEditors.Repository;
 
 
 namespace PowerScada
 {
     public partial class frmCihazTanim : frmInfoForm
     {
-        private BindingList<CihazAdres> CihazAdresleri = new BindingList<CihazAdres>();
-              
+        //BindingList<CihazAdres> Adresler = new BindingList<CihazAdres>();
+        DataTable Adresler = new DataTable();
+        private GridEditButtonManager gridadres;
+        
+      
         public frmCihazTanim()
         {
            
             InitializeComponent();
-            InitdataControl();
+           
             EditNew(null);
-       
+            InitdataControl();
             //CommandAdd();
       }
 
         public frmCihazTanim(long id, EkranDurumu ekrandurumu)
         {
             InitializeComponent();
-            InitdataControl();
+           
             //CommandAdd();
             this.EkranDurumu = ekrandurumu;
             EditById(id);
+            InitdataControl();
             
         }
 
         protected override Entity findEntity(long id)
         {
             infoformentity = Persistence.Read<Cihaz>(id);
-
-            CihazAdres[] cihazadresler = CihazAdres.ReadCihazAdresleri(infoformentity.Id);
-            ((Cihaz)infoformentity).CihazAdresleri = new BindingList<CihazAdres>();
-            if (cihazadresler != null)
+            if (infoformentity != null)
             {
-                CihazAdresleri.Clear();
-                foreach (CihazAdres item in cihazadresler)
-                {
-                    CihazAdresleri.Add(item);
-                }
+                
+                //CihazAdres[] adresler=Persistence.ReadList<CihazAdres>("Select * from CihazAdres where Aktif=1 and Cihaz_Id=@prm0", new object[] { infoformentity.Id });
+                Adresler = Transaction.Instance.ExecuteSql("Select *,(Select TagAdresi from Adres Where Adres.Id=CihazAdres.Adres_Id and Adres.Aktif=1) as TagAdresi from CihazAdres where Aktif=1 and Cihaz_Id=@prm0", new object[] { infoformentity.Id });
+                //if(adresler!=null)
+                //{
+                //    Adresler.Clear();
+                //    foreach (CihazAdres item in adresler)
+                //    {
+                //        if (item.Adres.Id > 0)
+                //            item.Adres = Persistence.Read<Adres>(item.Adres.Id);
+                       
+                //        Adresler.Add(item);
+                //    }
+                    
+                //}
             }
-
             return ((Cihaz)infoformentity);
-
-            
-
         }
 
      
 
         protected  void InitdataControl()
         {
+            //GridAdresler.DataError += new DataGridViewDataErrorEventHandler(GridAdresler_DataError);
+          
+          
+        
+                            //<Column Name='Davranis'  HeaderText='Davranis'  Width='150' DisplayIndex='6'   Visible='true' Type ='ComboBox' />                           
+                    //<Column Name='AdresTipi'  HeaderText='Adres Tipi'  Width='150' DisplayIndex='5'   Visible='true' Type ='ComboBox' />
 
-           
-
-           
-
-            //listTable = PbiOrder.GetOrderedList();
-            //listTable.RowChanged += new DataRowChangeEventHandler(listTable_RowChanged);
-            //bindingSource1.DataSource = listTable;
             GridAdresler.SetGridStyle(
-                @"<Style>
-                    <Column Name='Id' HeaderText='Id' Width='49' DisplayIndex='0' />
-                    <Column Name='Adres_Id' HeaderText='Adres_Id' Width='100' DisplayIndex='1' Visible='false'/>                    
-                    <Column Name='AdresAdi' HeaderText='Adres Adı' Width='60' DisplayIndex='2' />
-                    <Column Name='AdresSec' HeaderText='Adres Seçiniz' Width='150' DisplayIndex='3' />
-                    <Column Name='Cihaz_Id' HeaderText='İstek' Width='563' DisplayIndex='4' Visible='false'/>
-                    <Column Name='CihazAdi' HeaderText='Cihaz Adı' Width='563' DisplayIndex='5' />
-                    <Column Name='CihazSec' HeaderText='Cihaz Seçiniz' Width='150' DisplayIndex='6'  type == 'Button'/>
-                    <Column Name='Formul' HeaderText='Formül' Width='115' DisplayIndex='7' />                 
-                </Style>");
+             @"<Style>
+                    <Column Name='Id'        HeaderText='Id'             Width='0'  DisplayIndex='0'   Visible='false'  />
+                    <Column Name='Adres_Id'  HeaderText='Adres_Id'       Width='0' DisplayIndex='1'    Visible='false' />                    
+                    <Column Name='TagAdresi'  HeaderText='TagAdresi'     Width='100' Text='Adres Seç' DisplayIndex='2'   Visible='true' Type ='Button' />
+                    <Column Name='Formul'    HeaderText='Formül'         Width='100' DisplayIndex='3'   Visible='true'  />                 
+                   <Column Name='AdresTipi'    HeaderText='Adres Tipi'         Width='100' DisplayIndex='3'   Visible='true'  Type ='ComboBox'/>                 
+                   <Column Name='Davranis'    HeaderText='Davranış'         Width='100' DisplayIndex='3'   Visible='true'  Type ='ComboBox'/>                 
+              
+            </Style>");
+
+ //<Column Name='TagAdresi' HeaderText='Tag Adresi'     Width='150'  DisplayIndex='2'   Visible='true'  />
+
+            //DataGridViewComboBoxColumn combo = new DataGridViewComboBoxColumn();
+            //combo.DataSource = Enum.GetValues(typeof(myenum.Davranis));
+            //combo.DataPropertyName = "Davranis";
+            //combo.Name = "Davranis";
+            //GridAdresler.Columns.Add(combo);
+            string[] names = Enum.GetNames(typeof(mymodel.myenum.Davranis));
+            foreach (string str in names)
+            {
+                ((RepositoryItemComboBox)gridView1.Columns["Davranis"].ColumnEdit).Items.Add(str);
+            }
+            names = null;
+            names = Enum.GetNames(typeof(mymodel.myenum.AdresTipi));
+            foreach (string str in names)
+            {
+                ((RepositoryItemComboBox)gridView1.Columns["AdresTipi"].ColumnEdit).Items.Add(str);
+            }
+            //DataGridViewComboBoxColumn AdresColumn = new DataGridViewComboBoxColumn();
+            //AdresColumn.Name = "AdresTipi";
+            //AdresColumn.HeaderText = "AdresTipi";
+            //AdresColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
+            //AdresColumn.DataPropertyName = "AdresTipi";
+            //AdresColumn.DataSource=Utility.EnumToDataTable(typeof(myenum.AdresTipi));
+            //AdresColumn.DisplayMember = "Ad";
+            //AdresColumn.ValueMember = "Id";
+            //AdresColumn.DisplayIndex = 7;
+             
+            //GridAdresler.Columns.Add(AdresColumn);
+            gridView1.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
+
+            gridadres = new GridEditButtonManager(GridAdresler, new ActionAdresListesi(),
+            new string[] { "Adres_Id", "TagAdresi" }, new string[] { "Id", "TagAdresi" }, true);
+            gridadres.BeforeExecute += new BeforeExecuteEventHandler(gridadres_BeforeExecute);
+            gridadres.AfterExecute += new EventHandler(gridadres_AfterExecute);
+        }
+
+        bool gridadres_BeforeExecute(object sender, EventArgs e)
+        {
+            //Adresler.Add(new CihazAdres());
+            return true;
+        }
+
+        void GridAdresler_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+         
+        }
+
+        void gridadres_AfterExecute(object sender, EventArgs e)
+        {
+            
+            
+                 
+              
+            //adres.Adres.Id = (long)gridadres.ManagerGrid.CurrentRow.Cells["Adres_Id"].Value;
+            //adres.Adres.TagAdresi = (string)gridadres.ManagerGrid.CurrentRow.Cells["TagAdresi"].Value;
+         
         }
 
         protected override Entity getNewEntity()
         {
-            CihazAdresleri = new BindingList<CihazAdres>();
+            Cihaz  cihaz=new Cihaz();
+            Adresler = Transaction.Instance.ExecuteSql("Select *,(Select TagAdresi from Adres Where Adres.Id=CihazAdres.Adres_Id and Adres.Aktif=1) as TagAdresi from CihazAdres where Aktif=1 and Cihaz_Id=@prm0", new object[] { cihaz.Id });
 
-            return new Cihaz();
+            //Adresler = new BindingList<CihazAdres>();
+            //Adresler.Add(new CihazAdres());
+           
+            return cihaz;
         }
 
         protected override void ShowEntityData()
         {
             Cihaz cihaz = ((Cihaz)infoformentity);
-            if(cihaz.CihazTuru.Id>0)
+            if (cihaz != null)
             {
-               LookupTable cihazturu=Persistence.Read<LookupTable>(cihaz.cihazturu.Id);
-               editButtonCihazTuru.Id = cihazturu.Id;
-               editButtonCihazTuru.Text = cihazturu.Adi;
+                if (cihaz.CihazTuru.Id > 0)
+                {
+                    LookupTable cihazturu = Persistence.Read<LookupTable>(cihaz.cihazturu.Id);
+                    editButtonCihazTuru.Id = cihazturu.Id;
+                    editButtonCihazTuru.Text = cihazturu.Adi;
+                }
+                textEditAdi.Text = cihaz.Adi;
+                textEditkodu.Text = cihaz.Kodu;
+                memoEditAciklama.Text = cihaz.Aciklama;
+                myComboDavranis.Id = (int)cihaz.Davranis;
+                ShowEntityDataGrid();
             }
-            textEditAdi.Text = cihaz.Adi;
-            textEditkodu.Text = cihaz.Kodu;
-            memoEditAciklama.Text = cihaz.Aciklama;
-            myComboDavranis.Id = (int)cihaz.Davranis;
-
-            GridAdresler.DataSource = CihazAdresleri;
-         
+            
         }
 
+        private void ShowEntityDataGrid()
+        {
+            GridAdresler.DataSource = Adresler; ;
+        }
 
        
 
@@ -126,18 +200,15 @@ namespace PowerScada
 
         private void KisiNotlariUpdate()
         {
-            ((Cihaz)infoformentity).CihazAdresleri.Clear();
-            foreach (CihazAdres item in CihazAdresleri)
-            {
+            Adresler.AcceptChanges();
 
-                ((Cihaz)infoformentity).CihazAdresleri.Add(item);
-
-            }
+            GridAdresler.DataSource = Adresler;
 
         }
 
         protected override void Save()
         {
+            UpdateEntityData();
             Transaction.Instance.Join(delegate()
             {
                 base.Save();
@@ -149,16 +220,50 @@ namespace PowerScada
                 {
                     throw new Exception("Cihaz ait adresler silinemdi");
                 }
-                foreach (CihazAdres chzadres in ((Cihaz)infoformentity).CihazAdresleri)
-                {
+                 //bindingsource.DataSource
+                //foreach (CihazAdres ent in Adresler)
+                //{
+                    
+                //    ent.Cihaz.Id = infoformentity.Id;
+                //    //chzadres.Adres.Id =Convert.ToInt64(rw["Adres_Id"]);
+                //    //chzadres.Davranis = (mymodel.myenum.Davranis) Enum.Parse(typeof(mymodel.myenum.Davranis),rw["Davranis"].ToString());
+                //    //chzadres.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi), rw["AdresTipi"].ToString());
+                //    //chzadres.Formul = rw["Formul"] == null ? "" : rw["Formul"].ToString();
+                //    ent.Insert();
+                //}
 
-                    chzadres.Cihaz.Id = infoformentity.Id;
-                    chzadres.Adres.Id = 0;
-                    chzadres.Insert();
+                foreach (DataRow rw in Adresler.Rows)
+                {
+                    CihazAdres chz = new CihazAdres();
+                    chz.Cihaz.Id=infoformentity.Id;
+                    chz.Adres.Id=Convert.ToInt64(rw["Adres_Id"]);
+                    chz.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi),rw["AdresTipi"].ToString());
+                    chz.Davranis = (mymodel.myenum.Davranis)Enum.Parse(typeof(mymodel.myenum.Davranis), rw["Davranis"].ToString());
+                    chz.Formul = rw["Formul"].ToString();
+                    chz.Insert();
                 }
+
             });
 
             
+        }
+
+        private void GridAdresler_Validating(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void gridView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if(DialogResult.Yes==MessageBox.Show("Seçili satırı silmek istediğinizden eminmisiniz ?","Uyarı",MessageBoxButtons.YesNo))
+                {
+                    gridView1.DeleteRow(gridView1.FocusedRowHandle);
+                }
+                else
+                    return;
+            }
         }
 
       

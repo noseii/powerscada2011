@@ -715,7 +715,7 @@ namespace PowerScada
             this._OPCItemValue_0.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this._OPCItemValue_0.Size = new System.Drawing.Size(97, 20);
             this._OPCItemValue_0.TabIndex = 30;
-            this._OPCItemValue_0.TextChanged += new System.EventHandler(this._OPCItemValue_0_TextChanged);
+            
             // 
             // _OPCItemSyncReadButton_3
             // 
@@ -1730,7 +1730,7 @@ namespace PowerScada
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1284, 213);
+            this.panel1.Size = new System.Drawing.Size(1028, 213);
             this.panel1.TabIndex = 113;
             // 
             // flowLayoutPanel1
@@ -1738,14 +1738,14 @@ namespace PowerScada
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 213);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1284, 446);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1028, 446);
             this.flowLayoutPanel1.TabIndex = 114;
             // 
             // frmOpcServerCihazIzle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 659);
+            this.ClientSize = new System.Drawing.Size(1028, 659);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.panel1);
             this.Name = "frmOpcServerCihazIzle";

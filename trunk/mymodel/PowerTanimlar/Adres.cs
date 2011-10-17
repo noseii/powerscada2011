@@ -11,10 +11,23 @@ using SharpBullet.OAL;
 namespace mymodel
 {
     public class Adres : Entity
-    {        
+    {
 
         [FieldDefinition(Length = 100)]
-        public string TagAdresi { get; set; }
+        public string tagadresi;
+
+        public string TagAdresi
+        {
+            get
+            {
+                return tagadresi;
+            }
+            set
+            {
+                tagadresi = value;
+            }
+
+        }
 
         public override string ToString() { return this.TagAdresi ?? ""; }
 

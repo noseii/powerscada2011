@@ -44,7 +44,72 @@ namespace mymodel
 
         }
         
+
         public string Formul { get; set; }
+
+        private myenum.AdresTipi adrestipi;
+        public myenum.AdresTipi AdresTipi
+        {
+            get
+            {
+                return adrestipi;
+            }
+            set
+            {
+                adrestipi = value;
+            }
+        }
+
+        private myenum.Davranis davranis;
+        public myenum.Davranis Davranis
+        {
+            get
+            {
+                return davranis;
+            }
+            set
+            {
+                davranis = value;
+            }
+        }
+
+        public bool IsLogTutulsun { get; set; }
+
+
+
+        private myenum.MappedFieldType datatipi;
+
+        public myenum.MappedFieldType DataTipi
+        {
+            get
+            {
+                return datatipi;
+            }
+            set
+            {
+                datatipi = value;
+            }
+        }
+
+        public CihazAdres()
+        {
+            Adres = new Adres();
+            Cihaz = new Cihaz();
+            Formul = string.Empty;
+            Davranis = myenum.Davranis.Oku;
+            AdresTipi = myenum.AdresTipi.CihazAcmaKapamaAdresi;
+
+        }
+      
+        
+        //[FieldDefinition(MappingType = FieldMappingType.No)]
+        //public string TagAdresi 
+        //{
+        //    get
+        //    {
+        //        return this.Adres.TagAdresi;
+        //    }
+        //}
 
         #region static Methots
         public static CihazAdres[] ReadCihazAdresleri(long cihazid)

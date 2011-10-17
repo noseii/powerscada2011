@@ -91,9 +91,10 @@ namespace PowerScada
                 }
                 else if (type == "Button")
                 {
-                    int i = view.Columns.Add(new GridColumn() { Name = name, FieldName = name });
-                    view.Columns[i].ColumnEdit = new RepositoryItemButtonEdit() { TextEditStyle = TextEditStyles.HideTextEditor };
-                    view.Columns[i].ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
+                    int i = view.Columns.Add(new GridColumn() { Name = name, FieldName = name, Caption=text });
+                    view.Columns[i].ColumnEdit = new RepositoryItemButtonEdit() { TextEditStyle = TextEditStyles.Standard };
+                    view.Columns[i].ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedCell;
+                    
                 }
                 else
                 {
@@ -107,6 +108,8 @@ namespace PowerScada
                 column.Caption = columnNode.Attributes["HeaderText"] != null ? columnNode.Attributes["HeaderText"].InnerText : "";
                 column.Width = int.Parse(columnNode.Attributes["Width"].InnerText);
                 column.VisibleIndex = int.Parse(columnNode.Attributes["DisplayIndex"].InnerText);
+                column.Visible = columnNode.Attributes["Visible"] != null ? bool.Parse(columnNode.Attributes["Visible"].InnerText) : false;
+    
             }
         }
 

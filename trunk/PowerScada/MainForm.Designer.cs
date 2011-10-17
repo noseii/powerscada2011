@@ -40,6 +40,7 @@
             this.ilçeTanımıToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cihazListesiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tanımListesiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.adresListesiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.yenidenOluşturToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kullaniciAyarlariToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,7 +55,7 @@
             this.cmbaktifdoktor = new System.Windows.Forms.ComboBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tt = new System.Windows.Forms.Timer(this.components);
-            this.adresListesiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cihazİzlemEkranıToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.pnlstatus.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -88,7 +89,8 @@
             this.ilçeTanımıToolStripMenuItem,
             this.cihazListesiToolStripMenuItem,
             this.tanımListesiToolStripMenuItem,
-            this.adresListesiToolStripMenuItem});
+            this.adresListesiToolStripMenuItem,
+            this.cihazİzlemEkranıToolStripMenuItem});
             this.tanımlarToolStripMenuItem.Name = "tanımlarToolStripMenuItem";
             this.tanımlarToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.tanımlarToolStripMenuItem.Tag = "Tanimlar";
@@ -140,6 +142,13 @@
             this.tanımListesiToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.tanımListesiToolStripMenuItem.Text = "Tanım Listesi";
             this.tanımListesiToolStripMenuItem.Click += new System.EventHandler(this.tanımListesiToolStripMenuItem_Click);
+            // 
+            // adresListesiToolStripMenuItem
+            // 
+            this.adresListesiToolStripMenuItem.Name = "adresListesiToolStripMenuItem";
+            this.adresListesiToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.adresListesiToolStripMenuItem.Text = "Adres Listesi";
+            this.adresListesiToolStripMenuItem.Click += new System.EventHandler(this.adresListesiToolStripMenuItem_Click);
             // 
             // sysToolStripMenuItem
             // 
@@ -254,12 +263,12 @@
             this.statusStrip1.TabIndex = 10;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // adresListesiToolStripMenuItem
+            // cihazİzlemEkranıToolStripMenuItem
             // 
-            this.adresListesiToolStripMenuItem.Name = "adresListesiToolStripMenuItem";
-            this.adresListesiToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.adresListesiToolStripMenuItem.Text = "Adres Listesi";
-            this.adresListesiToolStripMenuItem.Click += new System.EventHandler(this.adresListesiToolStripMenuItem_Click);
+            this.cihazİzlemEkranıToolStripMenuItem.Name = "cihazİzlemEkranıToolStripMenuItem";
+            this.cihazİzlemEkranıToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.cihazİzlemEkranıToolStripMenuItem.Text = "Cihaz İzlem Ekranı";
+            this.cihazİzlemEkranıToolStripMenuItem.Click += new System.EventHandler(this.cihazİzlemEkranıToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -311,6 +320,7 @@
         private System.Windows.Forms.ToolStripMenuItem cihazListesiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tanımListesiToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem adresListesiToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cihazİzlemEkranıToolStripMenuItem;
 
 
 

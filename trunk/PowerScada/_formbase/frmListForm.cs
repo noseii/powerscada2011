@@ -9,13 +9,13 @@ using mymodel;
 using SharpBullet.OAL;
 using SharpBullet.UI;
 using PowerScada;
+using System.Collections;
 
 namespace PowerScada
 {
-    public class frmListForm : BaseForm
+    public class frmListForm : BaseForm, ISelectionForm     
     {
         private System.ComponentModel.IContainer components;
-        protected DataGridView grid;
         private XPExplorerBar.TaskPane SolMenutaskPane;
         public XPExplorerBar.Expando Islemler;
         private XPExplorerBar.TaskItem Incele;
@@ -32,7 +32,9 @@ namespace PowerScada
         protected Panel Gridpanel;
         private XPExplorerBar.TaskItem Aktiftask;
         private Type entityType;
-
+        protected SelectionFormReturnType returnType = SelectionFormReturnType.AsIs;
+        protected bool multiSelect;
+        protected ListFormState State;
         private Control firstControl;
         public virtual Control FirstControl
         {
@@ -46,6 +48,16 @@ namespace PowerScada
 
 
         }
+        protected bool multiPageSelection = true;
+        protected Entity[] secilenNesne;
+        protected System.Data.DataTable secilenData;
+        private System.Collections.Hashtable secilenObjIdHT;
+        private bool formClosing = false;
+        private bool formLoaded = false;
+        private bool keyDownPassed;
+        public DevExpress.XtraGrid.GridControl grid;
+        public DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        const string SELECTIONCOLKEY = "SelectionColumn";
 
         public Type EntityType
         {
@@ -56,9 +68,57 @@ namespace PowerScada
         public frmListForm()
         {
             InitializeComponent();
-
+            multiSelect = false;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(ListForm_KeyDown);
-            grid.CellDoubleClick += grid_CellDoubleClick;
+            grid.DoubleClick+=new EventHandler(grid_DoubleClick);
+            //Commands.Add("New", new Command(delegate()
+            //{
+            //    frmInfoForm form = newInfoForm();
+            //    form.EditNew();
+            //    AnaForm anaform = (AnaForm)(AnaForm)Application.OpenForms["AnaForm"];
+            //    anaform.TabControl1.TabPages.Add(form);
+            //    form.MdiParent = this.MdiParent;
+            //    form.Show();
+            //}));
+           
+            Commands.Add(new Command()
+           {
+               Name = "New",
+               ExecuteMethod = New
+           });
+
+            Commands.Add(new Command()
+            {
+                Name = "Refresh",
+                ExecuteMethod = showData
+            });
+
+            Commands.Add(new Command()
+            {
+                Name = "Pasif",
+                ExecuteMethod = MakePasif
+            });
+
+            Commands.Add(new Command()
+            {
+                Name = "Close",
+                ExecuteMethod = Close
+            });
+
+
+
+
+
+
+
+        }
+
+        public frmListForm(bool Multiselect)
+        {
+            InitializeComponent();
+            multiSelect = Multiselect;
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(ListForm_KeyDown);
+            grid.DoubleClick += new EventHandler(grid_DoubleClick);
             //Commands.Add("New", new Command(delegate()
             //{
             //    frmInfoForm form = newInfoForm();
@@ -69,36 +129,104 @@ namespace PowerScada
             //    form.Show();
             //}));
 
-             Commands.Add(new Command()
+            Commands.Add(new Command()
             {
                 Name = "New",
-                ExecuteMethod =New 
+                ExecuteMethod = New
             });
 
-             Commands.Add(new Command()
-             {
-                 Name = "Refresh",
-                 ExecuteMethod = showData
-             });
+            Commands.Add(new Command()
+            {
+                Name = "Refresh",
+                ExecuteMethod = showData
+            });
 
-             Commands.Add(new Command()
-             {
-                 Name = "Pasif",
-                 ExecuteMethod = MakePasif
-             });
+            Commands.Add(new Command()
+            {
+                Name = "Pasif",
+                ExecuteMethod = MakePasif
+            });
 
-             Commands.Add(new Command()
-             {
-                 Name = "Close",
-                 ExecuteMethod = Close
-             });
+            Commands.Add(new Command()
+            {
+                Name = "Close",
+                ExecuteMethod = Close
+            });
 
-         
 
-          
 
-       
 
+
+
+
+        }
+        private int multiselectid = 0;
+        private bool keyForSecilenObjIdHT(ref string objId)
+        {
+            for (int i = 0; i <= multiselectid; i++)
+            {
+                if (secilenObjIdHT.Contains(i.ToString() + ";" + objId))
+                {
+                    objId = i.ToString() + ";" + objId;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private void InitializeGrid()
+        {
+
+            gridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.RowSelect;
+                //grid.DisplayLayout.Bands[0].Override.AllowUpdate = Infragistics.Win.DefaultableBoolean.False;
+            //grid.DisplayLayout.Override.SelectTypeCol = Infragistics.Win.UltraWinGrid.SelectType.None;
+            if (multiSelect)
+            {
+                gridView1.OptionsSelection.MultiSelect = true;
+                if (multiPageSelection == true)
+                {
+                    ResetSelection();
+                }
+            }
+            else
+                gridView1.OptionsSelection.MultiSelect = false;
+
+        }
+        protected void ResetSelection()
+        {
+            ResetSelection(true);
+        }
+
+        protected void ResetSelection(bool initselection)
+        {
+            if (multiPageSelection == true && (this.State == ListFormState.EditAndSelect || this.State == ListFormState.SelectOnly))
+            {
+
+                DevExpress.XtraGrid.Columns.GridColumn col;
+
+                int i=0;
+
+                if (gridView1.Columns.Contains(gridView1.Columns["SELECTIONCOLKEY"]))
+                    col = gridView1.Columns["SELECTIONCOLKEY"];
+                else
+                {   
+                    DevExpress.XtraGrid.Columns.GridColumn column=new DevExpress.XtraGrid.Columns.GridColumn();
+                    column.Name=SELECTIONCOLKEY;
+                    column.FieldName=SELECTIONCOLKEY;
+                    column.Caption="Seç";
+                    i= gridView1.Columns.Add(column);
+                }
+                col = gridView1.Columns["SELECTIONCOLKEY"];
+                //col. typeof(bool);
+                //col.Header.Fixed = true;
+                //col.Header.VisiblePosition = 0;
+                //col.PerformAutoResize();
+                col.Visible = false;
+                if (initselection)
+                    secilenObjIdHT = new Hashtable();
+                //else
+                //    AfterScrollPage();
+            }
         }
 
         void ListForm_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -136,6 +264,15 @@ namespace PowerScada
 
         }
 
+        // BK: Bu özellik default olarak true'dur.
+        // bunun anlamı; seçim amacıyla açılmak istenen ListForm boş da olsa gösterilir.
+        // eğer false yapılırsa; liste boş ise görüntülenmez. (returnIfFound gibi.. ama bu returnIfNotFound :)
+        private bool alwaysShowListForm = true;
+        public bool AlwaysShowListForm
+        {
+            get { return alwaysShowListForm; }
+            set { alwaysShowListForm = value; }
+        }
         protected void showData(object sender)
         {
             DataTable dt = retrieveData();
@@ -145,16 +282,16 @@ namespace PowerScada
 
         protected virtual void loadGridSeeting()
         {
-            grid.AutoSize = true;
-            foreach (DataGridViewColumn item in grid.Columns)
-            {
-                if (item.Name == "Id")
-                    item.Visible = false;
-                if (item.Name.Length > 15)
-                    item.Width = 150;
+            //grid.AutoSize = true;
+            //foreach (DataGridViewColumn item in grid.Columns)
+            //{
+            //    if (item.Name == "Id")
+            //        item.Visible = false;
+            //    if (item.Name.Length > 15)
+            //        item.Width = 150;
 
 
-            }
+            //}
         }
 
         //public grid grid;
@@ -166,30 +303,36 @@ namespace PowerScada
         //    set
         //    {
         //        if (grid != null)
-        //            grid.CellDoubleClick -= grid_CellDoubleClick;
+        //            grid.grid_DoubleClick -= grid_CellDoubleClick;
 
         //        grid = value;
         //        if (grid != null)
         //        {
-        //            grid.CellDoubleClick += grid_CellDoubleClick;
+        //            grid.grid_DoubleClick += grid_CellDoubleClick;
         //        }
         //    }
         //}
 
-        void grid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void grid_DoubleClick(object sender, EventArgs e)
         {
-            if (e.RowIndex > -1)
+            if (gridView1.GetFocusedDataRow()!=null)
             {
-                try
+                if (State == ListFormState.EditOnly || State == ListFormState.ListOnly || State == ListFormState.ListAndBrowse)
                 {
-                    long id = (long)grid.Rows[e.RowIndex].Cells["Id"].Value;
-                    View(sender);
+                    long id = (long)gridView1.GetFocusedDataRow()["Id"];
+                    View(sender); // yoksa this.View() mi olsun?
                 }
-                catch
+                else if (this.Modal)
                 {
+                    this.SelectRow();
                 }
             }
+
+          
+
         }
+
+        
 
         protected virtual Entity findById(int id)
         {
@@ -208,11 +351,11 @@ namespace PowerScada
 
         protected virtual void New(object sender)
         {
-          
+
         }
         protected virtual void Edit(object sender)
         {
-           
+
 
         }
 
@@ -254,7 +397,8 @@ namespace PowerScada
         private void InitializeComponent()
         {
             this.Gridpanel = new System.Windows.Forms.Panel();
-            this.grid = new System.Windows.Forms.DataGridView();
+            this.grid = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.ListFormPanel = new System.Windows.Forms.Panel();
             this.SolPanel = new System.Windows.Forms.Panel();
             this.SolMenutaskPane = new XPExplorerBar.TaskPane();
@@ -271,6 +415,7 @@ namespace PowerScada
             this.Aktiftask = new XPExplorerBar.TaskItem();
             this.Gridpanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.ListFormPanel.SuspendLayout();
             this.SolPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SolMenutaskPane)).BeginInit();
@@ -291,21 +436,24 @@ namespace PowerScada
             // 
             // grid
             // 
-            this.grid.AllowUserToAddRows = false;
-            this.grid.BackgroundColor = System.Drawing.SystemColors.Control;
-            this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grid.EnableHeadersVisualStyles = false;
-            this.grid.GridColor = System.Drawing.SystemColors.Control;
             this.grid.Location = new System.Drawing.Point(0, 0);
-            this.grid.MultiSelect = false;
+            this.grid.MainView = this.gridView1;
             this.grid.Name = "grid";
-            this.grid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            this.grid.RowTemplate.ReadOnly = true;
-            this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grid.Size = new System.Drawing.Size(867, 749);
             this.grid.TabIndex = 0;
-            this.grid.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid_RowEnter);
+            this.grid.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView1});
+            // 
+            // gridView1
+            // 
+            this.gridView1.GridControl = this.grid;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.False;
+            this.gridView1.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.False;
+            this.gridView1.OptionsBehavior.AllowIncrementalSearch = true;
+            this.gridView1.OptionsBehavior.Editable = false;
+            this.gridView1.OptionsBehavior.ReadOnly = true;
             // 
             // ListFormPanel
             // 
@@ -529,9 +677,10 @@ namespace PowerScada
             this.Name = "frmListForm";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.ShowIcon = false;
-          
+            this.Load += new System.EventHandler(this.frmListForm_Load);
             this.Gridpanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.ListFormPanel.ResumeLayout(false);
             this.SolPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SolMenutaskPane)).EndInit();
@@ -567,15 +716,15 @@ namespace PowerScada
             showData(sender);
         }
 
-        protected void  MakePasif( object sender)
+        protected void MakePasif(object sender)
         {
-            if (grid.CurrentRow.Index > -1)
+            if (gridView1.GetFocusedDataRow()!=null)
             {
-               
+
                 try
                 {
                     int aktif = 0;
-                    long id = (long)grid.CurrentRow.Cells["Id"].Value;
+                    long id = (long)gridView1.GetFocusedDataRow()["Id"];
                     Transaction.Instance.ExecuteNonQuery("update " + this.EntityType.Name + " set Aktif=" + aktif + " where Id='" + id + "'");
                     sender = false;
                 }
@@ -584,21 +733,21 @@ namespace PowerScada
                     sender = true;
                     MessageBox.Show(ex.ToString());
                 }
-               
+
             }
-          
+
         }
 
         protected void MakeAktif(object sender)
         {
 
-            if (grid.CurrentRow.Index > -1)
+            if (gridView1.GetFocusedDataRow() != null)
             {
                 sender = false;
                 try
                 {
                     int aktif = 1;
-                    long id = (long)grid.CurrentRow.Cells["Id"].Value;
+                    long id = (long)gridView1.GetFocusedDataRow()["Id"];
                     Transaction.Instance.ExecuteNonQuery("update " + this.EntityType.Name + " set Aktif=" + aktif + " where Id='" + id + "'");
                     sender = true;
                 }
@@ -618,7 +767,8 @@ namespace PowerScada
             //bool aktif = false;
             MakePasif(false);
             //showData(sender);
-            grid.CurrentRow.Cells["Aktif"].Value = false;
+
+            gridView1.GetFocusedDataRow()["Aktif"] = false;
             grid.Update();
             Aktiftask.Visible = !false;
             PasifTask.Visible = false;
@@ -626,10 +776,10 @@ namespace PowerScada
 
         private void Aktiftask_Click(object sender, EventArgs e)
         {
-            
+
             MakeAktif(true);
-           
-            grid.CurrentRow.Cells["Aktif"].Value = true;
+
+            gridView1.GetFocusedDataRow()["Aktif"] = true;
             grid.Update();
             Aktiftask.Visible = !true;
             PasifTask.Visible = true;
@@ -637,9 +787,9 @@ namespace PowerScada
 
         private void grid_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if (grid.Rows[e.RowIndex] != null && grid.Rows[e.RowIndex].Index > -1)
+            if ( gridView1.GetFocusedDataRow()!=null)
             {
-                bool aktif = (bool)grid.Rows[e.RowIndex].Cells["aktif"].Value;
+                bool aktif = (bool)gridView1.GetFocusedDataRow()["Aktif"];
                 if (aktif)
                 {
                     Aktiftask.Visible = !aktif;
@@ -653,8 +803,720 @@ namespace PowerScada
             }
         }
 
+        #region ISelectionForm Members
+        Entity[] ISelectionForm.ShowSelectionList(string searchField, object searchValue, bool returnOnMatch, bool editable, bool multiselect)
+        {
+            return ((ISelectionForm)this).ShowSelectionList(searchField, searchValue, returnOnMatch, editable, multiselect, SelectionFormReturnType.AsIs);
+        }
+
+         Entity[] ISelectionForm.ShowSelectionList(string searchField, object searchValue, bool returnOnMatch, bool editable, bool multiselect, SelectionFormReturnType returntype)
+        {
+            this.multiSelect = multiselect;
+            this.returnType = returntype;
+
+            closeAction = DialogResult.OK;
+
+            if (editable)
+                State = ListFormState.EditAndSelect;
+            else
+                State = ListFormState.SelectOnly;
+
+            if (multiselect == false && returnOnMatch == true)
+            {
+                //SearchField ve SearchValue değerine göre bir nesne bulunursa Select modunda döndürülür.
+                Entity theEntity = SearchEntity(searchField, searchValue.ToString());
+                if (theEntity == null)
+                {
+                    secilenNesne = null;
+                    secilenData = null;
+                }
+                else
+                {
+                    secilenNesne = new Entity[1];
+                    secilenNesne[0] = theEntity;
+                    try
+                    {
+                        secilenData = Persistence.ReadListTable(EntityType, new string[] { "*" }, null, null, 100);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            secilenData = Persistence.ReadListTable(EntityType, new string[] { "*" }, null, null, 100);
+                        }
+                        catch
+                        {
+                            secilenData = null;
+                        }
+                    }
+                    this.Dispose(true);
+                    return secilenNesne;
+                }
+            }
+
+            frmListForm_Load(this, new System.EventArgs());
+            //InitSelectList();
+
+            if (multiselect)
+            {
+                //InitSelectSearch("", "");
+            }
+            else
+            {
+                if (returnOnMatch)
+                {
+
+                }
+                //ListForm_Load(this, new System.EventArgs());
+                //InitSelectList();
+                //InitSelectSearch(searchField, searchValue == null ? "" : searchValue.ToString());
+            }
+
+            if (AlwaysShowListForm || (gridView1.RowCount > 0))
+            {
+                closeAction = this.ShowDialog();
+                this.Dispose();
+            }
+
+
+            return secilenNesne;
+        }
+
+        protected virtual string RowObjIdEntityName()
+        {
+            return EntityName();
+        }
+
+        private DialogResult closeAction;
+
+        public DialogResult CloseAction
+        {
+            get
+            {
+                return closeAction;
+            }
+        }
+
+        public System.Data.DataTable SelectedData
+        {
+            get { return secilenData; }
+        }
+
+        public Entity[] SelectedEntity
+        {
+            get { return secilenNesne; }
+        }
+
+        /// <summary>
+        /// secili nesnenin object ID sini döndürür.Seçii değilse 0.
+        /// </summary>
+        public long SelectedObjId
+        {
+            get
+            {
+                if (gridView1.GetFocusedDataRow() != null)
+                    return (long)gridView1.GetFocusedDataRow()["Aktif"]; 
+                return 0;
+
+            }
+        }
+
+
+
+        #endregion
+
+        protected virtual string EntityName()
+        {
+            return "";
+        }
+
+
+
+        private bool selectsearchinitialized = false;
+
+       
+
+        public virtual void CustomFindEntityFilters(ArrayList searchFields, ArrayList fieldValues, ArrayList paramTypes)
+        {
+        }
+
+       
+
+        protected virtual DataTable GetDatasource()
+        {
+            if (grid.DataSource is DataTable) return grid.DataSource as DataTable;
+            if (grid.DataSource is DataSet) return ((grid.DataSource as BindingSource).DataSource as DataSet).Tables[0];
+            if (grid.DataSource is BindingSource)
+            {
+                if ((grid.DataSource as BindingSource).DataSource is DataTable) return (grid.DataSource as BindingSource).DataSource as DataTable;
+                if ((grid.DataSource as BindingSource).DataSource is DataSet) return ((grid.DataSource as BindingSource).DataSource as DataSet).Tables[0];
+            }
+
+            throw new ApplicationException("ListFormda gride bind edilen datasourceda datatable bulunamadı");
+
+        }
+
+        protected void ArrangeRowSelection()
+        {
+            
+            DataTable gridData = (grid.DataSource as DataTable);
+            DataTable tmpSecilenData;
+
+            if (multiSelect == true)
+            {
+                tmpSecilenData = gridData.Clone();
+                //string[] t
+                String[] tmp = (System.String[])(new ArrayList(secilenObjIdHT.Keys)).ToArray(typeof(string));
+                long[] tmpKey = new long[tmp.Length];
+                for (int i = 0; i < tmpKey.Length; i++)
+                {
+                    tmpKey[i] = Int64.Parse(tmp[i].Substring(0, tmp[i].IndexOf(';')));
+                }
+                Array.Sort(tmpKey, tmp);
+
+                //  foreach (object key in secilenObjIdHT.Keys) {
+                foreach (string key in tmp)
+                {
+                    object[] itemarray = (object[])secilenObjIdHT[key];
+                    tmpSecilenData.Rows.Add(itemarray);
+                }
+                secilenData = tmpSecilenData;
+            }
+            else
+            {
+                secilenData = gridData.Clone();
+                DataRow drRow = gridView1.GetFocusedDataRow();
+                if (drRow != null)
+                {
+                    secilenData.Rows.Add(drRow.ItemArray);
+                }
+            }
+        }
+     
+
+        protected bool CloseFormAfterRowsSelected = true; //Vakdeniz
        
 
 
+        protected virtual void ArrangeSelectedData()
+        {
+            ArrangeRowSelection();
+
+            string entityname = EntityName();//RowObjIdEntityName();// 
+            string originalentityname = RowObjIdEntityName();// 
+
+            Type type;
+
+            PersistenceStrategy strategy;
+            DataTable table;
+
+            type = typeof(mymodel.Entity);
+            strategy = PersistenceStrategyProvider.FindStrategyFor(type);
+            if (entityname != null && entityname.Trim().Length > 0)
+            {
+                switch (returnType)
+                {
+                    case SelectionFormReturnType.AsIs:
+                        try
+                        {
+                            int index = 0;
+                            if (secilenNesne == null)
+                                secilenNesne = new Entity[secilenData.Rows.Count];
+                            foreach (DataRow row in secilenData.Rows)
+                            {   
+                                mymodel.Entity entities = Utility.CreateEntityWithFullName(entityname);
+                                strategy.Fill(entities, row);
+                                secilenNesne[index] = new Entity();
+                                secilenNesne[index] = entities;
+                                index++;
+                            }
+
+                        
+                        
+                        }
+                        catch
+                        {
+                            //MessageBox.Show(ex.Message);
+                            int i = 0;
+                            if (multiSelect == true)
+                            {
+                                secilenNesne = new mymodel.Entity[secilenData.Rows.Count];
+                                foreach (DataRow drow in secilenData.Rows)
+                                {
+                                    //Entity.Result rslt = WinFormLib.Provider.Server.CoreSetService.Read(RowObjIdEntityName(), (long)drow["ObjId"], false, ReadMethod.EntityRowOnly);
+                                    object entity = Persistence.Read(this.entityType, (long)drow["Id"]);
+                                    if (entity == null)
+                                        MessageBox.Show("Data okunamadı");
+                                    else
+                                        secilenNesne[i] = (Entity)entity;
+                                    i++;
+                                }
+                            }
+                            else
+                            {
+                                DataRow drRow = gridView1.GetFocusedDataRow();
+                                if (drRow != null)
+                                {
+                                    secilenNesne = new mymodel.Entity[1];
+                                    object entity = Persistence.Read(this.entityType, (long)drRow["Id"]);
+                                    if (entity == null)
+                                        MessageBox.Show("Data okunamadı");
+                                    else
+                                        secilenNesne[i] = (Entity)entity;
+                                   
+                                }
+                            }
+                            secilenData = Transaction.Instance.ExecuteSql("Select * from " + RowObjIdEntityName(), null);
+                        }
+                        break;
+                }
+            }
+        }
+
+      
+
+        protected virtual void SelectRow()
+        {
+            
+            if (gridView1.GetFocusedRow() == null || gridView1.FocusedRowHandle == DevExpress.XtraGrid.GridControl.AutoFilterRowHandle)
+            {
+                if (multiSelect == false)
+                {
+                    secilenNesne = null;
+                    secilenData = null;
+                }
+            }
+            else
+            {
+                ArrangeSelectedData();
+                if (multiSelect)
+                {
+                    if (secilenNesne != null)
+                    {
+                        foreach (BaseEntity item in secilenNesne)
+                        {
+                            if (item == null)
+                            {
+                                secilenNesne = null;
+                                secilenData = null;
+                                return;
+                            }
+                        }
+                    }
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                else
+                {
+
+                    if (secilenNesne != null && secilenNesne[0] != null)
+                    {
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                    else
+                    {
+                        secilenNesne = null;
+                        secilenData = null;
+                    }
+                }
+            }
+        }
+
+
+        protected void SelectAll()
+        {
+            //if (multiSelect)
+            //{
+            //    grid.SuspendLayout();
+            //    foreach (System.Windows.Forms.DataGridViewRow row in grid.Rows)
+            //    {
+            //        if (multiPageSelection == true)
+            //        {
+            //            row.Cells[SELECTIONCOLKEY].Value = true;
+            //            grid.Update();
+            //        }
+            //        else
+            //            row.Selected = true;
+            //    }
+            //    grid.Refresh();
+            //    grid.ResumeLayout();
+            //}
+        }
+
+        protected void UnSelectAll()
+        {
+            //if (multiSelect)
+            //{
+            //    grid.SuspendLayout();
+            //    System.Data.DataRow activerow =gridView1.GetFocusedDataRow();
+
+            //    for (int i = 0; i < gridView1.RowCount; i++)
+            //    {
+            //        if (multiPageSelection == true)
+            //        {
+            //          gridView1.GetDataRow(i)[SELECTIONCOLKEY] = false;
+            //          gridView1.UpdateCurrentRow();
+                        
+            //        }
+            //        else
+            //            gridView1.sele = false;
+            //    }
+                
+                
+            //    foreach (System.Data.DataRow row in gridView1.Rows)
+            //    {
+            //        if (multiPageSelection == true)
+            //        {
+            //            row[SELECTIONCOLKEY].Value = false;
+            //            grid.Update();
+            //        }
+            //        else
+            //            row.Selected = false;
+            //    }
+            //    grid.Refresh();
+            //    if (activerow != null)
+            //        activerow.Selected = true;
+            //    grid.ResumeLayout();
+            //}
+        }
+
+        private void frmListForm_Load(object sender, EventArgs e)
+        {
+            if (DesignMode)
+                return;
+
+            //IsOtherFilterApply();//TanimListeForm dan Türeyen ListFormlar da Patlıyordu.. Bunu da Constructor dan yapamazsak diye koyduk bu metodun içinde try catch var...
+            //TanimListeForm dan Türeyen Entity ler RowObjIdEntityName() construtordan geldiği için onlar kesinlikle LoadForm() u override edip orda query atmalılar... 
+            if (formLoaded == false)
+            {
+                this.InitializeGrid();
+                formLoaded = true;
+            }
+
+            
+            grid.Select();
+            grid.Focus();
+
+
+        }
+
+
+
+        #region Selection Functions
+        protected void InitSelectList()
+        {
+            //InitializeExplorerBar();
+            //ArrangeExplorerBar();
+            ////InitializeGrid();
+            //InitializeSearchFields();
+        }
+
+      
+
+        protected void InitSelectSearch(string searchField, string searchValue)
+        {
+            //if (selectsearchinitialized) return;
+            //selectsearchinitialized = true;
+
+            //if (searchComboBox.Rows == null) return;
+            //if (searchComboBox.Rows.Count > 0)
+            //{
+            //    if (searchField == null) searchField = "";
+            //    if (searchValue == null) searchValue = "";
+            //    if (searchField != "")
+            //    {
+            //        searchComboBox.Value = searchField;
+            //        if (searchComboBox.Text == "")
+            //        {
+            //            string entityname = EntityName();
+            //            entityname = entityname.Substring(entityname.IndexOf(".") + 1);
+            //            searchComboBox.Value = entityname + "." + searchField;
+            //        }
+            //        if (searchComboBox.SelectedRow == null)
+            //        {
+            //            searchComboBox.Value = null;
+            //            return;
+            //        }
+            //        if (searchComboBox.Text == "") return;
+            //        searchTextBox.Text = searchValue;
+            //        if (searchValue == "") return;
+            //        this.Search();
+            //    }
+            //}
+        }
+
+        private Entity SearchEntity(string searchField, string searchValue)
+        {
+            if (searchField == "" || searchValue == "") return null;
+            if (State == ListFormState.EditAndSelect || State == ListFormState.SelectOnly)
+            {
+                Entity nesne = FindEntity(searchField, searchValue);
+
+                if (nesne == null)
+                {
+                    secilenData = null;
+                    secilenNesne = null;
+                }
+                else
+                {
+                    if (CanSelectEntity(nesne, false))
+                        return nesne;
+                    else
+                    {
+                        secilenData = null;
+                        secilenNesne = null;
+                    }
+                }
+            }
+            return null;
+        }
+
+      
+
+        /// <summary>
+        /// Liste seçim ekranlarına gelen arama alanı ve değerine göre entity aranır.
+        /// Bulununca liste ekranı açılmadan dönülecekse entity döndürülür.ComplexView lar için
+        /// bu metodun override edilmesi gerekiyor.Şimdilik alanların string olduğu varsayılıyor.
+        /// </summary>
+        /// <param name="searchField">Arama alanı</param>
+        /// <param name="searchValue">Arama değeri</param>
+        /// <returns>Hem Entity hem de ViewEntity dönebildiği için BaseEnity sınıfı döndürür.</returns>
+        protected virtual Entity FindEntity(string searchField, string searchValue)
+        {
+            Entity nesne = null;
+            string rowobjidentityname = RowObjIdEntityName();
+            string entityname = EntityName();
+            Result r = new Result(false, "");
+
+            ArrayList customSearchFields = new ArrayList();
+            ArrayList customFieldValues = new ArrayList();
+            ArrayList customParamTypes = new ArrayList();
+
+            ////CustomFindEntityFilters(customSearchFields, customFieldValues, customParamTypes);
+
+            //////Default filtreler
+
+            ////customSearchFields.Add("Aktif");
+            ////customFieldValues.Add(true);
+            ////customParamTypes.Add(ParameterType.Boolean);
+
+            ////customSearchFields.Add(searchField);
+            ////customFieldValues.Add(searchValue);
+            ////customParamTypes.Add(ParameterType.String);
+
+            ////int countofsearchfield = customSearchFields.Count;
+            ////FilterExpression myfilter = new FilterExpression(new Expression[1]);
+            ////myfilter.Filter[0] = new Expression(new Criteria[countofsearchfield]);
+            ////myfilter.Parameters = new ParameterCollection();
+
+            ////string[] searchFields = new string[countofsearchfield];
+            ////object[] searchValues = new object[countofsearchfield];
+            ////Entity.ParameterType[] paramTypes = new ParameterType[countofsearchfield];
+
+            //for (int j = 0; j < customSearchFields.Count; j++)
+            //{
+            //    string op = "=";
+            //    if (customSearchFields[j].ToString() == searchField)
+            //    {
+            //        //if (IsUnicode(searchField))
+            //        op = "LIKE";
+            //        //else
+            //        //    op = "LIKEvarchar";
+            //        customFieldValues[j] = customFieldValues[j].ToString() + "%";
+            //    }
+            //    myfilter.Filter[0].ExpList[j] = new Criteria((string)customSearchFields[j], op, "p" + customSearchFields[j].ToString());
+            //    myfilter.Parameters.Add(new Parameter("p" + customSearchFields[j].ToString(), customFieldValues[j], (Entity.ParameterType)customParamTypes[j]));
+
+            //    searchFields[j] = (string)customSearchFields[j];
+            //    searchValues[j] = customFieldValues[j];
+            //    paramTypes[j] = (Entity.ParameterType)customParamTypes[j];
+            //}
+
+            //switch (returnType)
+            //{
+            //    case SelectionFormReturnType.AsIs:
+            //        if (rowobjidentityname == entityname)
+            //        {
+            //            r = WinFormLib.Provider.WinformLibServer.Server_SharedService.EntityRead(rowobjidentityname, myfilter, false, ReadMethod.EntityRowOnly, 2);
+            //            if (r.IsError == false)
+            //            {
+            //                secilenNesne = (Entity[])r.Value;
+            //                if (secilenNesne != null && secilenNesne.Length > 0)
+            //                {
+            //                    if (secilenNesne.Length == 1)
+            //                    {
+            //                        nesne = secilenNesne[0];
+            //                    }
+            //                }
+            //            }
+            //        }
+
+            //        if (r.IsError || (rowobjidentityname != entityname))
+            //        {
+            //            if (formLoaded == false)
+            //            {
+            //                frmListForm_Load(this, new System.EventArgs());
+            //                InitSelectList();
+            //            }
+            //            InitSelectSearch(searchField, searchValue == null ? "" : searchValue.ToString());
+            //            this.ArrangeSelectedData();
+            //            if (secilenData != null && secilenData.Rows.Count > 0) //veysel...
+            //                if (secilenData.Rows[0][searchField].ToString() == searchValue)
+            //                {
+            //                    nesne = secilenNesne[0];
+            //                }
+            //        }
+            //        else
+            //        {
+            //            //					nesne = (Entity.BaseEntity)r.Value;
+            //        }
+            //        break;
+            //    case SelectionFormReturnType.OriginalEntity:
+            //        r = WinFormLib.Provider.WinformLibServer.Server_SharedService.EntityRead(rowobjidentityname, myfilter, false, ReadMethod.EntityRowOnly, 2);
+            //        if (r.IsError == false)
+            //        {
+            //            secilenNesne = (Entity[])r.Value;
+            //            if (secilenNesne != null && secilenNesne.Length > 0)
+            //            {
+            //                if (secilenNesne.Length == 1)
+            //                {
+            //                    nesne = secilenNesne[0];
+            //                }
+            //            }
+            //        }
+            //        break;
+            //    case SelectionFormReturnType.ComplexViewEntity:
+            //        if (formLoaded == false)
+            //        {
+            //            frmListForm_Load(this, new System.EventArgs());
+            //            InitSelectList();
+            //        }
+            //        InitSelectSearch(searchField, searchValue == null ? "" : searchValue.ToString());
+            //        this.ArrangeSelectedData();
+            //        if (secilenData != null && secilenData.Rows.Count > 0 && (grid.Rows.Count == 1 || secilenData.Rows[0][searchField].ToString() == searchValue))
+            //        {
+            //            nesne = secilenNesne[0];
+            //        }
+            //        break;
+            //}
+
+            return nesne;
+        }
+
+        
+
+        protected virtual bool CanSelectEntity(Entity nesne, bool showErrorMessage)
+        {
+            if (nesne == null)
+                return false;
+            else
+                return true;
+        }
+
+        protected virtual bool CanMultiSelectEntity(Entity[] nesneler)
+        {
+            if (nesneler == null) return false;
+
+            foreach (Entity nesne in nesneler)
+            {
+                if (!CanSelectEntity(nesne, true))
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="searchField">Gridde aranacak olan kolon</param>
+        /// <param name="searchValue">Gridde aranacak olan değer. Searcfieldlı kolonda arama yapar.Bulduğu row'u seçer</param>
+        /// <returns></returns>
+        public Entity ShowSelectList(ListFormState state, string searchField, object searchValue)
+        {
+            return ShowSelectList(state, searchField, searchValue, false);
+        }
+
+        public Entity ShowSelectList(ListFormState state, string searchField, object searchValue, bool returnOnMatch)
+        {
+            this.State = state;
+
+            if (returnOnMatch)
+            {
+                //SearchField ve SearchValue değerine göre bir nesne bulunursa Select modunda döndürülür.
+                Entity theEntity = SearchEntity(searchField, searchValue.ToString());
+                if (theEntity != null)
+                {
+                    this.Dispose(true);
+                    return theEntity;
+                }
+            }
+
+            InitSelectList();
+            InitSelectSearch(searchField, searchValue == null ? "" : searchValue.ToString());
+            switch (state)
+            {
+                case ListFormState.EditOnly:
+                case ListFormState.ListOnly:
+                    this.Show();
+                    break;
+                case ListFormState.SelectOnly:
+                case ListFormState.EditAndSelect:
+                default:
+                    this.ShowDialog();
+                    this.Dispose();
+                    break;
+            }
+            //			return secilenNesne;
+            if (secilenNesne != null && secilenNesne.Length > 0)
+                return secilenNesne[0];
+            else
+                return null;
+        }
+
+        public Entity ShowSelectList(ListFormState state)
+        {
+            return ShowSelectList(state, "", "");
+        }
+
+        public System.Data.DataTable ShowMultiSelectList()
+        {
+            this.State = ListFormState.SelectOnly;
+            //			this.returnDataTable = true;
+            InitSelectList();
+            InitSelectSearch("", "");
+            this.ShowDialog();
+            this.Dispose();
+            return secilenData;
+        }
+
+        public Entity[] ShowMultiSelectList(ListFormState state)
+        {
+            //			this.returnDataTable = false;
+            this.multiSelect = true;
+            this.State = state;
+            InitSelectList();
+            InitSelectSearch("", "");
+            this.ShowDialog();
+            this.Dispose();
+            return secilenNesne;
+        }
+        #endregion
+
+      
+
     }
+
+
+
+}
+
+public enum ListFormState
+{
+    EditOnly,
+    SelectOnly,
+    EditAndSelect,
+    ListOnly,
+    ListAndBrowse
 }

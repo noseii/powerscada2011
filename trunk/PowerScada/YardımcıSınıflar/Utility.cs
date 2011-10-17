@@ -18,11 +18,92 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Grid;
+using System.Reflection;
 
+using System.IO;
 namespace PowerScada
 {
     public  class Utility
     {
+        private static Assembly entityAssembly;
+        private static IList<Assembly> entityAssemblies;
+
+        public static IList<Assembly> EntityAssemblies
+        {
+            get
+            {
+                if (entityAssemblies == null)
+                {
+                    //entityAssembly = Assembly.Load("mymodel.dll");
+                    Assembly entryAssembly = Assembly.GetEntryAssembly();
+
+                    if (entryAssembly != null)
+                    {
+                        string binPath = System.IO.Path.GetDirectoryName(entryAssembly.Location);
+                        string[] entityFiles = Directory.GetFiles(binPath, "*mymodel*.dll");
+                        entityAssemblies = new List<Assembly>();
+                        foreach (string entityFile in entityFiles)
+                            entityAssemblies.Add(Assembly.LoadFile(entityFile));
+                    }
+                    else
+                    {
+                        entityAssemblies = new List<Assembly>();
+                        entityAssemblies.Add(entityAssembly);
+                        try
+                        {//Assembly.Location dan for ile dönünce olmadı o yüzden try catch lerle eklendi...
+                            Assembly CoreEntity = Assembly.Load("mymodel.Entity");
+                            entityAssemblies.Add(CoreEntity);
+                        }
+                        catch
+                        { }
+                    }
+
+                }
+
+                return entityAssemblies;
+
+
+
+            }
+            set
+            {
+                entityAssemblies = value;
+            }
+        }
+        
+        public static Dictionary<string, Type>  typeCache = new Dictionary<string, Type>();
+
+
+        public static Type GetEntityTypeFromFullName(string entityFullName)
+        {
+            
+            
+            Type type = null;
+            if (!string.IsNullOrEmpty(entityFullName))
+            {
+                if (typeCache.ContainsKey(entityFullName))
+                    return typeCache[entityFullName];
+
+                //Type type= entityAssembly.GetType(entityFullName);
+                //if (type == null) {
+                foreach (Assembly asm in EntityAssemblies)
+                {
+                    type = asm.GetType("mymodel."+entityFullName);
+                    if (type != null) break;
+
+                }
+                if (type != null)
+                    typeCache[entityFullName] = type;
+                //}
+            }
+            return type;
+        }
+
+        public static Entity CreateEntityWithFullName(string entityFullName)
+        {
+            return (Entity)Activator.CreateInstance(GetEntityTypeFromFullName(entityFullName));
+        }
+
         //public static class DateTimeFormatter : IFormatProvider, ICustomFormatter
         //{
         //    public object GetFormat(Type formatType)
@@ -80,6 +161,7 @@ namespace PowerScada
                 DataRow row = dtenum.NewRow();
                 row["Id"] = list.GetValue(i);
                 row["Ad"] = Enum.GetName(enumtype, list.GetValue(i));
+                dtenum.Rows.Add(row);
             }
             return dtenum;
         }
@@ -921,10 +1003,75 @@ namespace PowerScada
 //        }
 
 
+        
 
+        //public BaseEntity[] ArrayFromTable(DataTable ptable, string entityName)
+        //{
+            
+
+        //    BaseEntity[] entityArray = null;
+
+        //    if (ptable == null) return entityArray;
+        //    DataTable table = ptable.Copy();
+
+        //    if (table != null)
+        //    {
+        //        int count = table.Rows.Count;
+        //        if (count > 0)
+        //        {
+        //            entityArray = (BaseEntity[])Array.CreateInstance(((mymodel.BaseEntity)Activator.CreateInstance("mymodel",entityName)).GetType(), count);
+        //            DataColumnCollection columns = table.Columns;
+        //            int colCount = columns.Count;
+        //            int k = 0; //* Silinmiş row ları atladığımız için "i" dışında bir index daha tutmamız lazım!
+        //            for (int i = 0; i < count; i++)
+        //            {
+        //                if (!(table.Rows[i].RowState == DataRowState.Deleted))
+        //                {
+        //                    for (int j = 0; j < colCount; j++)
+        //                    {
+        //                        if (table.Rows[i].IsNull(j))
+        //                        {
+        //                            DataColumn column = table.Columns[j];
+        //                            //									if (table.Rows[i].IsNull(j)){
+        //                            if (column.DataType == typeof(DateTime))
+        //                                table.Rows[i][j] = DateTime.MinValue;
+        //                            else if (column.DataType == typeof(int) || column.DataType == typeof(long) || column.DataType == typeof(decimal) || column.DataType == typeof(double) || column.DataType == typeof(float) || column.DataType == typeof(byte))
+        //                                table.Rows[i][j] = 0;// Convert.ChangeType(0, col.DataType);
+        //                            else if (column.DataType == typeof(bool))
+        //                                if (column.ColumnName == "Aktif")
+        //                                    table.Rows[i][j] = true;
+        //                                else
+        //                                    table.Rows[i][j] = false;
+        //                            else if (column.DataType == typeof(string))
+        //                            {
+        //                                table.Rows[i][j] = "";
+        //                            }
+        //                            //									}
+        //                            // table.Rows[i][j] = columns[j].DefaultValue;
+
+        //                        }
+        //                    }
+        //                    //* Yukarda anlatılanlardan dolayı burda index olarak "k" kullanılacak!
+        //                    entityArray[k] = metadataService.EntityFromDataRow(entityName,(mymodel.BaseEntity)Activator.CreateInstance("mymodel",entityName), table.Rows[i], false);
+        //                    k++; //*
+        //                }
+        //            }
+        //            // Silinmiş rowlar yüzünden, dizide boşluk kaldıysa yeni bir dizi oluşturuyoruz.
+        //            if (k < entityArray.Length)
+        //            {
+        //                BaseEntity[] tempEntityArray = (BaseEntity[])Array.CreateInstance(Activator.CreateInstance("mymodel",entityName).GetType(), k); // k, count değeri taşıyor.
+        //                for (int x = 0; x < k; x++)
+        //                {
+        //                    tempEntityArray[x] = entityArray[x];
+        //                }
+        //                entityArray = tempEntityArray;
+        //            }
+        //        }
+        //    }
+        //    return entityArray;
+        //}
      
     }
-
 
    
 

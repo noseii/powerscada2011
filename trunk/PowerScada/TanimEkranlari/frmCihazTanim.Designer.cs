@@ -30,7 +30,8 @@ namespace PowerScada
         private void InitializeComponent()
         {
             this.panelust = new DevExpress.XtraEditors.PanelControl();
-            this.GridAdresler = new System.Windows.Forms.DataGridView();
+            this.GridAdresler = new DevExpress.XtraGrid.GridControl();
+            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.Ustpanel = new System.Windows.Forms.Panel();
             this.editButtonCihazTuru = new PowerScada.EditButton();
             this.labelControlSablonAdi = new DevExpress.XtraEditors.LabelControl();
@@ -47,6 +48,7 @@ namespace PowerScada
             ((System.ComponentModel.ISupportInitialize)(this.panelust)).BeginInit();
             this.panelust.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GridAdresler)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.Ustpanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.textEditAdi.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEditkodu.Properties)).BeginInit();
@@ -74,13 +76,26 @@ namespace PowerScada
             // 
             // GridAdresler
             // 
-            this.GridAdresler.AllowUserToOrderColumns = true;
-            this.GridAdresler.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.GridAdresler.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GridAdresler.Location = new System.Drawing.Point(2, 252);
+            this.GridAdresler.MainView = this.gridView1;
             this.GridAdresler.Name = "GridAdresler";
             this.GridAdresler.Size = new System.Drawing.Size(806, 291);
             this.GridAdresler.TabIndex = 24;
+            this.GridAdresler.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gridView1});
+            this.GridAdresler.Validating += new System.ComponentModel.CancelEventHandler(this.GridAdresler_Validating);
+            // 
+            // gridView1
+            // 
+            this.gridView1.GridControl = this.GridAdresler;
+            this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.AllowAddRows = DevExpress.Utils.DefaultBoolean.True;
+            this.gridView1.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.True;
+            this.gridView1.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.Click;
+            this.gridView1.OptionsNavigation.AutoFocusNewRow = true;
+            this.gridView1.ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
+            this.gridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gridView1_KeyDown);
             // 
             // Ustpanel
             // 
@@ -184,14 +199,14 @@ namespace PowerScada
             this.myComboDavranis.EmptyRow = false;
             this.myComboDavranis.EntityName = "";
             this.myComboDavranis.EnumTipi = "Davranis";
-            this.myComboDavranis.Id = 1;
+            this.myComboDavranis.Id = 0;
             this.myComboDavranis.Location = new System.Drawing.Point(103, 89);
             this.myComboDavranis.Name = "myComboDavranis";
             this.myComboDavranis.SelectedIndex = 0;
             this.myComboDavranis.Size = new System.Drawing.Size(197, 21);
             this.myComboDavranis.TabIndex = 7;
             this.myComboDavranis.WhereClause = null;
-              // 
+            // 
             // frmCihazTanim
             // 
             this.ClientSize = new System.Drawing.Size(983, 545);
@@ -201,6 +216,7 @@ namespace PowerScada
             ((System.ComponentModel.ISupportInitialize)(this.panelust)).EndInit();
             this.panelust.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GridAdresler)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.Ustpanel.ResumeLayout(false);
             this.Ustpanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.textEditAdi.Properties)).EndInit();
@@ -224,7 +240,8 @@ namespace PowerScada
         private DevExpress.XtraEditors.LabelControl labelControl3;
         private EditButton editButtonCihazTuru;
         private System.Windows.Forms.Panel Ustpanel;
-        private System.Windows.Forms.DataGridView GridAdresler;
+        private DevExpress.XtraGrid.GridControl GridAdresler;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
 
     }
 }

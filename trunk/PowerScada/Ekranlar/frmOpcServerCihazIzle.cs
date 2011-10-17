@@ -63,11 +63,11 @@ namespace PowerScada
                
                 foreach (mymodel.Cihaz chz in cihazlar)
                 {
-                    UserControlCihazTanim ucchz = new UserControlCihazTanim();
-                    ucchz.Cihaz = chz;
-                    ucchz.CihazNo = cihazno;
-                    cihazno++;
-                    flowLayoutPanel1.Controls.Add(ucchz);
+                    //UserControlCihazTanim ucchz = new UserControlCihazTanim();
+                    //ucchz.Cihaz = chz;
+                    ////ucchz.CihazNo = cihazno;
+                    //cihazno++;
+                    //flowLayoutPanel1.Controls.Add(ucchz);
                 }
 
               
@@ -463,8 +463,8 @@ namespace PowerScada
                 //' Get control index from name
                 int index = -1;
 
-                if (((System.Windows.Forms.Button)sender).Parent.Parent.Parent.Parent is UserControlCihazTanim)
-                    index = ((UserControlCihazTanim)((Button)sender).Parent.Parent.Parent.Parent).CihazNo;
+                //if (((System.Windows.Forms.Button)sender).Parent.Parent.Parent.Parent is UserControlCihazTanim)
+                //    index = ((UserControlCihazTanim)((Button)sender).Parent.Parent.Parent.Parent).CihazNo;
                 //if (((Button)sender).Name == "_OPCItemWriteButton_0")
                 //    index = 1;
                 //else if (((Button)sender).Name == "_OPCItemWriteButton_1")
@@ -1257,26 +1257,11 @@ namespace PowerScada
             DisconnectFromServer_Click(DisconnectFromServer, new System.EventArgs());
         }
 
-        private void _OPCItemValue_0_TextChanged(object sender, EventArgs e)
-        {
-            if (((TextBox)sender).Name == "_OPCItemValue_0")
-            {
-                   
-            }
-        }
+      
 
     
 
-        private void userControl11_ValueChange(object sender, EventArgs e)
-        {
-            //DataLog dtlog = new DataLog();
-            //dtlog.User = Program.User;
-            //dtlog.YeniDeger = userControl11.YeniDeger;
-            //dtlog.EskiDeger = userControl11.EskiDeger;
-            //dtlog.Tarih = System.DateTime.Now;
-
-            //dtlog.Insert();
-        }
+        
     }
 
    

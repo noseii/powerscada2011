@@ -124,11 +124,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ekranlar\frmYeniOpcServerCihazIzle.cs">
+    <Compile Include="Ekranlar\frmCihazIzlem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ekranlar\frmYeniOpcServerCihazIzle.Designer.cs">
-      <DependentUpon>frmYeniOpcServerCihazIzle.cs</DependentUpon>
+    <Compile Include="Ekranlar\frmCihazIzlem.Designer.cs">
+      <DependentUpon>frmCihazIzlem.cs</DependentUpon>
     </Compile>
     <Compile Include="Ekranlar\frmOpcServerCihazIzle.cs">
       <SubType>Form</SubType>
@@ -144,6 +144,13 @@
     </Compile>
     <Compile Include="IlkKurulum.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OPCSiniflari\OpcItems.cs" />
+    <Compile Include="PowerUserControl\UCCihaz.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PowerUserControl\UCCihaz.Designer.cs">
+      <DependentUpon>UCCihaz.cs</DependentUpon>
     </Compile>
     <Compile Include="PowerUserControl\UserControlCihazTanim.cs">
       <SubType>UserControl</SubType>
@@ -218,6 +225,11 @@
       <DependentUpon>frmSehir.cs</DependentUpon>
     </Compile>
     <Compile Include="YardımcıSınıflar\BindingMap.cs" />
+    <Compile Include="YardımcıSınıflar\ActionBase.cs" />
+    <Compile Include="YardımcıSınıflar\Actions.cs" />
+    <Compile Include="YardımcıSınıflar\ISelectionForm.cs" />
+    <Compile Include="YardımcıSınıflar\GridEditButtonManager.cs" />
+    <Compile Include="YardımcıSınıflar\IButtonAction.cs" />
     <Compile Include="YardımcıSınıflar\DataGridViewAutoFilterTextBoxColumn.cs" />
     <Compile Include="YardımcıSınıflar\DataGridViewAutoFilterColumnHeaderCell.cs" />
     <Compile Include="YardımcıSınıflar\Current.cs">
@@ -225,6 +237,8 @@
     </Compile>
     <Compile Include="YardımcıSınıflar\EditbuttonCommand.cs" />
     <Compile Include="YardımcıSınıflar\Extension.cs" />
+    <Compile Include="OPCSiniflari\OpcManager.cs" />
+    <Compile Include="YardımcıSınıflar\Result.cs" />
     <Compile Include="YardımcıSınıflar\sqlclientUtil.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -357,8 +371,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Ekranlar\frmYeniOpcServerCihazIzle.resx">
-      <DependentUpon>frmYeniOpcServerCihazIzle.cs</DependentUpon>
+    <EmbeddedResource Include="Ekranlar\frmCihazIzlem.resx">
+      <DependentUpon>frmCihazIzlem.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Ekranlar\frmOpcServerCihazIzle.resx">
       <DependentUpon>frmOpcServerCihazIzle.cs</DependentUpon>
@@ -366,32 +381,44 @@
     <EmbeddedResource Include="Ekranlar\frmOpcServerIzle.resx">
       <DependentUpon>frmOpcServerIzle.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCCihaz.resx">
+      <DependentUpon>UCCihaz.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PowerUserControl\UserControlCihazTanim.resx">
       <DependentUpon>UserControlCihazTanim.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmAdresListesi.resx">
       <DependentUpon>frmAdresListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmLookupTable.resx">
       <DependentUpon>frmLookupTable.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmLookupTableListesi.resx">
       <DependentUpon>frmLookupTableListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmCihazTanim.resx">
       <DependentUpon>frmCihazTanim.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmCihazTanimListesi.resx">
       <DependentUpon>frmCihazTanimListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmLokasyonListesi.resx">
       <DependentUpon>frmLokasyonListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmLokasyon.resx">
       <DependentUpon>frmLokasyon.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmAdres.resx">
       <DependentUpon>frmAdres.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tanimlar\frmIlce.resx">
       <DependentUpon>frmIlce.cs</DependentUpon>

@@ -65,8 +65,22 @@ namespace mymodel
 
         public Cihaz()
         {
-            this.Davranis = myenum.Davranis.Oku;
+           
         }
+
+
+        #region static Methots
+        public static CihazAdres[] ReadCihazlar(long cihazid)
+        {
+            Condition[] conditionss = new Condition[1];
+            conditionss[0].Field = "Cihaz_Id";
+            conditionss[0].Value = cihazid;
+            conditionss[0].Operator = System.Operator.Equal;
+            return Persistence.ReadList<CihazAdres>(new string[] { "*" }, conditionss, null, 100);
+        }
+
+
+        #endregion Methots
 
     }
 }

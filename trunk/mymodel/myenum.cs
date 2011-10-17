@@ -152,12 +152,36 @@ namespace mymodel
 
         public enum Davranis
         {
-            Oku=1,
-            Yaz=2,
-            OkuveYaz=3
+            Oku,
+            Yaz,
+            OkuveYaz
         }
 
-       
+        public enum AdresTipi
+        {
+            CihazAcmaKapamaAdresi = 1,
+            CihazSigortaAdresi = 2,
+            CihazResetlemeAdresi = 3,
+            CihazOtomatikCalistirmaAdresi=4,
+            Diger=5
+
+        }
+
+        public enum MappedFieldType
+        {
+            NotSet,
+            Boolean,
+            DateTime,
+            Decimal,
+            Double,
+            Integer,
+            Percentage,
+            Short,
+            Single,
+            String, // Nvarchar 
+            Byte,
+            Heat
+        }
        
     }
 }

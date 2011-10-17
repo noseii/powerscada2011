@@ -125,7 +125,6 @@ namespace PowerScada
             this._OPCItemQuality_9 = new System.Windows.Forms.TextBox();
             this._OPCItemQuality_7 = new System.Windows.Forms.TextBox();
             this._OPCItemQuality_8 = new System.Windows.Forms.TextBox();
-            this.userControlCihazTanim1 = new PowerScada.UserControlCihazTanim();
             this.OPCGroupFrame.SuspendLayout();
             this.Frame1.SuspendLayout();
             this.Frame2.SuspendLayout();
@@ -494,12 +493,13 @@ namespace PowerScada
             this.Frame2.Controls.Add(this._OPCItemQuality_9);
             this.Frame2.Controls.Add(this._OPCItemQuality_7);
             this.Frame2.Controls.Add(this._OPCItemQuality_8);
+            this.Frame2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.Frame2.Font = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Frame2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.Frame2.Location = new System.Drawing.Point(539, 12);
+            this.Frame2.Location = new System.Drawing.Point(0, 205);
             this.Frame2.Name = "Frame2";
             this.Frame2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Frame2.Size = new System.Drawing.Size(732, 310);
+            this.Frame2.Size = new System.Drawing.Size(1028, 454);
             this.Frame2.TabIndex = 112;
             this.Frame2.TabStop = false;
             this.Frame2.Text = "OPC Items";
@@ -1719,23 +1719,15 @@ namespace PowerScada
             this._OPCItemQuality_8.Size = new System.Drawing.Size(65, 20);
             this._OPCItemQuality_8.TabIndex = 128;
             // 
-            // userControlCihazTanim1
-            // 
-            this.userControlCihazTanim1.Location = new System.Drawing.Point(12, 221);
-            this.userControlCihazTanim1.Name = "userControlCihazTanim1";
-            this.userControlCihazTanim1.Size = new System.Drawing.Size(313, 243);
-            this.userControlCihazTanim1.TabIndex = 113;
-            // 
             // frmOpcServerIzle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 659);
-            this.Controls.Add(this.userControlCihazTanim1);
-            this.Controls.Add(this.Frame2);
+            this.ClientSize = new System.Drawing.Size(1028, 659);
             this.Controls.Add(this.AvailableOPCServerList);
             this.Controls.Add(this.OPCGroupFrame);
             this.Controls.Add(this.Frame1);
+            this.Controls.Add(this.Frame2);
             this.Name = "frmOpcServerIzle";
             this.Text = "frmOpcServerIzle";
             this.OPCGroupFrame.ResumeLayout(false);
@@ -1845,7 +1837,7 @@ namespace PowerScada
         public System.Windows.Forms.TextBox _OPCItemQuality_9;
         public System.Windows.Forms.TextBox _OPCItemQuality_7;
         public System.Windows.Forms.TextBox _OPCItemQuality_8;
-        private UserControlCihazTanim userControlCihazTanim1;
+       
       
     }
 }

@@ -12,7 +12,7 @@ namespace PowerScada
 {
     public partial class UserControlCihazTanim : UserControl
     {
-        private Cihaz cihaz = new Cihaz();
+        private Cihaz cihaz;
 
         public Cihaz Cihaz
         {
@@ -22,67 +22,85 @@ namespace PowerScada
             }
             set
             {
-                cihaz=value;
-                InitDataControls();
+                cihaz = value;
+                if (cihaz.Id > 0 && cihaz.CihazAdresleri != null && cihaz.CihazAdresleri.Count == 0)
+                {
+                    CihazAdres[] adresler = mymodel.Cihaz.ReadCihazlar(cihaz.Id);
+                    foreach (CihazAdres adres in adresler)
+                    {
+                        if (adres.Adres.Id > 0)
+                            adres.Adres.Read();
+                        cihaz.CihazAdresleri.Add(adres);
+                    }
+                }
             }
-
         }
 
-        public int CihazNo = -1;
-
-     
-
-        public UserControlCihazTanim()
+        public UserControlCihazTanim(Cihaz chz)
         {
             InitializeComponent();
+            this.Cihaz = chz;
+            InitDataControls();
         }
-
-      
 
         public void InitDataControls()
         {
                 this.groupBox1.Text = Cihaz.Adi;
 
-                //groupBoxSigorta.Visible=Cihaz.IsSigortasiVar;
-                if(Cihaz.Davranis==myenum.Davranis.Oku)
-                {   
-                    labelOkunanDeger.Visible = true; ;
-                    textBoxOkunanDeger.Visible = true;
-                }
-                else
-                    if (Cihaz.Davranis == myenum.Davranis.Yaz)
-                    {
-                        groupBoxCihazDegerleri.Visible = true;
-                        buttonYaz.Visible = true; ;
-                        textBoxYazilacakDeger.Visible = true;
-                        labelYazilacakDeger.Visible = true;
+                foreach (CihazAdres chzadres in Cihaz.CihazAdresleri)
+                {
+                    if (chzadres.Davranis == myenum.Davranis.Oku)
+                    {   
+                        labelOkunanDeger.Visible = true; ;
+                        textBoxOkunanDeger.Visible = true;
                     }
                     else
-                        if (Cihaz.Davranis == myenum.Davranis.OkuveYaz)
+                        if (chzadres.Davranis == myenum.Davranis.Yaz)
                         {
-                            groupBoxCihazDegerleri.Visible = true;
-                            //[ML1400-ser-den]B70:0,L1,C1
+                            groupBoxCihazDurumu.Visible = true;
                             buttonYaz.Visible = true; ;
                             textBoxYazilacakDeger.Visible = true;
                             labelYazilacakDeger.Visible = true;
-                            labelOkunanDeger.Visible = true; ;
-                            textBoxOkunanDeger.Visible = true;
                         }
+                        else
+                            if (chzadres.Davranis == myenum.Davranis.OkuveYaz)
+                            {
+                                groupBoxCihazDurumu.Visible = true;
+                                //[ML1400-ser-den]B70:0,L1,C1
+                                buttonYaz.Visible = true; ;
+                                textBoxYazilacakDeger.Visible = true;
+                                labelYazilacakDeger.Visible = true;
+                                labelOkunanDeger.Visible = true; ;
+                                textBoxOkunanDeger.Visible = true;
+                            }
+
+                    if (chzadres.AdresTipi == myenum.AdresTipi.CihazSigortaAdresi)
+                    {
+                        groupBoxSigorta.Visible = true;
+
+                    }
+                }
+                
+              
 
            
 
         }
 
-
-     
-
         public void SigortaDurumu(bool sigortadurumu)
-        { 
-             if(sigortadurumu)
-                    radioButtonSigortaAcik.Checked=true;
-                else
-                    radioButtonSigortaKapali.Checked=true;
-                    
+        {
+            if (sigortadurumu)
+            {
+                labelSigortaDurumu.Text = "Sigorta Açık";
+                labelSigortaDurumu.BackColor = Color.Green;
+               
+            }
+            else
+            {
+                labelSigortaDurumu.Text = "Sigorta Kapalı";
+                labelSigortaDurumu.BackColor = Color.Red;
+               
+            }       
             
         }
 

@@ -59,9 +59,9 @@ namespace PowerScada
         protected override void Edit(object sender)
         {
 
-            if (grid.CurrentRow.Cells["id"].Value != null && grid.CurrentRow.Cells["id"].Value != System.DBNull.Value)
+            if (gridView1.GetFocusedDataRow()["Id"]!=null && gridView1.GetFocusedDataRow()["Id"]!=System.DBNull.Value)
             {
-                int objId = Convert.ToInt32(grid.CurrentRow.Cells["id"].Value);
+                int objId = Convert.ToInt32(gridView1.GetFocusedDataRow()["Id"]);
 
                 frmAdres sablonform = new frmAdres(objId, EkranDurumu.Duzenle);
                 sablonform.Text = "Adres Tanım Formu";
@@ -73,9 +73,9 @@ namespace PowerScada
         }
         protected override void View(object sender)
         {
-            if (grid.CurrentRow != null && grid.CurrentRow.Cells["id"].Value != null && grid.CurrentRow.Cells["id"].Value != System.DBNull.Value)
+            if (gridView1.GetFocusedDataRow()["Id"]!=null && gridView1.GetFocusedDataRow()["Id"]!=System.DBNull.Value)
             {
-                int objId = Convert.ToInt32(grid.CurrentRow.Cells["id"].Value);
+                int objId = Convert.ToInt32(gridView1.GetFocusedDataRow()["Id"]);
 
                 frmAdres sablonform = new frmAdres(objId, EkranDurumu.Izle);
                 sablonform.MdiParent = this.MdiParent;
@@ -86,9 +86,12 @@ namespace PowerScada
             }
         }
 
-      
 
-        
+
+        protected override string EntityName()
+        {
+            return "Adres";
+        }
 
      
         

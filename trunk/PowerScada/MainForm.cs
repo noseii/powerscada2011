@@ -228,7 +228,16 @@ namespace PowerScada
 
         private void adresListesiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAdres f = new frmAdres();
+            frmAdresListesi f = new frmAdresListesi();
+            f.MdiParent = this;
+            f.Text = (sender as ToolStripDropDownItem).Text;
+            f.MdiParent = this;
+            f.Show();
+        }
+
+        private void cihazİzlemEkranıToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmCihazIzlem f = new frmCihazIzlem();
             f.MdiParent = this;
             f.Text = (sender as ToolStripDropDownItem).Text;
             f.MdiParent = this;
