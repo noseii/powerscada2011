@@ -1,4 +1,5 @@
-﻿namespace AHBS2010.Rapor.Form13 {
+﻿namespace PowerScada.Rapor.Form13
+{
     
     
     public partial class Form13AsilarDataSet {

@@ -127,12 +127,39 @@ namespace mymodel
 
         public enum ParametreTipi
         {
-            Cihaz=1,
-            ResimTuru=2,
-            Klima=3
+            Termokupul = 1,
+            Kapi = 2,
+            Sigorta = 3,
+            Klima = 4,
+            Modem = 5,
+            Dvr = 6,
+            Hub = 7,
+            Router = 8,
+            Sebeke = 9,
+            Ups = 10,
+            Frekans = 11,
+            ToprakNotrArasiVoltaj = 12,
+            LuxMetre = 13,
         }
 
-       
+        public enum CihazTuru
+        {
+            Termokupul=1,
+            Kapi=2,
+            Sigorta=3,
+            Klima=4,
+            Modem=5,
+            Dvr=6,
+            Hub=7,
+            Router=8,
+            Sebeke=9,
+            Ups=10,
+            Frekans=11,
+            ToprakNotrArasiVoltaj=12,
+            LuxMetre=13,
+
+
+        }
 
       
 
@@ -153,18 +180,24 @@ namespace mymodel
         public enum Davranis
         {
             Oku,
-            Yaz,
-            OkuveYaz
+            Yaz
+            
         }
 
         public enum AdresTipi
         {
-            CihazAcmaKapamaAdresi = 1,
-            CihazSigortaAdresi = 2,
-            CihazResetlemeAdresi = 3,
-            CihazOtomatikCalistirmaAdresi=4,
-            Diger=5
+            OkunacakAdres = 1,
+            AlarmAdresi = 2,
+            IstenilenDegerAdresi=3,
+            LimitDegerAdresi=4
 
+        }
+
+        public enum AlarmTipi
+        {
+            Alarm = 1,
+            Uyari = 2,
+            Diger = 3
         }
 
         public enum MappedFieldType
@@ -182,6 +215,13 @@ namespace mymodel
             Byte,
             Heat
         }
-       
+
+        public enum Durum
+        {
+            
+            Kapalı=0,            
+            Açık=1,
+            
+        }
     }
 }

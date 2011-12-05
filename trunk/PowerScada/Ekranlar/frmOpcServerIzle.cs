@@ -325,7 +325,7 @@ namespace PowerScada
                     {
                         //  Provide an array to contain the ItemServerHandles of the item
                         //  we intend to remove
-                        int[] RemoveItemServerHandles = new int[NUMITEMS];
+                        System.Array RemoveItemServerHandles = Array.CreateInstance(typeof(Int32), NUMITEMS+1); 
                         
                         //  Array for potential error returns.  This example doesn't
                         //  check them but yours should ultimately.
@@ -339,16 +339,16 @@ namespace PowerScada
                             //  In this example if the ItemServerHandle is non zero it is valid
                             if (((int)ItemServerHandles.GetValue(i) != 0))
                             {
-                                
-                                RemoveItemServerHandles.SetValue(ItemServerHandles.GetValue(i), ItemCount);
                                 ItemCount = (ItemCount + 1);
+                                RemoveItemServerHandles.SetValue(ItemServerHandles.GetValue(i), ItemCount);
+                               
                             }
                         }
                         //  Invoke the Remove Item operation.  Remember this call will
                         //  wait until completion
-                        System.Array removeitemserverhandles = RemoveItemServerHandles.ToArray<int>();
-                        ConnectedGroup.OPCItems.Remove(ItemCount-1, ref removeitemserverhandles, out RemoveItemServerErrors);
-                        for (short i = 1; (i <= ItemCount-1); i++)
+                        //System.Array removeitemserverhandles = Array.CreateInstance(typeof(Int32),RemoveItemServerHandles.Length+1);
+                        ConnectedGroup.OPCItems.Remove((ItemCount), ref RemoveItemServerHandles, out RemoveItemServerErrors);
+                        for (short i = 1; (i <= ItemCount); i++)
                         {
                             if (((int)RemoveItemServerErrors.GetValue(i) != 0))
                             {

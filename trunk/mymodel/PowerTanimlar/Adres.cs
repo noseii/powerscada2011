@@ -10,6 +10,7 @@ using SharpBullet.OAL;
 
 namespace mymodel
 {
+    [Serializable]
     public class Adres : Entity
     {
 

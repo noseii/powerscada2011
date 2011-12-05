@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using mymodel;
 using SharpBullet.OAL;
 
-namespace AHBS2010.Rapor
+namespace PowerScada.Rapor
 {
     public partial class frmProtokolDefteri : Form
     {
@@ -29,12 +29,12 @@ namespace AHBS2010.Rapor
 
         void simpleButtonOnizleme_Click(object sender, EventArgs e)
         {
-            ReportProtokolDefteri rprprotokoldefteri = new ReportProtokolDefteri();
-            rprprotokoldefteri.DataSource = Getir(dateEditBasTarih.DateTime, dateEditBitTarih.DateTime, editButtondoktor.Id); 
-            rprprotokoldefteri.DataMember = "Table";
-            rprprotokoldefteri.Parameters[1].Value = dateEditBasTarih.DateTime;
-            rprprotokoldefteri.Parameters[0].Value = dateEditBitTarih.DateTime;
-            rprprotokoldefteri.ShowPreview();
+            //ReportProtokolDefteri rprprotokoldefteri = new ReportProtokolDefteri();
+            //rprprotokoldefteri.DataSource = Getir(dateEditBasTarih.DateTime, dateEditBitTarih.DateTime, editButtondoktor.Id); 
+            //rprprotokoldefteri.DataMember = "Table";
+            //rprprotokoldefteri.Parameters[1].Value = dateEditBasTarih.DateTime;
+            //rprprotokoldefteri.Parameters[0].Value = dateEditBitTarih.DateTime;
+            //rprprotokoldefteri.ShowPreview();
         }
 
         void simpleButtonKapat_Click(object sender, EventArgs e)
@@ -95,7 +95,8 @@ namespace AHBS2010.Rapor
 
         private DataTable Getir(DateTime bastarih, DateTime bittarih, long doktor)
         {
-            return Current.GetProtokolDefteri(bastarih, bittarih, doktor);
+            return new DataTable();
+                //Current.GetProtokolDefteri(bastarih, bittarih, doktor);
         }
       
     }

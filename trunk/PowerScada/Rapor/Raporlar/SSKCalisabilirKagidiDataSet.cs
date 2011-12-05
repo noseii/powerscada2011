@@ -1,1 +1,3 @@
-﻿
+﻿namespace PowerScada.Rapor.Raporlar
+{
+}

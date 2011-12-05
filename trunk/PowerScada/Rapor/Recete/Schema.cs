@@ -1,4 +1,4 @@
-﻿namespace AHBS2010.Rapor
+﻿namespace PowerScada.Rapor.Recete
 {
     
     

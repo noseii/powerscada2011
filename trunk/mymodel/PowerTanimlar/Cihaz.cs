@@ -13,36 +13,48 @@ namespace mymodel
 {
     public class Cihaz : Entity
     {
-       
-
-
-        public LookupTable cihazturu;
-
-        public LookupTable CihazTuru
-        {
-            get
-            {
-                return cihazturu == null ? cihazturu = new LookupTable() : cihazturu;
-            }
-            set
-            {
-                cihazturu = value;
-            }
-        }
-
-
+        
         [FieldDefinition(Length =100)]
         public string Adi { get; set; }
 
-         [FieldDefinition(Length = 100)]
+        [FieldDefinition(Length = 100)]
         public string Kodu { get; set; }
 
-        public string Aciklama { get; set; }
-      
+        public LookupTable cihazmodeli;
+
+        public LookupTable CihazModeli
+        {
+            get
+            {
+                return cihazmodeli == null ? cihazmodeli = new LookupTable() : cihazmodeli;
+            }
+            set
+            {
+                cihazmodeli = value;
+            }
+        }
 
         [FieldDefinition(IsRequired = true)]
-        public myenum.Davranis Davranis { get; set; }
+        public myenum.CihazTuru CihazTuru { get; set; }
 
+
+        public Lokasyon lokasyon;
+
+        
+        public Lokasyon Lokasyon
+        {
+            get
+            {
+                return lokasyon == null ? lokasyon = new Lokasyon() : lokasyon;
+            }
+            set
+            {
+                lokasyon = value;
+            }
+        }
+
+        public string Aciklama { get; set; }
+ 
         private BindingList<CihazAdres> cihazadresleri;
 
         [FieldDefinition(MappingType = FieldMappingType.No)]

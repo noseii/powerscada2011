@@ -11,7 +11,10 @@ namespace PowerScada
 
         public event OPCItemValueChangeEventHandler OPCItemValueChange;
 
+        public string OpcGroupName { get; set; }
+        
         public int AdresNo { get; set; }
+        
         public string OPCItemName { get; set; }
 
         private string opcitemvalue;
@@ -27,6 +30,7 @@ namespace PowerScada
                 string eskideger = OPCItemValue;
                 if (eskideger != value)
                 {
+                    opcitemvalue = value;
                     if (OPCItemValueChange != null)
                         this.OPCItemValueChange(this, new OPCItemEventArg(value));
                 }
@@ -34,13 +38,19 @@ namespace PowerScada
         }
 
         public bool OPCItemActiveState { get; set; }
+
         public string OPCItemQuality { get; set; }
-        public OpcItems(int adresno, string opcitemname, string opcitemvalue, bool opcitemactivestate)
+
+        public int GrupAdresNo { get; set; }
+
+        public OpcItems(string opcgroupname, int adresno, string opcitemname, string opcitemvalue, bool opcitemactivestate, int grupadresno)
         {
+            this.OpcGroupName = opcgroupname;
             this.AdresNo = adresno;
             this.OPCItemName = opcitemname;
             this.OPCItemValue = opcitemvalue;
             this.OPCItemActiveState = opcitemactivestate;
+            this.GrupAdresNo = grupadresno;
         }
 
         public override string ToString()

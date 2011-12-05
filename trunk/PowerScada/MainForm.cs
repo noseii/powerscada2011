@@ -192,11 +192,11 @@ namespace PowerScada
 
         private void denemeFormuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmOpcServerCihazIzle f = new frmOpcServerCihazIzle();
-            f.MdiParent = this;
-            f.Text = (sender as ToolStripDropDownItem).Text;
-            f.MdiParent = this;
-            f.Show();
+            //frmOpcServerCihazIzle f = new frmOpcServerCihazIzle();
+            //f.MdiParent = this;
+            //f.Text = (sender as ToolStripDropDownItem).Text;
+            //f.MdiParent = this;
+            //f.Show();
         }
 
         private void opcİzlemeFormuToolStripMenuItem_Click(object sender, EventArgs e)
@@ -237,7 +237,46 @@ namespace PowerScada
 
         private void cihazİzlemEkranıToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmCihazIzlem f = new frmCihazIzlem();
+            if (Utility.OpenForms.ContainsKey("frmCihazIzlem"))
+            {
+                frmCihazIzlem f = (frmCihazIzlem)Utility.OpenForms["frmCihazIzlem"];
+                f.Show();
+            }
+            else
+            {
+               
+                frmCihazIzlem f = new frmCihazIzlem();
+                Utility.OpenForms.Add(f.Name, f);
+                f.MdiParent = this;
+                f.Text = (sender as ToolStripDropDownItem).Text;
+                f.MdiParent = this;
+                f.Show();
+               
+            }
+        }
+
+        private void opcServerTanımiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            frmOpcServer f = new frmOpcServer();
+            f.MdiParent = this;
+            f.Text = (sender as ToolStripDropDownItem).Text;
+            f.MdiParent = this;
+            f.Show();
+        }
+
+        private void cihazTarihçeRaporuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Rapor.frmCihazTarihceRaporu f = new Rapor.frmCihazTarihceRaporu();
+            f.MdiParent = this;
+            f.Text = (sender as ToolStripDropDownItem).Text;
+            f.MdiParent = this;
+            f.Show();
+        }
+
+        private void alarmTarihçeRaporuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Rapor.frmCihazAlarmTarihceRaporu f = new Rapor.frmCihazAlarmTarihceRaporu();
             f.MdiParent = this;
             f.Text = (sender as ToolStripDropDownItem).Text;
             f.MdiParent = this;

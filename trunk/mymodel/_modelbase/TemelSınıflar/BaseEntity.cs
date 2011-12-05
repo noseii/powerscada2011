@@ -10,6 +10,7 @@ using SharpBullet.OAL.Metadata;
 
 namespace mymodel
 {
+    [Serializable]
     public class BaseEntity : Entity
     {
         private string kodu;

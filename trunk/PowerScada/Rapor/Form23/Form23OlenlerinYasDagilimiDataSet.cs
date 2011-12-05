@@ -1,4 +1,4 @@
-﻿namespace AHBS2010.Rapor.Form23
+﻿namespace PowerScada.Rapor.Form23
 {
     
     

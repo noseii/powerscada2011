@@ -5,13 +5,14 @@ using System.ComponentModel.DataAnnotations;
 
 
 using SharpBullet.OAL.Metadata;
+using SharpBullet.OAL;
 
 
 namespace mymodel
 {
     public class Lokasyon : Entity
     {
-        private Lokasyon Ust_Lokasyon;
+       
 
         private Lokasyon ustlokasyon;
         public Lokasyon UstLokasyon
@@ -32,7 +33,43 @@ namespace mymodel
 
         public string Aciklama { get; set; }
 
+        [FieldDefinition(Length = 100)]
+        public string tagadresi;
+
+        public string TagAdresi
+        {
+            get
+            {
+                return tagadresi;
+            }
+            set
+            {
+                tagadresi = value;
+            }
+
+        }
+
+        private Adres adres;
+        public Adres Adres
+        {
+            get
+            {
+                return adres == null ? adres = new Adres() : adres;
+            }
+            set { adres = value; }
+        }
+
         public override string ToString() { return this.Adi ?? ""; }
+
+        [FieldDefinition(MappingType = FieldMappingType.No)]
+        public long UstLokasyon_Id
+        {
+            get
+            {
+                return UstLokasyon == null ? 0 : UstLokasyon.Id;
+            }
+
+        }
        
     }
 }

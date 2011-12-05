@@ -47,9 +47,14 @@
   <ItemGroup>
     <Compile Include="CurrentModel.cs" />
     <Compile Include="myenum.cs" />
+    <Compile Include="PowerEntity\CihazTarihce.cs" />
+    <Compile Include="PowerEntity\AlarmTarihce.cs" />
+    <Compile Include="PowerEntity\OPCServerGroup.cs" />
     <Compile Include="PowerTanimlar\Cihaz.cs" />
     <Compile Include="PowerTanimlar\Adres.cs" />
     <Compile Include="PowerTanimlar\CihazAdres.cs" />
+    <Compile Include="PowerEntity\OPCServer.cs" />
+    <Compile Include="PowerTanimlar\CihazAlarmTanimi.cs" />
     <Compile Include="PowerTanimlar\LookupTable.cs">
       <SubType>Code</SubType>
     </Compile>

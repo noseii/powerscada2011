@@ -94,7 +94,8 @@ namespace PowerScada
                     int i = view.Columns.Add(new GridColumn() { Name = name, FieldName = name, Caption=text });
                     view.Columns[i].ColumnEdit = new RepositoryItemButtonEdit() { TextEditStyle = TextEditStyles.Standard };
                     view.Columns[i].ShowButtonMode = DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedCell;
-                    
+                  
+
                 }
                 else
                 {
@@ -109,9 +110,37 @@ namespace PowerScada
                 column.Width = int.Parse(columnNode.Attributes["Width"].InnerText);
                 column.VisibleIndex = int.Parse(columnNode.Attributes["DisplayIndex"].InnerText);
                 column.Visible = columnNode.Attributes["Visible"] != null ? bool.Parse(columnNode.Attributes["Visible"].InnerText) : false;
-    
+                column.ShowButtonMode = columnNode.Attributes["ShowButtonMode"] != null ? GetButtonMode(columnNode.Attributes["ShowButtonMode"].InnerText) : DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedCell; 
+                
             }
         }
 
+
+        public static DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum GetButtonMode(string buttonmode)
+        {
+            DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.Default;
+            switch (buttonmode)
+            {
+                case "Default":
+                    buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.Default;
+                    break;
+                case "ShowAlways":
+                    buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowAlways;
+                    break;
+                case "ShowForFocusedCell":
+                    buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedCell;
+                    break;
+                case "ShowForFocusedRow":
+                    buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowForFocusedRow;
+                    break;
+                case "ShowOnlyInEditor":
+                    buttonenum=DevExpress.XtraGrid.Views.Base.ShowButtonModeEnum.ShowOnlyInEditor;
+                    break;
+                default:
+                    break;
+            }
+
+            return buttonenum;
+        }
     }
 }

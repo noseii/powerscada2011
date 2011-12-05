@@ -82,8 +82,13 @@
     <Reference Include="DevExpress.XtraCharts.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraCharts.v10.1.Extensions, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v10.1.Core, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGauges.v10.1.Win, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraGrid.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraGrid.v10.1.Design, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPivotGrid.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPivotGrid.v10.1.Core, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraPrinting.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraReports.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraRichEdit.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
@@ -124,17 +129,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ekranlar\frmOpcServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ekranlar\frmOpcServer.Designer.cs">
+      <DependentUpon>frmOpcServer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ekranlar\frmCihazIzlem.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Ekranlar\frmCihazIzlem.Designer.cs">
       <DependentUpon>frmCihazIzlem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ekranlar\frmOpcServerCihazIzle.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Ekranlar\frmOpcServerCihazIzle.Designer.cs">
-      <DependentUpon>frmOpcServerCihazIzle.cs</DependentUpon>
     </Compile>
     <Compile Include="Ekranlar\frmOpcServerIzle.cs">
       <SubType>Form</SubType>
@@ -146,22 +151,40 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OPCSiniflari\OpcItems.cs" />
-    <Compile Include="PowerUserControl\UCCihaz.cs">
+    <Compile Include="PowerUserControl\UCKlima.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PowerUserControl\UCCihaz.Designer.cs">
-      <DependentUpon>UCCihaz.cs</DependentUpon>
+    <Compile Include="PowerUserControl\UCKlima.Designer.cs">
+      <DependentUpon>UCKlima.cs</DependentUpon>
     </Compile>
-    <Compile Include="PowerUserControl\UserControlCihazTanim.cs">
+    <Compile Include="PowerUserControl\UCModem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PowerUserControl\UserControlCihazTanim.Designer.cs">
-      <DependentUpon>UserControlCihazTanim.cs</DependentUpon>
+    <Compile Include="PowerUserControl\UCModem.Designer.cs">
+      <DependentUpon>UCModem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PowerUserControl\UCTermoKupul.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PowerUserControl\UCBaseControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.Designer.cs">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.Designer.cs">
+      <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="TanimEkranlari\frmAdresListesi.cs">
@@ -371,22 +394,34 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Ekranlar\frmOpcServer.resx">
+      <DependentUpon>frmOpcServer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ekranlar\frmCihazIzlem.resx">
       <DependentUpon>frmCihazIzlem.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ekranlar\frmOpcServerCihazIzle.resx">
-      <DependentUpon>frmOpcServerCihazIzle.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Ekranlar\frmOpcServerIzle.resx">
       <DependentUpon>frmOpcServerIzle.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PowerUserControl\UCCihaz.resx">
-      <DependentUpon>UCCihaz.cs</DependentUpon>
+    <EmbeddedResource Include="PowerUserControl\UCKlima.resx">
+      <DependentUpon>UCKlima.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PowerUserControl\UserControlCihazTanim.resx">
-      <DependentUpon>UserControlCihazTanim.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="PowerUserControl\UCModem.resx">
+      <DependentUpon>UCModem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCTermoKupul.resx">
+      <DependentUpon>UCTermoKupul.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCBaseControl.resx">
+      <DependentUpon>UCBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.resx">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.resx">
+      <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmAdresListesi.resx">
       <DependentUpon>frmAdresListesi.cs</DependentUpon>
@@ -636,6 +671,23 @@
       <Lcid>0</Lcid>
       <WrapperTool>aximp</WrapperTool>
       <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

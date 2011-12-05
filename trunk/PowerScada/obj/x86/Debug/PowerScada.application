@@ -4,14 +4,14 @@
   <description asmv2:publisher="Sirket Adi" asmv2:product="Tıpart Aile Hekimliği Bilgi Sistemi" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="false" mapFileExtensions="true" co.v1:createDesktopShortcut="true" />
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="PowerScada.exe.manifest" size="41353">
+    <dependentAssembly dependencyType="install" codebase="PowerScada.exe.manifest" size="44506">
       <assemblyIdentity name="PowerScada.exe" version="1.0.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>3M1Lady/ykttlEUx01oWRz4iYV8=</dsig:DigestValue>
+        <dsig:DigestValue>Ypfvmu2hNJTnGbg4T40U8ksb/SU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

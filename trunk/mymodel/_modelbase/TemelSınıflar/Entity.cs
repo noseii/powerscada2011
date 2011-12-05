@@ -9,7 +9,8 @@ using SharpBullet.OAL.Metadata;
 
 namespace mymodel
 {
-    
+
+     [Serializable]
     public class Entity : ActiveRecordBase
     {
         public override bool Equals(object obj)

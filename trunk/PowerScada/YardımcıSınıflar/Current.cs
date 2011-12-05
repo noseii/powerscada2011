@@ -1330,10 +1330,6 @@ namespace PowerScada
 //            return dt;
 //        }
 
-
-
-
-
         public static bool HasRight (myenum.GorevTuru rol, myenum.Hak hak)
         {
 
@@ -1347,6 +1343,31 @@ namespace PowerScada
             }
             else
                 return false;
+        }
+
+        public static string ConvertToBinary(string deger)
+        {
+           
+            int sayi,kalan;
+            sayi = Convert.ToInt32(deger);
+            
+            string yaziKalan = "";
+            while (sayi != 0)
+            {
+                kalan = sayi % 2;
+                sayi = sayi / 2;
+                yaziKalan = kalan.ToString() + yaziKalan;
+            }
+
+            return yaziKalan;
+        }
+
+        public static object IsNull(object o1, object o2)
+        {
+            if (o1 == null || o1 == System.DBNull.Value)
+                return o2;
+            else
+                return o1;
         }
     }
 }

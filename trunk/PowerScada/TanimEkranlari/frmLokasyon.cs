@@ -74,8 +74,21 @@ namespace PowerScada
             textEditAdi.Text = sablon.Adi;
             textEditkodu.Text = sablon.Kodu;
             memoEditAciklama.Text = sablon.Aciklama;
-            //ucEnumGosterSablonTuru.Deger = (myenum.IzlemTuru)sablon.SablonTuru;
-         
+            if (sablon.UstLokasyon.Id > 0)
+            {
+                Lokasyon ustlokasyon = Persistence.Read<Lokasyon>(sablon.UstLokasyon.Id);
+                editButtonLokasyon.Id = ustlokasyon.Id;
+                editButtonLokasyon.Text = ustlokasyon.Adi;
+                sablon.UstLokasyon = ustlokasyon;
+            }
+
+            if (sablon.Adres.Id > 0)
+            {
+                Adres adres = Persistence.Read<Adres>(sablon.Adres.Id);
+                editButtonHataAdresi.Id = adres.Id;
+                editButtonHataAdresi.Text = adres.TagAdresi;
+                sablon.Adres = adres;
+            }
         }
 
 
@@ -87,6 +100,8 @@ namespace PowerScada
             sablon.Adi = textEditAdi.Text;
             sablon.Kodu = textEditkodu.Text;
             sablon.Aciklama = memoEditAciklama.Text;
+            sablon.UstLokasyon.Id = editButtonLokasyon.Id;
+            sablon.Adres.Id = editButtonHataAdresi.Id;
             //sablon.SablonTuru=(myenum.IzlemTuru)ucEnumGosterSablonTuru.Deger;
            
            

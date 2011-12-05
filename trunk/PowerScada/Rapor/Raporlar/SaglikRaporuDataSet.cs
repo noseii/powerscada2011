@@ -1,4 +1,4 @@
-﻿namespace AHBS2010.Rapor.Raporlar
+﻿namespace PowerScada.Rapor.Raporlar
 {
     
     

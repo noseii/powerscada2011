@@ -1,4 +1,5 @@
-﻿namespace AHBS2010.Rapor
+﻿using PowerScada;
+namespace PowerScada.Rapor
 {
     partial class frmProtokolDefteri
     {
@@ -36,7 +37,7 @@
             this.labelControlBitTarih = new DevExpress.XtraEditors.LabelControl();
             this.dateEditBitTarih = new DevExpress.XtraEditors.DateEdit();
             this.labelControlBasTarih = new DevExpress.XtraEditors.LabelControl();
-            this.editButtondoktor = new AHBS2010.EditButton();
+            this.editButtondoktor = new PowerScada.EditButton();
             this.dateEditBasTarih = new DevExpress.XtraEditors.DateEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();

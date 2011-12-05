@@ -7,6 +7,7 @@ using System.Reflection;
 
 namespace SharpBullet.ActiveRecord
 {
+    [Serializable]
     [FieldDefinition(TypeName = "Int64", IsFiltered = false)] //For 'Id' 
     [EntityDefinition(IdMethod = IdMethod.UserSubmitted, OptimisticLockField="RowVersion")]
     public class ActiveRecordBase

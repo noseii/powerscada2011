@@ -12,39 +12,108 @@ namespace PowerScada
 {
     public class OpcManager
     {
-        OPCAutomation.OPCServer AnOPCServer;
-        OPCAutomation.OPCServer ConnectedOPCServer;
-        OPCAutomation.OPCGroup ConnectedGroup;
+        public OPCAutomation.OPCServer AnOPCServer;
+        public OPCAutomation.OPCServer ConnectedOPCServer;
+        public OPCAutomation.OPCGroup ConnectedGroup;
         System.Array ItemServerHandles;
         List<String> OPCItemIDs = null;
         List<int> ClientHandles = null;
         List<OpcItems> OPCItem= null;
+        public bool GlobalDataChangeKapat = false;
+        public bool ConnectGroupDataChangeKapat = false;
+        public List<OpcItems> GetOPCItem
+        {
+            get { return OPCItem; }
+           
+        }
+
+        public void DeleteOPCItem(List<OpcItems> silinecekitemlistesi,string opcgroupname )
+        {
+            if(OPCItem!=null)
+            {
+               
+                this.OPCRemoveItems(opcgroupname);
+                foreach (OpcItems item in silinecekitemlistesi)
+	            {
+                    List<OpcItems> items = OPCItem.FindAll(p => p != null && p != null && p.OPCItemName == item.OPCItemName && p.OpcGroupName == item.OpcGroupName);
+                    if (items!=null)
+                        this.OPCItem.Remove(item);
+                    OPCItemIDs = null;
+	            }
+                
+            }
+        }
+
         List<int> OPCItemIsArray = null;
 
         public string GroupName { get; set; }
 
         public string OPCServerName { get; set; }
 
-        public string OPCNodeName { get; set; } 
+        public string OPCNodeName { get; set; }
 
-
-        public OpcManager(List<string> adresler)
+        public OpcManager()
         {
+            AnOPCServer = new OPCAutomation.OPCServer();
+            ConnectedOPCServer = new OPCAutomation.OPCServer();
+        }
 
+
+        public OpcManager(string groupname,List<string> adresler)
+        {
             OPCItemIDs = new List<string>(adresler.Count+1);
             OPCItem=new List<OpcItems>();
             OPCItem.Add(null);
             for (int i = 0; i < adresler.Count; i++)
             {
-                OpcItems item = new OpcItems(i + 1, adresler[i], "", true);
-                item.OPCItemValueChange += new OPCItemValueChangeEventHandler(item_OPCItemValueChange);
+                OpcItems item = new OpcItems(groupname, i + 1, adresler[i], "", true, (i+1));
+                //item.OPCItemValueChange += new OPCItemValueChangeEventHandler(item_OPCItemValueChange);
                 OPCItem.Add(item);
-                
             }
-        
-            
             ClientHandles = new List<int>(adresler.Count + 1);
             OPCItemIsArray = new List<int>(adresler.Count + 1);
+        }
+
+        public void SetOpcItems(string groupname,List<string> adresler)
+        {
+            //if (OPCItemIDs == null)
+                OPCItemIDs = new List<string>(adresler.Count + 1);
+            //else
+            //{
+            //    foreach (string item in adresler)
+            //    {
+            //        OPCItemIDs.Add(item);
+            //    }
+            //}
+            if (OPCItem == null)
+            {
+                OPCItem = new List<OpcItems>();
+                OPCItem.Add(null);
+            }
+            int grupadresno=1;
+            List<OpcItems> grupadresleri = OPCItem.FindAll(p => p != null && (p.OpcGroupName == groupname ||p.OpcGroupName == "lks"+groupname));
+            if (grupadresleri != null && grupadresleri.Count > 0)
+                grupadresno = grupadresleri[grupadresleri.Count-1].GrupAdresNo+1;
+
+            int k = 0;
+            if (OPCItem != null && OPCItem.Count>1)
+            {
+                k = k + OPCItem.Count-1;
+            }
+            for (int i = 0; i < adresler.Count; i++)
+            {
+                int l = k+i + 1;
+
+                OpcItems item = new OpcItems(groupname, l, adresler[i], "", true, grupadresno+i);
+                //item.OPCItemValueChange += new OPCItemValueChangeEventHandler(item_OPCItemValueChange);
+                OPCItem.Add(item);
+            }
+
+            //ClientHandles = new List<int>(OPCItemIDs.Capacity);
+            //OPCItemIsArray = new List<int>(OPCItemIDs.Capacity);
+            ClientHandles = new List<int>(OPCItemIDs.Count + 1);
+
+            OPCItemIsArray = new List<int>(OPCItemIDs.Count + 1);
         }
 
         /// <summary>
@@ -102,6 +171,7 @@ namespace PowerScada
 
                 ConnectedOPCServer = new OPCAutomation.OPCServer();
                 ConnectedOPCServer.Connect(servername, nodename);
+             
                 this.OPCServerName=servername;
                 this.OPCNodeName = nodename; 
             }
@@ -135,14 +205,33 @@ namespace PowerScada
         {
             try
             {
-                this.GroupName = opcgroupname;
                 
-                ConnectedOPCServer.OPCGroups.DefaultGroupIsActive = groupactive;
-                ConnectedOPCServer.OPCGroups.DefaultGroupDeadband = groupdeadband;
-                ConnectedGroup = ConnectedOPCServer.OPCGroups.Add(opcgroupname);
-                ConnectedGroup.UpdateRate = groupupdaterate;
-                ConnectedGroup.IsSubscribed = true; ;
-                ConnectedGroup.DataChange += new OPCAutomation.DIOPCGroupEvent_DataChangeEventHandler(ConnectedGroup_DataChange);
+
+                OPCAutomation.OPCGroup grup = ConnectedOPCServer.OPCGroups.Add(opcgroupname);  
+               
+               
+                grup.UpdateRate = groupupdaterate;
+                grup.IsActive = groupactive;
+                grup.DeadBand = groupdeadband;
+                grup.IsSubscribed=true;
+                //grup.DataChange += new OPCAutomation.DIOPCGroupEvent_DataChangeEventHandler(ConnectedGroup_DataChange);
+                this.ConnectedGroup = grup;
+              
+               
+
+                //grup.Name = opcgroupname;
+                //ConnectedOPCServer.OPCGroups.Add(grup);
+                //this.GroupName = opcgroupname;
+                //ConnectedOPCServer.OPCGroups.DefaultGroupIsActive = groupactive;
+                //ConnectedOPCServer.OPCGroups.DefaultGroupDeadband = groupdeadband;
+                //ConnectedGroup = ConnectedOPCServer.OPCGroups.Add(opcgroupname);
+                //ConnectedGroup.UpdateRate = groupupdaterate;
+                //ConnectedGroup.IsSubscribed = true; ;
+                //ConnectedGroup = grup;
+                //ConnectedGroup.DataChange += new OPCAutomation.DIOPCGroupEvent_DataChangeEventHandler(ConnectedGroup_DataChange);
+               
+
+
             }
             catch (Exception ex)
             {
@@ -152,8 +241,37 @@ namespace PowerScada
             }
         }
 
+        public void OPCGroups_GlobalDataChange(int TransactionID, int GroupHandle, int NumItems, ref System.Array ClientHandles, ref System.Array ItemValues, ref System.Array Qualities, ref System.Array TimeStamps)
+        {
+            if (!GlobalDataChangeKapat)
+            {
+                int i;
+                string GroupName;
+                string ItemName;
+                try
+                {
+                    if (ConnectedOPCServer.OPCGroups.Count > 0)
+                    {
+                        GroupName = ConnectedOPCServer.OPCGroups.GetOPCGroup(GroupHandle).Name;
+
+                        SetConnectedGroup(GroupName);
+                        //ConnectedGroup_DataChange(TransactionID, NumItems, ref ClientHandles, ref ItemValues, ref Qualities, ref TimeStamps);
+
+                    }
+                }
+                catch (System.Exception ex)
+                {
+
+
+                }
+            }
+           
+     
+        }
+
         public void RemoveGroupServer(string opcgroupname)
         {
+            SetConnectedGroup(opcgroupname);
             //  Test to see if the OPC Group object is currently available
             if (!(ConnectedGroup == null))
             {
@@ -177,66 +295,70 @@ namespace PowerScada
 
         public void ConnectedGroup_DataChange(int TransactionID, int NumItems, ref System.Array ClientHandles, ref System.Array ItemValues, ref System.Array Qualities, ref System.Array TimeStamps)
         {
-            //  We don't have error handling here since this is an event called from the OPC interface
-            try
+            if (!ConnectGroupDataChangeKapat)
             {
-                short i;
-                for (i = 1; (i <= NumItems); i++)
+                //  We don't have error handling here since this is an event called from the OPC interface
+                try
                 {
-                    //  Use the 'Clienthandles' array returned by the server to pull out the
-                    //  index number of the control to update and load the value.
-                    if (IsArray(ItemValues.GetValue(i).GetType()))
+                    short i;
+                    for (i = 1; (i <= NumItems); i++)
                     {
-                        Array ItsAnArray;
-                        int x;
-                        string Suffix;
-                        ItsAnArray = (System.Array)ItemValues.GetValue(i);
-                        //  Store the size of array for use by sync write
-                        OPCItemIsArray[(int)ClientHandles.GetValue(i)] = (ItsAnArray.GetUpperBound(0) + 1);
-                        OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = "";
-                        for (x = ItsAnArray.GetLowerBound(0); (x <= ItsAnArray.GetUpperBound(0)); x++)
+                        //  Use the 'Clienthandles' array returned by the server to pull out the
+                        //  index number of the control to update and load the value.
+                        if (IsArray(ItemValues.GetValue(i).GetType()))
                         {
-                            if ((x == ItsAnArray.GetUpperBound(0)))
+                            Array ItsAnArray;
+                            int x;
+                            string Suffix;
+                            ItsAnArray = (System.Array)ItemValues.GetValue(i);
+                            //  Store the size of array for use by sync write
+                            OPCItemIsArray[(int)ClientHandles.GetValue(i)] = (ItsAnArray.GetUpperBound(0) + 1);
+                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = "";
+                            for (x = ItsAnArray.GetLowerBound(0); (x <= ItsAnArray.GetUpperBound(0)); x++)
                             {
-                                Suffix = "";
+                                if ((x == ItsAnArray.GetUpperBound(0)))
+                                {
+                                    Suffix = "";
+                                }
+                                else
+                                {
+                                    Suffix = ", ";
+                                }
+                                OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = (OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue + (ItsAnArray.GetValue(x) + Suffix));
                             }
-                            else
-                            {
-                                Suffix = ", ";
-                            }
-                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = (OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue + (ItsAnArray.GetValue(x) + Suffix));
                         }
-                    }
-                    else
-                    {
-                        OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = ItemValues.GetValue(i).ToString();
-                    }
+                        else
+                        {
+                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemValue = ItemValues.GetValue(i).ToString();
+                        }
 
-                    
-                    if (((OPCAutomation.OPCQuality)Qualities.GetValue(i)) == OPCAutomation.OPCQuality.OPCQualityGood)
-                    {
-                        OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Good";
+
+                        if (((OPCAutomation.OPCQuality)Qualities.GetValue(i)) == OPCAutomation.OPCQuality.OPCQualityGood)
+                        {
+                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Good";
+                        }
+                        else if ((((OPCAutomation.OPCQuality)Qualities.GetValue(i)) == OPCAutomation.OPCQuality.OPCQualityUncertain))
+                        {
+                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Uncertain";
+                        }
+                        else
+                        {
+                            OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Bad";
+                        }
+
                     }
-                    else if ((((OPCAutomation.OPCQuality)Qualities.GetValue(i)) == OPCAutomation.OPCQuality.OPCQualityUncertain))
-                    {
-                        OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Uncertain";
-                    }
-                    else
-                    {
-                        OPCItem[(int)ClientHandles.GetValue(i)].OPCItemQuality = "Bad";
-                    }
-                   
                 }
-            }
-            catch (Exception ex)
-            {
-                
-                MessageBox.Show(("OPC DataChange failed with exception: " + ex.Message), "SimpleOPCInterface Exception", MessageBoxButtons.OK);
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(("OPC DataChange failed with exception: " + ex.Message), "SimpleOPCInterface Exception", MessageBoxButtons.OK);
+                }
             }
         }
 
-        public void OPCItemWrite(string adres,string yazilacakdeger)
+        public void OPCItemWrite(string groupname,string adres,string yazilacakdeger)
         {
+            SetConnectedGroup(groupname);
             if (ConnectedGroup != null)
             {
                 List<OpcItems> items=OPCItem.FindAll(p =>  p!=null && p.OPCItemName == adres);
@@ -502,15 +624,11 @@ namespace PowerScada
             }
         }
 
-        public void  OpcServerKapat()
-        {
-            OPCRemoveItems();
-            RemoveGroupServer(GroupName);
-            DisConnectServer();
-        }
+      
 
-        public void  OPCRemoveItems()
+        public void OPCRemoveItems(string groupname)
         {
+            SetConnectedGroup(groupname);
             if ((ConnectedGroup != null))
             {
                 if ((ConnectedGroup.OPCItems.Count != 0))
@@ -519,8 +637,8 @@ namespace PowerScada
                     {
                         //  Provide an array to contain the ItemServerHandles of the item
                         //  we intend to remove
-                        int[] RemoveItemServerHandles = new int[OPCItem.Count];
-
+                       
+                        System.Array RemoveItemServerHandles = Array.CreateInstance(typeof(Int32), ConnectedGroup.OPCItems.Count); 
                         //  Array for potential error returns.  This example doesn't
                         //  check them but yours should ultimately.
                         System.Array RemoveItemServerErrors;
@@ -528,26 +646,29 @@ namespace PowerScada
                         //  were returned in add item subroutine.  In this case we need to get
                         //  only the handles for item that are valid.
                         int ItemCount = 0;
-                        for (int i = 1; (i <= OPCItem.Count); i++)
+                        for (int i = 1; (i <= ConnectedGroup.OPCItems.Count-1); i++)
                         {
                             //  In this example if the ItemServerHandle is non zero it is valid
-                            if (((int)ItemServerHandles.GetValue(i) != 0))
+                            if (((int)ItemServerHandles.GetValue(i) != 0)) 
                             {
-
-                                RemoveItemServerHandles.SetValue(ItemServerHandles.GetValue(i), ItemCount);
                                 ItemCount = (ItemCount + 1);
+                                RemoveItemServerHandles.SetValue(ItemServerHandles.GetValue(i), ItemCount);
+                                
                             }
                         }
                         //  Invoke the Remove Item operation.  Remember this call will
                         //  wait until completion
-                        System.Array removeitemserverhandles = RemoveItemServerHandles.ToArray<int>();
-                        ItemCount = ItemCount - 1;
-                        ConnectedGroup.OPCItems.Remove(ItemCount, ref removeitemserverhandles, out RemoveItemServerErrors);
-                        for (short i = 1; (i <= ItemCount); i++)
+
+                        if (ItemCount > 0)
                         {
-                            if (((int)RemoveItemServerErrors.GetValue(i) != 0))
+                            ConnectedGroup.OPCItems.Remove(ItemCount, ref RemoveItemServerHandles, out RemoveItemServerErrors);
+
+                            for (short i = 1; (i <= ItemCount); i++)
                             {
-                                MessageBox.Show(("OPC server remove item failed with error: " + RemoveItemServerErrors.GetValue(i)), "OPC remove item", MessageBoxButtons.OK);
+                                if (((int)RemoveItemServerErrors.GetValue(i) != 0))
+                                {
+                                    MessageBox.Show(("OPC server remove item failed with error: " + RemoveItemServerErrors.GetValue(i)), "OPC remove item", MessageBoxButtons.OK);
+                                }
                             }
                         }
                     }
@@ -558,14 +679,14 @@ namespace PowerScada
                     }
                     finally
                     {
-                       
-                        for (short i = 1; (i <= OPCItem.Count); i++)
+
+                        for (short i = 1; (i <= ConnectedGroup.OPCItems.Count-1); i++)
                         {
                             ItemServerHandles.SetValue(0, i);
                            
                         }
-                       
-                        for (short i = 1; (i <= OPCItem.Count); i++)
+
+                        for (short i = 1; (i <= ConnectedGroup.OPCItems.Count-1); i++)
                         {
                             //OPCItemName[i].Enabled = true;
                             OPCItemIsArray[i] = 0;
@@ -575,8 +696,10 @@ namespace PowerScada
             }
         }
 
-        public string  GetOPCItemSyncRead(string adres)
+        public string  GetOPCItemSyncRead(string groupname,string adres)
         {
+            SetConnectedGroup(groupname);
+
             if ((ConnectedGroup != null))
             {
 
@@ -651,8 +774,16 @@ namespace PowerScada
             return string.Empty;
         }
 
-        public void SetOPCItemActiveStateChecked(string adres, bool check)
+        private void SetConnectedGroup(string groupname)
         {
+            OPCAutomation.OPCGroup grup = ConnectedOPCServer.OPCGroups.GetOPCGroup(groupname);
+            if (grup != null)
+                this.ConnectedGroup = grup;
+        }
+
+        public void SetOPCItemActiveStateChecked(string groupname,string adres, bool check)
+        {
+            SetConnectedGroup(groupname);
             if (!(ConnectedGroup == null))
             {
 
@@ -684,8 +815,9 @@ namespace PowerScada
             }
         }
 
-        public void  SetGroupActiveStateChecked(bool check)
+        public void  SetGroupActiveStateChecked(string groupname,bool check)
         {
+            SetConnectedGroup(groupname);
             //  If the group has been added and exist then change its active state
             if (!(ConnectedGroup == null))
             {
@@ -701,8 +833,9 @@ namespace PowerScada
             }
         }
 
-        public void SetGroupDeadBand(float groupdeadband)
+        public void SetGroupDeadBand(string groupname,float groupdeadband)
         {
+            SetConnectedGroup(groupname);
             //  If the group has been added and exist then change its dead band
             if (!(ConnectedGroup == null))
             {
@@ -718,8 +851,9 @@ namespace PowerScada
             }
         }
 
-        public void SetGroupUpdateRate(int groupupdaterate)
+        public void SetGroupUpdateRate(string groupname, int groupupdaterate)
         {
+            SetConnectedGroup(groupname);
             //  If the group has been added and exist then change its update rate
             if (!(ConnectedGroup == null))
             {
@@ -738,27 +872,35 @@ namespace PowerScada
         /// <summary>
         /// Adresleri Ekler...
         /// </summary>
-        public void OPCAddItems()
+        public void OPCAddItems(string groupname)
         {
+             SetConnectedGroup(groupname);
+
             if ((ConnectedGroup != null))
             {
+
+                List<OpcItems> grupitems = OPCItem.FindAll(p => p == null || p.OpcGroupName == groupname || p.OpcGroupName == "lks"+groupname);
+
                 try
                 {
-                    int ItemCount = OPCItem.Count-1;
+                    int ItemCount = grupitems.Count-1;
 
                     //' Array for potential error returns.  This example doesn't
                     //' check them but yours should ultimately.
                     System.Array AddItemServerErrors;
-                    OPCItemIDs.Add(null);
-                    OPCItemIsArray.Add(0);
-                    ClientHandles.Add(0);
+                    if (OPCItemIDs.Count==0)
+                    {
+                        OPCItemIDs.Add(null);
+                        OPCItemIsArray.Add(0);
+                        ClientHandles.Add(0);
+                    }
                     //' Load the request OPC Item names and build the ClientHandles list
-                    for (int i = 1; i < OPCItem.Count; i++)
+                    for (int i = 1; i < grupitems.Count; i++)
                     {
                         //' Load the name of then item to be added to this group.  You can add
                         //' as many items as you want to the group in a single call by building these
                         //' arrays as needed.
-                        List<OpcItems> item = OPCItem.FindAll(p => p!=null && p.AdresNo==i);
+                        List<OpcItems> item = grupitems.FindAll(p => p != null && p.GrupAdresNo == i);
                            
                         OPCItemIDs.Add(item[0].OPCItemName);
 
@@ -790,9 +932,9 @@ namespace PowerScada
                     bool AnItemIsGood;
                     AnItemIsGood = false;
 
-                    for (int i = 1; i < OPCItem.Count; i++)
+                    for (int i = 1; i < grupitems.Count; i++)
                     {
-                        List<OpcItems> item = OPCItem.FindAll(p => p != null && p.AdresNo == i);
+                        List<OpcItems> item = grupitems.FindAll(p => p != null && p.GrupAdresNo == i);
                         if ((int)AddItemServerErrors.GetValue(i) == 0) 					  //'If the item was added successfully then allow it to be used.
                         {
                             AnItemIsGood = true;
@@ -804,9 +946,9 @@ namespace PowerScada
                             item[0].OPCItemValue = "OPC Add Item Fail";
                         }
                     }
-                    for (int i = 1; i < OPCItem.Count; i++)
+                    for (int i = 1; i < grupitems.Count; i++)
                     {
-                        List<OpcItems> item = OPCItem.FindAll(p => p!=null && p.AdresNo == i);
+                        List<OpcItems> item = grupitems.FindAll(p => p != null && p.GrupAdresNo == i);
                         if ((int)AddItemServerErrors.GetValue(i) == 0)					  //'If the item was added successfully then allow it to be used.
                         {
                             AnItemIsGood = true;
@@ -819,8 +961,8 @@ namespace PowerScada
                     }
                     //' Disable the Add OPC item button if any item in the list was good
                     Object Response;
-                    if (!AnItemIsGood)
-                        MessageBox.Show("The OPC Server has not accepted any of the item you have entered, check your item names and try again.", "OPC Add Item", MessageBoxButtons.OK);
+                    //if (!AnItemIsGood)
+                    //    MessageBox.Show("The OPC Server has not accepted any of the item you have entered, check your item names and try again.", "OPC Add Item", MessageBoxButtons.OK);
 
                 }
                 catch (Exception ex)

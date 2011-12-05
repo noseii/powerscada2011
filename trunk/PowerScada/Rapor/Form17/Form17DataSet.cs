@@ -1,4 +1,4 @@
-﻿namespace AHBS2010.Rapor.Form17
+﻿namespace PowerScada.Rapor.Form17
 {
     
     

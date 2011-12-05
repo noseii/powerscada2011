@@ -23,6 +23,14 @@ namespace PowerScada
             showData(null);
             this.EntityType = typeof(LookupTable);
             this.Text = Utility.FormName(this.EntityType);
+            grid.SetGridStyle(@"<Style>
+                    <Column Name='Id'               HeaderText='Id'                         Width='0'   DisplayIndex='0'    Visible='false' />
+                    <Column Name='Tip'              HeaderText='Tip'                        Width='100' DisplayIndex='1'    Visible='true'  />
+                    <Column Name='Adi'              HeaderText='Adi'                        Width='100' DisplayIndex='2'    Visible='true'  />
+                    <Column Name='Kodu'             HeaderText='Kodu'                       Width='100' DisplayIndex='3'    Visible='true' />
+                    <Column Name='Aciklama'         HeaderText='Aciklama'                   Width='100' DisplayIndex='4'    Visible='true' />
+                    <Column Name='Aktif'            HeaderText='Aktif'                      Width='100' DisplayIndex='5'    Visible='true'    Type ='Checkbox' />                 
+            </Style>");
         }
 
 

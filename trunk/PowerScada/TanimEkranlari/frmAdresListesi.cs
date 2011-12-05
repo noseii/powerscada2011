@@ -23,6 +23,14 @@ namespace PowerScada
             showData(null);
             this.EntityType = typeof(Adres);
             this.Text = Utility.FormName(this.EntityType);
+
+            grid.SetGridStyle(
+           @"<Style>
+                    <Column Name='Id'               HeaderText='Id'                         Width='0'   DisplayIndex='0'    Visible='false'                                         />
+                    <Column Name='TagAdresi'        HeaderText='TagAdresi'                  Width='100' DisplayIndex='1'    Visible='true'    Type ='Button' Text='Adres Seç'       />
+                    <Column Name='Aktif'            HeaderText='Aktif'                      Width='100' DisplayIndex='2'    Visible='true'    Type ='Checkbox'                      />                 
+            </Style>");
+
         }
 
 
@@ -30,7 +38,7 @@ namespace PowerScada
         {
             return Transaction.Instance.ExecuteSql(@"select 
                                                          *
-                                                         from Adres
+                                                         from Adres order by Adres.TagAdresi asc
                                                      ");
 
             

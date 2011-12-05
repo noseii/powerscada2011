@@ -87,6 +87,9 @@ namespace PowerScada
             set { emptyMessage = value; }
         }
 
+        public int OldId { get; set; }
+       
+        
         public int Id
         {
             get
@@ -96,6 +99,7 @@ namespace PowerScada
             }
             set
             {
+                OldId = Id;
                 comboBox1.SelectedValue = value;
             }
 
@@ -167,7 +171,8 @@ namespace PowerScada
         }
 
         private void comboBox1_SelectedValueChanged(object sender, EventArgs e)
-        {
+        {   
+           
             OnSelectedValueChanged();
         }
 

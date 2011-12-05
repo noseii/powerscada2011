@@ -9,8 +9,7 @@ using mymodel;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Columns;
 using SharpBullet.OAL;
-using PowerScada.DataGridViewAutoFilter;
-using PowerScada.DataGridViewAutoFilter;
+
 using DevExpress.XtraEditors.Repository;
 
 
@@ -20,8 +19,11 @@ namespace PowerScada
     {
         //BindingList<CihazAdres> Adresler = new BindingList<CihazAdres>();
         DataTable Adresler = new DataTable();
+        DataTable AlarmAdresleri = new DataTable();
         private GridEditButtonManager gridadres;
-        
+        private GridEditButtonManager gridalarmadres;
+        OpcManager mngr;
+        OPCServer opcserver;
       
         public frmCihazTanim()
         {
@@ -51,19 +53,10 @@ namespace PowerScada
             {
                 
                 //CihazAdres[] adresler=Persistence.ReadList<CihazAdres>("Select * from CihazAdres where Aktif=1 and Cihaz_Id=@prm0", new object[] { infoformentity.Id });
-                Adresler = Transaction.Instance.ExecuteSql("Select *,(Select TagAdresi from Adres Where Adres.Id=CihazAdres.Adres_Id and Adres.Aktif=1) as TagAdresi from CihazAdres where Aktif=1 and Cihaz_Id=@prm0", new object[] { infoformentity.Id });
-                //if(adresler!=null)
-                //{
-                //    Adresler.Clear();
-                //    foreach (CihazAdres item in adresler)
-                //    {
-                //        if (item.Adres.Id > 0)
-                //            item.Adres = Persistence.Read<Adres>(item.Adres.Id);
-                       
-                //        Adresler.Add(item);
-                //    }
-                    
-                //}
+                Adresler = Transaction.Instance.ExecuteSql("Select *,(Select TagAdresi from Adres Where Adres.Id=CihazAdres.Adres_Id and Adres.Aktif=1) as TagAdresi from CihazAdres where Aktif=1 and Cihaz_Id=@prm0 and AdresTipi in (@prm1,@prm2,@prm3)", new object[] { infoformentity.Id, myenum.AdresTipi.OkunacakAdres.ToString(), myenum.AdresTipi.IstenilenDegerAdresi.ToString(), myenum.AdresTipi.LimitDegerAdresi.ToString() });
+                AlarmAdresleri = Transaction.Instance.ExecuteSql(@"Select *,(Select TagAdresi from Adres Where Adres.Id=CihazAdres.Adres_Id and Adres.Aktif=1) as TagAdresi from CihazAdres 
+                 inner join CihazAlarmTanimi catnm on catnm.CihazAdres_Id=CihazAdres.Id and catnm.Aktif=1 
+                 where CihazAdres.Aktif=1 and CihazAdres.Cihaz_Id=@prm0 and AdresTipi=@prm1", new object[] { infoformentity.Id, myenum.AdresTipi.AlarmAdresi.ToString() });
             }
             return ((Cihaz)infoformentity);
         }
@@ -72,31 +65,57 @@ namespace PowerScada
 
         protected  void InitdataControl()
         {
-            //GridAdresler.DataError += new DataGridViewDataErrorEventHandler(GridAdresler_DataError);
-          
-          
-        
-                            //<Column Name='Davranis'  HeaderText='Davranis'  Width='150' DisplayIndex='6'   Visible='true' Type ='ComboBox' />                           
-                    //<Column Name='AdresTipi'  HeaderText='Adres Tipi'  Width='150' DisplayIndex='5'   Visible='true' Type ='ComboBox' />
+            DataColumn OkunanDeger = new DataColumn("OkunanDeger", typeof(string));
+            DataColumn YazilacakDeger = new DataColumn("YazilacakDeger", typeof(string));
+            DataColumn YazButonu = new DataColumn("YazButonu");
+
+            DataColumn OkunanDeger1 = new DataColumn("OkunanDeger", typeof(string));
+            DataColumn YazilacakDeger1 = new DataColumn("YazilacakDeger", typeof(string));
+            DataColumn YazButonu1 = new DataColumn("YazButonu");
+
+            Adresler.Columns.Add(OkunanDeger);
+            Adresler.Columns.Add(YazilacakDeger);
+            Adresler.Columns.Add(YazButonu);
+            AlarmAdresleri.Columns.Add(OkunanDeger1);
+            AlarmAdresleri.Columns.Add(YazilacakDeger1);
+            AlarmAdresleri.Columns.Add(YazButonu1);
 
             GridAdresler.SetGridStyle(
              @"<Style>
-                    <Column Name='Id'        HeaderText='Id'             Width='0'  DisplayIndex='0'   Visible='false'  />
-                    <Column Name='Adres_Id'  HeaderText='Adres_Id'       Width='0' DisplayIndex='1'    Visible='false' />                    
-                    <Column Name='TagAdresi'  HeaderText='TagAdresi'     Width='100' Text='Adres Seç' DisplayIndex='2'   Visible='true' Type ='Button' />
-                    <Column Name='Formul'    HeaderText='Formül'         Width='100' DisplayIndex='3'   Visible='true'  />                 
-                   <Column Name='AdresTipi'    HeaderText='Adres Tipi'         Width='100' DisplayIndex='3'   Visible='true'  Type ='ComboBox'/>                 
-                   <Column Name='Davranis'    HeaderText='Davranış'         Width='100' DisplayIndex='3'   Visible='true'  Type ='ComboBox'/>                 
-              
+                    <Column Name='Id'             HeaderText='Id'             Width='0'     DisplayIndex='0'   Visible='false' />
+                    <Column Name='Adres_Id'       HeaderText='Adres_Id'       Width='0'     DisplayIndex='1'   Visible='false' />                    
+                    <Column Name='TagAdresi'      HeaderText='TagAdresi'      Width='100'   DisplayIndex='2'   Visible='true'  Type ='Button' Text='Adres Seç'/>
+                    <Column Name='Formul'         HeaderText='Formül'         Width='100'   DisplayIndex='3'   Visible='true'  />                 
+                    <Column Name='AdresTipi'      HeaderText='Adres Tipi'     Width='100'   DisplayIndex='4'   Visible='true'  Type ='ComboBox' />                 
+                    <Column Name='Davranis'       HeaderText='Davranış'       Width='100'   DisplayIndex='5'   Visible='true'  Type ='ComboBox' />                 
+                    <Column Name='IsLogTutulsun'  HeaderText='IsLogTutulsun'  Width='100'   DisplayIndex='6'   Visible='true'  Type ='Checkbox' />
+                    <Column Name='OkunanDeger'    HeaderText='OkunanDeger'    Width='100'   DisplayIndex='7'   Visible='true'  />                 
+                    <Column Name='YazilacakDeger' HeaderText='YazilacakDeger' Width='100'   DisplayIndex='8'   Visible='true'  />                 
+                    <Column Name='YazButonu'      HeaderText='Değeri Set Et'      Width='100'   DisplayIndex='9'   Visible='true'  Type ='Button' Text='Değeri Set Et' ShowButtonMode='ShowAlways'/>
+                   <Column Name='TagDeğeriniOku'        HeaderText='Tag Değerini Oku'           Width='100' DisplayIndex='12'   Visible='true'  Type ='Button' Text='Tag Değerini Oku'    ShowButtonMode='ShowAlways' />
+                </Style>");
+
+
+            gridAlarmAdresler.SetGridStyle(
+             @"<Style>
+                    <Column Name='Id'               HeaderText='Id'                         Width='0'   DisplayIndex='0'    Visible='false'                                         />
+                    <Column Name='Adres_Id'         HeaderText='Adres_Id'                   Width='0'   DisplayIndex='1'    Visible='false'                                         />                    
+                    <Column Name='TagAdresi'        HeaderText='TagAdresi'                  Width='100' DisplayIndex='2'    Visible='true'    Type ='Button' Text='Adres Seç'       />
+                    <Column Name='Formul'           HeaderText='Formül'                     Width='100' DisplayIndex='3'    Visible='true'                                          />                 
+                    <Column Name='AlarmTipi'        HeaderText='Alarm Tipi'                 Width='100' DisplayIndex='4'    Visible='true'    Type ='ComboBox'                      />                 
+                    <Column Name='DataTipi1'        HeaderText='Data Tipi'                  Width='100' DisplayIndex='5'    Visible='true'    Type ='ComboBox'                      />
+                    <Column Name='AlarmMesaji'      HeaderText='Alarm Mesajı'               Width='100' DisplayIndex='6'    Visible='true'                                          />
+                    <Column Name='SesAcik'          HeaderText='SesAcik'                    Width='100' DisplayIndex='7'    Visible='true'    Type ='Checkbox'                      />
+                    <Column Name='SesDosyasiAdresi' HeaderText='SesDosyasiAdresi'           Width='100' DisplayIndex='8'    Visible='true'                                          />
+                    <Column Name='IsLogTutulsun1'   HeaderText='IsLogTutulsun'              Width='100' DisplayIndex='9'    Visible='true'    Type ='Checkbox'                      />
+                    <Column Name='OkunanDeger'      HeaderText='OkunanDeger'                Width='100' DisplayIndex='10'   Visible='true'                                          />                 
+                    <Column Name='YazilacakDeger'   HeaderText='YazilacakDeger'             Width='100' DisplayIndex='11'   Visible='true'                                          />                 
+                    <Column Name='YazButonu'        HeaderText='Değeri Set Et'              Width='100' DisplayIndex='12'   Visible='true'  Type ='Button' Text='Değeri Set Et'       ShowButtonMode='ShowAlways' />
+                    <Column Name='TagDeğeriniOku'        HeaderText='Tag Değerini Oku'           Width='100' DisplayIndex='12'   Visible='true'  Type ='Button' Text='Tag Değerini Oku'    ShowButtonMode='ShowAlways' />
+
             </Style>");
 
- //<Column Name='TagAdresi' HeaderText='Tag Adresi'     Width='150'  DisplayIndex='2'   Visible='true'  />
-
-            //DataGridViewComboBoxColumn combo = new DataGridViewComboBoxColumn();
-            //combo.DataSource = Enum.GetValues(typeof(myenum.Davranis));
-            //combo.DataPropertyName = "Davranis";
-            //combo.Name = "Davranis";
-            //GridAdresler.Columns.Add(combo);
+ 
             string[] names = Enum.GetNames(typeof(mymodel.myenum.Davranis));
             foreach (string str in names)
             {
@@ -108,45 +127,186 @@ namespace PowerScada
             {
                 ((RepositoryItemComboBox)gridView1.Columns["AdresTipi"].ColumnEdit).Items.Add(str);
             }
-            //DataGridViewComboBoxColumn AdresColumn = new DataGridViewComboBoxColumn();
-            //AdresColumn.Name = "AdresTipi";
-            //AdresColumn.HeaderText = "AdresTipi";
-            //AdresColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
-            //AdresColumn.DataPropertyName = "AdresTipi";
-            //AdresColumn.DataSource=Utility.EnumToDataTable(typeof(myenum.AdresTipi));
-            //AdresColumn.DisplayMember = "Ad";
-            //AdresColumn.ValueMember = "Id";
-            //AdresColumn.DisplayIndex = 7;
-             
-            //GridAdresler.Columns.Add(AdresColumn);
+    
             gridView1.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
-
             gridadres = new GridEditButtonManager(GridAdresler, new ActionAdresListesi(),
             new string[] { "Adres_Id", "TagAdresi" }, new string[] { "Id", "TagAdresi" }, true);
-            gridadres.BeforeExecute += new BeforeExecuteEventHandler(gridadres_BeforeExecute);
-            gridadres.AfterExecute += new EventHandler(gridadres_AfterExecute);
-        }
-
-        bool gridadres_BeforeExecute(object sender, EventArgs e)
-        {
-            //Adresler.Add(new CihazAdres());
-            return true;
-        }
-
-        void GridAdresler_DataError(object sender, DataGridViewDataErrorEventArgs e)
-        {
-         
-        }
-
-        void gridadres_AfterExecute(object sender, EventArgs e)
-        {
+        
             
-            
-                 
-              
-            //adres.Adres.Id = (long)gridadres.ManagerGrid.CurrentRow.Cells["Adres_Id"].Value;
-            //adres.Adres.TagAdresi = (string)gridadres.ManagerGrid.CurrentRow.Cells["TagAdresi"].Value;
-         
+
+            names = Enum.GetNames(typeof(mymodel.myenum.AlarmTipi));
+            foreach (string str in names)
+            {
+                ((RepositoryItemComboBox)gridViewAlarmAdresler.Columns["AlarmTipi"].ColumnEdit).Items.Add(str);
+            }
+            names = null;
+            names = Enum.GetNames(typeof(mymodel.myenum.MappedFieldType));
+            foreach (string str in names)
+            {
+                ((RepositoryItemComboBox)gridViewAlarmAdresler.Columns["DataTipi1"].ColumnEdit).Items.Add(str);
+            }
+
+            gridViewAlarmAdresler.OptionsView.NewItemRowPosition = DevExpress.XtraGrid.Views.Grid.NewItemRowPosition.Bottom;
+            gridalarmadres = new GridEditButtonManager(gridAlarmAdresler, new ActionAdresListesi(),
+            new string[] { "Adres_Id", "TagAdresi" }, new string[] { "Id", "TagAdresi" }, true);
+
+            RepositoryItemButtonEdit button = ((RepositoryItemButtonEdit)gridView1.Columns["YazButonu"].ColumnEdit);
+            button.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            button.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(frmCihazTanim_ButtonClick);
+
+            RepositoryItemButtonEdit button1 = ((RepositoryItemButtonEdit)gridViewAlarmAdresler.Columns["YazButonu"].ColumnEdit);
+            button1.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            button1.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(frmCihazTanim_ButtonClick1);
+
+
+            RepositoryItemButtonEdit button2 = ((RepositoryItemButtonEdit)gridView1.Columns["TagDeğeriniOku"].ColumnEdit);
+            button2.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            button2.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(frmCihazTanim_ButtonClick2);
+
+            RepositoryItemButtonEdit button3 = ((RepositoryItemButtonEdit)gridViewAlarmAdresler.Columns["TagDeğeriniOku"].ColumnEdit);
+            button3.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            button3.ButtonClick += new DevExpress.XtraEditors.Controls.ButtonPressedEventHandler(frmCihazTanim_ButtonClick3);
+          
+            opcserver = Persistence.Read<OPCServer>(new Condition("Aktif", Operator.Equal, 1));
+            if (opcserver != null && opcserver.Id > 0)
+            {
+                OPCServerGroup groups = OPCServer.ReadGroups(opcserver.Id, editButtonLokasyon.Text);
+                if (groups != null)
+                {
+                    opcserver.Groups.Add(groups);
+                }
+                else
+                {
+                    MessageBox.Show("Hata:Bu Lokasyona ait OPCServerGroup ismi boş !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Hata:OPCServer Kaydı Bulunamadı. OPCServer Kayıt Ekranında gerekli tanımlamayı yapabilirsiniz.!!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+        }
+
+        void frmCihazTanim_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        {
+            object value = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, "YazilacakDeger");
+            object  adres = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, "TagAdresi");
+            if (value != null && value != System.DBNull.Value && adres != null && adres!=string.Empty)
+            {
+                //OpcManager mngr;
+                //OPCServer opcserver = Persistence.Read<OPCServer>(new Condition("Aktif", Operator.Equal, 1));
+                //if (opcserver != null && opcserver.Id > 0)
+                //{
+                //    OPCServerGroup groups=OPCServer.ReadGroups(opcserver.Id,editButtonLokasyon.Text);
+                //    if (groups != null)
+                //    {
+                //        opcserver.Groups.Add(groups);
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show("Hata:Bu Lokasyona ait OPCServerGroup ismi boş !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //        return;
+                //    }
+                
+                    mymodel.Adres[] adresler = Persistence.ReadList<Adres>();
+                    List<string> adreslist = new List<string>();
+                    adreslist.Add(adres.ToString());
+                    mngr = new OpcManager(opcserver.Groups[0].OPCGroupName,adreslist);
+                    mngr.OPCServerConnect(opcserver.OpcServerName, opcserver.OPCNodeName);
+                    mngr.AddOpcGroupServer(opcserver.Groups[0].OPCGroupName, opcserver.Groups[0].GroupUpdateRate, opcserver.Groups[0].GroupActiveState, (float)opcserver.Groups[0].GroupDeadBand);
+                    mngr.OPCAddItems(this.editButtonLokasyon.Text);
+                    mngr.OPCItemWrite(this.editButtonLokasyon.Text,adres.ToString(), value.ToString());
+                    gridView1.SetRowCellValue(gridView1.FocusedRowHandle, "OkunanDeger", mngr.GetOPCItemSyncRead(this.editButtonLokasyon.Text,adres.ToString()));
+                    mngr.DisConnectServer();
+                    mngr = null;
+                }
+           //}
+           // else
+           //     MessageBox.Show("Hata:Tag Degeri boş ya da adres seçmediniz !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          
+        }
+
+        void frmCihazTanim_ButtonClick1(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        {
+            object value = gridViewAlarmAdresler.GetRowCellValue(gridViewAlarmAdresler.FocusedRowHandle, "YazilacakDeger");
+            object adres = gridViewAlarmAdresler.GetRowCellValue(gridViewAlarmAdresler.FocusedRowHandle, "TagAdresi");
+            if (value != null && value != System.DBNull.Value && adres != null && adres != string.Empty)
+            {
+                //OpcManager mngr;
+                //OPCServer opcserver = Persistence.Read<OPCServer>(new Condition("Aktif", Operator.Equal, 1));
+                //if (opcserver != null && opcserver.Id > 0)
+                //{
+                    mymodel.Adres[] adresler = Persistence.ReadList<Adres>();
+                    List<string> adreslist = new List<string>();
+                    adreslist.Add(adres.ToString());
+                    mngr = new OpcManager(opcserver.Groups[0].OPCGroupName,adreslist);
+                    mngr.OPCServerConnect(opcserver.OpcServerName, opcserver.OPCNodeName);
+                    //mngr.AddOpcGroupServer(opcserver.OPCGroupName, (opcserver.GroupUpdateRate), (opcserver.GroupActiveState), (float)opcserver.GroupDeadBand);
+                    mngr.AddOpcGroupServer(opcserver.Groups[0].OPCGroupName, opcserver.Groups[0].GroupUpdateRate, opcserver.Groups[0].GroupActiveState, (float)opcserver.Groups[0].GroupDeadBand);
+                    mngr.OPCAddItems(this.editButtonLokasyon.Text);
+                    mngr.OPCItemWrite(this.editButtonLokasyon.Text,adres.ToString(), value.ToString());
+                    gridViewAlarmAdresler.SetRowCellValue(gridViewAlarmAdresler.FocusedRowHandle, "OkunanDeger", mngr.GetOPCItemSyncRead(this.editButtonLokasyon.Text,adres.ToString()));
+                    mngr.DisConnectServer();
+                    mngr = null;
+                //}
+
+            }
+            else
+                MessageBox.Show("Hata:Tag Degeri boş ya da adres seçmediniz !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        void frmCihazTanim_ButtonClick2(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        {
+            object adres = gridView1.GetRowCellValue(gridView1.FocusedRowHandle, "TagAdresi");
+            if (adres != null && adres != string.Empty)
+            {
+                //OpcManager mngr;
+                //OPCServer opcserver = Persistence.Read<OPCServer>(new Condition("Aktif", Operator.Equal, 1));
+                //if (opcserver != null && opcserver.Id > 0)
+                //{
+                    List<string> adreslist = new List<string>();
+                    adreslist.Add(adres.ToString());
+                    mngr = new OpcManager(opcserver.Groups[0].OPCGroupName,adreslist);
+                    mngr.OPCServerConnect(opcserver.OpcServerName, opcserver.OPCNodeName);
+                    //mngr.AddOpcGroupServer(opcserver.OPCGroupName, (opcserver.GroupUpdateRate), (opcserver.GroupActiveState), (float)opcserver.GroupDeadBand);
+                    mngr.AddOpcGroupServer(opcserver.Groups[0].OPCGroupName, opcserver.Groups[0].GroupUpdateRate, opcserver.Groups[0].GroupActiveState, (float)opcserver.Groups[0].GroupDeadBand);
+                    mngr.OPCAddItems(this.editButtonLokasyon.Text);
+                    gridView1.SetRowCellValue(gridView1.FocusedRowHandle, "OkunanDeger", mngr.GetOPCItemSyncRead(this.editButtonLokasyon.Text,adres.ToString()));
+                    mngr.DisConnectServer();
+                    mngr = null;
+                //}
+
+            }
+            else
+                MessageBox.Show("Hata:Tag Degeri boş ya da adres seçmediniz !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        void frmCihazTanim_ButtonClick3(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
+        {
+            object adres = gridViewAlarmAdresler.GetRowCellValue(gridViewAlarmAdresler.FocusedRowHandle, "TagAdresi");
+            if (adres != null && adres != string.Empty)
+            {
+                //OpcManager mngr;
+                //OPCServer opcserver = Persistence.Read<OPCServer>(new Condition("Aktif", Operator.Equal, 1));
+                //if (opcserver != null && opcserver.Id > 0)
+                //{  
+                    List<string> adreslist = new List<string>();
+                    adreslist.Add(adres.ToString());
+                    mngr = new OpcManager(opcserver.Groups[0].OPCGroupName,adreslist);
+                    mngr.OPCServerConnect(opcserver.OpcServerName, opcserver.OPCNodeName);
+                    //mngr.AddOpcGroupServer(opcserver.OPCGroupName, (opcserver.GroupUpdateRate), (opcserver.GroupActiveState), (float)opcserver.GroupDeadBand);
+                    mngr.AddOpcGroupServer(opcserver.Groups[0].OPCGroupName, opcserver.Groups[0].GroupUpdateRate, opcserver.Groups[0].GroupActiveState, (float)opcserver.Groups[0].GroupDeadBand);
+                    mngr.OPCAddItems(this.editButtonLokasyon.Text);
+                    gridViewAlarmAdresler.SetRowCellValue(gridViewAlarmAdresler.FocusedRowHandle, "OkunanDeger", mngr.GetOPCItemSyncRead(this.editButtonLokasyon.Text,adres.ToString()));
+                    mngr.DisConnectServer();
+                    mngr = null;
+                //}
+
+            }
+            else
+                MessageBox.Show("Hata:Tag Degeri boş ya da adres seçmediniz !!!", "Uyarı..", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         protected override Entity getNewEntity()
@@ -165,16 +325,26 @@ namespace PowerScada
             Cihaz cihaz = ((Cihaz)infoformentity);
             if (cihaz != null)
             {
-                if (cihaz.CihazTuru.Id > 0)
+                if (cihaz.CihazModeli.Id > 0)
                 {
-                    LookupTable cihazturu = Persistence.Read<LookupTable>(cihaz.cihazturu.Id);
-                    editButtonCihazTuru.Id = cihazturu.Id;
-                    editButtonCihazTuru.Text = cihazturu.Adi;
+                    LookupTable cihazmodeli = Persistence.Read<LookupTable>(cihaz.CihazModeli.Id);
+                    editButtonCihazTuru.Id = cihazmodeli.Id;
+                    editButtonCihazTuru.Text = cihazmodeli.Adi;
+                    cihaz.CihazModeli = cihazmodeli;
                 }
+
+                if (cihaz.Lokasyon.Id > 0)
+                {
+                    Lokasyon lokasyon = Persistence.Read<Lokasyon>(cihaz.Lokasyon.Id);
+                    editButtonLokasyon.Id = lokasyon.Id;
+                    editButtonLokasyon.Text = lokasyon.Adi;
+                    cihaz.Lokasyon = lokasyon;
+                }
+
                 textEditAdi.Text = cihaz.Adi;
                 textEditkodu.Text = cihaz.Kodu;
                 memoEditAciklama.Text = cihaz.Aciklama;
-                myComboDavranis.Id = (int)cihaz.Davranis;
+                myComboCihazTuru.Id = (int)cihaz.CihazTuru;
                 ShowEntityDataGrid();
             }
             
@@ -182,7 +352,8 @@ namespace PowerScada
 
         private void ShowEntityDataGrid()
         {
-            GridAdresler.DataSource = Adresler; ;
+            GridAdresler.DataSource = Adresler;
+            gridAlarmAdresler.DataSource = AlarmAdresleri;
         }
 
        
@@ -193,15 +364,18 @@ namespace PowerScada
             cihaz.Adi = textEditAdi.Text;
             cihaz.Kodu = textEditkodu.Text;
             cihaz.Aciklama = memoEditAciklama.Text;
-            cihaz.Davranis=(myenum.Davranis)myComboDavranis.Id;
-            cihaz.CihazTuru.Id = editButtonCihazTuru.Id;
+            cihaz.CihazTuru=(myenum.CihazTuru)myComboCihazTuru.Id;
+            cihaz.CihazModeli.Id = editButtonCihazTuru.Id;
+            cihaz.Lokasyon.Id = editButtonLokasyon.Id;
+            
             KisiNotlariUpdate();    
         }
 
         private void KisiNotlariUpdate()
         {
             Adresler.AcceptChanges();
-
+            AlarmAdresleri.AcceptChanges();
+            gridAlarmAdresler.DataSource = AlarmAdresleri;
             GridAdresler.DataSource = Adresler;
 
         }
@@ -212,46 +386,144 @@ namespace PowerScada
             Transaction.Instance.Join(delegate()
             {
                 base.Save();
-                try
-                {
-                    int i = Transaction.Instance.ExecuteNonQuery(" delete from CihazAdres where Cihaz_Id=@prm0", infoformentity.Id);
-                }
-                catch (Exception)
-                {
-                    throw new Exception("Cihaz ait adresler silinemdi");
-                }
-                 //bindingsource.DataSource
-                //foreach (CihazAdres ent in Adresler)
-                //{
-                    
-                //    ent.Cihaz.Id = infoformentity.Id;
-                //    //chzadres.Adres.Id =Convert.ToInt64(rw["Adres_Id"]);
-                //    //chzadres.Davranis = (mymodel.myenum.Davranis) Enum.Parse(typeof(mymodel.myenum.Davranis),rw["Davranis"].ToString());
-                //    //chzadres.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi), rw["AdresTipi"].ToString());
-                //    //chzadres.Formul = rw["Formul"] == null ? "" : rw["Formul"].ToString();
-                //    ent.Insert();
-                //}
+                string cihaztagadresId = string.Empty;
+                string alarmtanimId = string.Empty;
+              
 
+                long Id = 0; 
                 foreach (DataRow rw in Adresler.Rows)
                 {
-                    CihazAdres chz = new CihazAdres();
-                    chz.Cihaz.Id=infoformentity.Id;
-                    chz.Adres.Id=Convert.ToInt64(rw["Adres_Id"]);
-                    chz.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi),rw["AdresTipi"].ToString());
-                    chz.Davranis = (mymodel.myenum.Davranis)Enum.Parse(typeof(mymodel.myenum.Davranis), rw["Davranis"].ToString());
-                    chz.Formul = rw["Formul"].ToString();
-                    chz.Insert();
+                    
+                    if(rw["Id"]!=null && rw["Id"]!=System.DBNull.Value)
+                       Id = Convert.ToInt64(rw["Id"]);
+                    else
+                        Id = 0;
+                    CihazAdres chz;
+                    if (Id == 0)
+                    {
+                        chz = new CihazAdres();
+                        chz.Cihaz.Id = infoformentity.Id;
+                        chz.Adres.Id = Convert.ToInt64(Current.IsNull(rw["Adres_Id"],0));
+                        chz.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi), Current.IsNull(rw["AdresTipi"],"").ToString());
+                        chz.Davranis = (mymodel.myenum.Davranis)Enum.Parse(typeof(mymodel.myenum.Davranis),Current.IsNull(rw["Davranis"],"").ToString());
+                        chz.Formul = Current.IsNull(rw["Formul"],"").ToString();
+                        chz.IsLogTutulsun = bool.Parse(Current.IsNull(rw["IsLogTutulsun"],false).ToString());
+                        chz.Insert();
+                    }
+                    else
+                    {
+                        chz = Persistence.Read<CihazAdres>(Id);
+                        chz.Cihaz.Id = infoformentity.Id;
+                        chz.Adres.Id = Convert.ToInt64(Current.IsNull(rw["Adres_Id"],0));
+                        chz.AdresTipi = (mymodel.myenum.AdresTipi)Enum.Parse(typeof(mymodel.myenum.AdresTipi), Current.IsNull(rw["AdresTipi"],"").ToString());
+                        chz.Davranis = (mymodel.myenum.Davranis)Enum.Parse(typeof(mymodel.myenum.Davranis), Current.IsNull(rw["Davranis"],"").ToString());
+                        chz.Formul = Current.IsNull(rw["Formul"],"").ToString();
+                        chz.IsLogTutulsun = bool.Parse(Current.IsNull(rw["IsLogTutulsun"],false).ToString());
+                        chz.Update();
+                    }
+                    cihaztagadresId += chz.Id + ",";
                 }
 
+                foreach (DataRow rw1 in AlarmAdresleri.Rows)
+                {
+                    
+                    if(rw1["Id"]!=null && rw1["Id"]!=System.DBNull.Value)
+                        Id = Convert.ToInt64(rw1["Id"]);
+                    else
+                        Id = 0;
+                    CihazAdres chz = null;
+                    if (Id == 0)
+                    {
+                        chz = new CihazAdres();
+                        chz.Cihaz.Id = infoformentity.Id;
+                        chz.Adres.Id = Convert.ToInt64(Current.IsNull(rw1["Adres_Id"],0));
+                        chz.AdresTipi = myenum.AdresTipi.AlarmAdresi; ;
+                        chz.Davranis = myenum.Davranis.Oku;
+                        chz.Formul = Current.IsNull(rw1["Formul"],"").ToString();
+                        chz.IsLogTutulsun = bool.Parse(Current.IsNull(rw1["IsLogTutulsun"],false).ToString());
+                        chz.Insert();
+                    }
+                    else
+                    {
+                        chz = Persistence.Read<CihazAdres>(Id);
+                        chz.Cihaz.Id = infoformentity.Id;
+                        chz.Adres.Id = Convert.ToInt64(Current.IsNull(rw1["Adres_Id"],0));
+                        chz.AdresTipi = myenum.AdresTipi.AlarmAdresi; ;
+                        chz.Davranis = myenum.Davranis.Oku;
+                        chz.Formul = Current.IsNull(rw1["Formul"],"").ToString();
+                        chz.IsLogTutulsun = bool.Parse(Current.IsNull(rw1["IsLogTutulsun"],false).ToString());
+                        chz.Update();
+                    }
+                    cihaztagadresId += chz.Id + ",";
+                    
+                    
+                    Id = 0;
+                    if (rw1["Id1"] != null && rw1["Id1"] != System.DBNull.Value)
+                        Id = Convert.ToInt64(rw1["Id1"]);
+                    else
+                        Id = 0;
+                    CihazAlarmTanimi alarmtanimi;
+                    if (Id == 0)
+                    {
+                        alarmtanimi = new CihazAlarmTanimi();
+                        alarmtanimi.Cihaz.Id = infoformentity.Id;
+                        alarmtanimi.CihazAdres.Id = chz.Id;
+                        alarmtanimi.AlarmTipi = (mymodel.myenum.AlarmTipi)Enum.Parse(typeof(mymodel.myenum.AlarmTipi), Current.IsNull(rw1["AlarmTipi"],false).ToString());
+                        alarmtanimi.AlarmMesaji = rw1["AlarmMesaji"].ToString();
+                        alarmtanimi.DataTipi = (mymodel.myenum.MappedFieldType)Enum.Parse(typeof(mymodel.myenum.MappedFieldType), Current.IsNull(rw1["DataTipi1"],false).ToString());
+                        alarmtanimi.IsLogTutulsun = bool.Parse(Current.IsNull(rw1["IsLogTutulsun1"],false).ToString());
+                        alarmtanimi.SesAcik = bool.Parse(Current.IsNull(rw1["SesAcik"], false).ToString());
+                        alarmtanimi.SesDosyasiAdresi = rw1["SesDosyasiAdresi"].ToString();
+                        alarmtanimi.Insert();
+                    }
+                     else
+                    {
+                        alarmtanimi = Persistence.Read<CihazAlarmTanimi>(Id);
+                        alarmtanimi.Cihaz.Id = infoformentity.Id;
+                        alarmtanimi.CihazAdres.Id = chz.Id;
+                        alarmtanimi.AlarmTipi = (mymodel.myenum.AlarmTipi)Enum.Parse(typeof(mymodel.myenum.AlarmTipi),Current.IsNull(rw1["AlarmTipi"].ToString(),"").ToString());
+                        alarmtanimi.AlarmMesaji = rw1["AlarmMesaji"].ToString();
+                        alarmtanimi.DataTipi = (mymodel.myenum.MappedFieldType)Enum.Parse(typeof(mymodel.myenum.MappedFieldType), Current.IsNull(rw1["DataTipi1"].ToString(),"").ToString());
+                        alarmtanimi.IsLogTutulsun = bool.Parse(Current.IsNull(rw1["IsLogTutulsun1"].ToString(), false).ToString());
+                        alarmtanimi.SesAcik = bool.Parse(Current.IsNull(rw1["SesAcik"], false).ToString());
+                        alarmtanimi.SesDosyasiAdresi = Current.IsNull(rw1["SesDosyasiAdresi"], "").ToString();
+                        alarmtanimi.Update();
+                    }
+                    alarmtanimId += alarmtanimi.Id + ",";
+                }
+
+
+                try
+                {
+                    if (cihaztagadresId.Length > 0)
+                    {
+                        cihaztagadresId = cihaztagadresId.Remove(cihaztagadresId.Length - 1, 1);
+                    }
+                    else
+                        cihaztagadresId = "0";
+
+                    if (alarmtanimId.Length > 0)
+                    {
+                        alarmtanimId = alarmtanimId.Remove(alarmtanimId.Length - 1, 1);
+                    }
+                    else
+                        alarmtanimId = "0";
+
+
+
+                    int i = Transaction.Instance.ExecuteNonQuery(" delete from CihazAdres where Cihaz_Id=@prm0 and Id Not in ("+cihaztagadresId+")", new object[] { infoformentity.Id });
+                    i = Transaction.Instance.ExecuteNonQuery(" delete from CihazAlarmTanimi where Cihaz_Id=@prm0 and Id Not in("+alarmtanimId+")", new object[] { infoformentity.Id });
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Cihaz ait adresler silinemedi" + ex.Message);
+                }
             });
 
             
         }
 
-        private void GridAdresler_Validating(object sender, CancelEventArgs e)
-        {
-
-        }
+     
 
         private void gridView1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -259,7 +531,11 @@ namespace PowerScada
             {
                 if(DialogResult.Yes==MessageBox.Show("Seçili satırı silmek istediğinizden eminmisiniz ?","Uyarı",MessageBoxButtons.YesNo))
                 {
-                    gridView1.DeleteRow(gridView1.FocusedRowHandle);
+                    if (((DevExpress.XtraGrid.Views.Grid.GridView)sender).Name == "gridView1")
+                        gridView1.DeleteRow(gridView1.FocusedRowHandle);
+                    else
+                        gridViewAlarmAdresler.DeleteRow(gridViewAlarmAdresler.FocusedRowHandle);
+
                 }
                 else
                     return;

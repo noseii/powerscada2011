@@ -1,4 +1,5 @@
-﻿namespace AHBS2010.Rapor._1549YasKadınBildirimFormu {
+﻿namespace PowerScada.Rapor._1549YasKadınBildirimFormu
+{
     
     
     public partial class _1549YasKadinListesiDataset {

@@ -446,7 +446,7 @@ namespace PowerScada
         {
             long id = 0;
             string deger = string.Empty;
-            Utility.EditButtonCommands.Add("EditButtonCihazTuru",
+            Utility.EditButtonCommands.Add("EditButtonCihazModeli",
             new EditbuttonCommand(
             delegate(object nesne)
             {
@@ -462,6 +462,43 @@ namespace PowerScada
                     ((EditButton)nesne).Text = "";
                 }
             }));
+
+
+            Utility.EditButtonCommands.Add("EditButtonLokasyon",
+          new EditbuttonCommand(
+          delegate(object nesne)
+          {
+              id = SimpleTreeLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi,Kodu from Lokasyon where Aktif=1 and (isnull(Adi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "Adi", ref deger);
+              if (id > 0)
+              {
+                  ((EditButton)nesne).Id = id;
+                  ((EditButton)nesne).Text = deger;
+              }
+              else
+              {
+                  ((EditButton)nesne).Id = 0;
+                  ((EditButton)nesne).Text = "";
+              }
+          }));
+            Utility.EditButtonCommands.Add("EditButtonCihaz",
+        new EditbuttonCommand(
+        delegate(object nesne)
+        {
+            id = SimpleTreeLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi,Kodu from Cihaz where Aktif=1 and (isnull(Adi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "Adi", ref deger);
+            if (id > 0)
+            {
+                ((EditButton)nesne).Id = id;
+                ((EditButton)nesne).Text = deger;
+            }
+            else
+            {
+                ((EditButton)nesne).Id = 0;
+                ((EditButton)nesne).Text = "";
+            }
+        }));
+
+       
+
 
             Utility.EditButtonCommands.Add("EditButtonUlkeSec",
             new EditbuttonCommand(
@@ -482,60 +519,79 @@ namespace PowerScada
                 }
             }));
 
-            Utility.EditButtonCommands.Add("EditButtonAsiSec",
-           new EditbuttonCommand(
-           delegate(object nesne)
-           {
-               id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("select Id,Adi as [Adı],Kodu from AsiTanim where aktif=1 and (isnull(Adi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "Adı", ref deger);
-               if (id > 0)
-               {
-                   ((EditButton)nesne).Id = id;
-                   ((EditButton)nesne).Text = deger;
-               }
-               else
-               {
-                   ((EditButton)nesne).Id = 0;
-                   ((EditButton)nesne).Text = "";
 
-
-               }
-           }));
-
-            Utility.EditButtonCommands.Add("EditButtonHasta",
-           new EditbuttonCommand(
-           delegate(object nesne)
-           {
-               id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi+' '+Soyadi as [AdiSoyadi] from Hasta where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
-               if (id > 0)
-               {
-                   ((EditButton)nesne).Id = id;
-                   ((EditButton)nesne).Text = deger;
-               }
-               else
-               {
-                   ((EditButton)nesne).Id = 0;
-                   ((EditButton)nesne).Text = "";
-               }
-           }));
-
-            Utility.EditButtonCommands.Add("EditButtonDoktorSec",
-            new EditbuttonCommand(
-            delegate(object nesne)
+            Utility.EditButtonCommands.Add("EditButtonAdres",
+        new EditbuttonCommand(
+        delegate(object nesne)
+        {
+            id = SimpleTreeLookup.Select(Transaction.Instance.ExecuteSql("Select Id,TagAdresi from Adres where Aktif=1 and (isnull(TagAdresi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "TagAdresi", ref deger);
+            if (id > 0)
             {
-                id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("select Id,Adi+' '+Soyadi as [AdiSoyadi]  from Doktor where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
-                if (id > 0)
-                {
-                    ((EditButton)nesne).Id = id;
-                    ((EditButton)nesne).Text = deger;
-                }
-                else
-                {
-                    ((EditButton)nesne).Id = 0;
-                    ((EditButton)nesne).Text = "";
+                ((EditButton)nesne).Id = id;
+                ((EditButton)nesne).Text = deger;
+            }
+            else
+            {
+                ((EditButton)nesne).Id = 0;
+                ((EditButton)nesne).Text = "";
+            }
+        }));
 
 
-                }
-            }));
+           // Utility.EditButtonCommands.Add("EditButtonAsiSec",
+           //new EditbuttonCommand(
+           //delegate(object nesne)
+           //{
+           //    id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("select Id,Adi as [Adı],Kodu from AsiTanim where aktif=1 and (isnull(Adi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "Adı", ref deger);
+           //    if (id > 0)
+           //    {
+           //        ((EditButton)nesne).Id = id;
+           //        ((EditButton)nesne).Text = deger;
+           //    }
+           //    else
+           //    {
+           //        ((EditButton)nesne).Id = 0;
+           //        ((EditButton)nesne).Text = "";
+
+
+           //    }
+           //}));
+
+           // Utility.EditButtonCommands.Add("EditButtonHasta",
+           //new EditbuttonCommand(
+           //delegate(object nesne)
+           //{
+           //    id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi+' '+Soyadi as [AdiSoyadi] from Hasta where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
+           //    if (id > 0)
+           //    {
+           //        ((EditButton)nesne).Id = id;
+           //        ((EditButton)nesne).Text = deger;
+           //    }
+           //    else
+           //    {
+           //        ((EditButton)nesne).Id = 0;
+           //        ((EditButton)nesne).Text = "";
+           //    }
+           //}));
+
+           // Utility.EditButtonCommands.Add("EditButtonDoktorSec",
+           // new EditbuttonCommand(
+           // delegate(object nesne)
+           // {
+           //     id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("select Id,Adi+' '+Soyadi as [AdiSoyadi]  from Doktor where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
+           //     if (id > 0)
+           //     {
+           //         ((EditButton)nesne).Id = id;
+           //         ((EditButton)nesne).Text = deger;
+           //     }
+           //     else
+           //     {
+           //         ((EditButton)nesne).Id = 0;
+           //         ((EditButton)nesne).Text = "";
+
+
+           //     }
+           // }));
 
 
             Utility.EditButtonCommands.Add("EditButtonIlSec",
@@ -557,23 +613,23 @@ namespace PowerScada
               }
           }));
 
-            Utility.EditButtonCommands.Add("EditButtonHasta2",
-         new EditbuttonCommand(
-         delegate(object nesne)
-         {
-             SimpleLookup.CommandName = "EditButtonHasta2";
-             id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi+' '+Soyadi as [AdiSoyadi],CONVERT(NVarChar,TckNo) as TckNo,Adi,Soyadi from Hasta where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
-             if (id > 0)
-             {
-                 ((EditButton)nesne).Id = id;
-                 ((EditButton)nesne).Text = deger;
-             }
-             else
-             {
-                 ((EditButton)nesne).Id = 0;
-                 ((EditButton)nesne).Text = "";
-             }
-         }));
+         //   Utility.EditButtonCommands.Add("EditButtonHasta2",
+         //new EditbuttonCommand(
+         //delegate(object nesne)
+         //{
+         //    SimpleLookup.CommandName = "EditButtonHasta2";
+         //    id = SimpleLookup.Select(Transaction.Instance.ExecuteSql("Select Id,Adi+' '+Soyadi as [AdiSoyadi],CONVERT(NVarChar,TckNo) as TckNo,Adi,Soyadi from Hasta where (isnull(Adi+' '+Soyadi,'')) like @prm0", ((EditButton)nesne).Text.Trim() + "%"), "AdiSoyadi", ref deger);
+         //    if (id > 0)
+         //    {
+         //        ((EditButton)nesne).Id = id;
+         //        ((EditButton)nesne).Text = deger;
+         //    }
+         //    else
+         //    {
+         //        ((EditButton)nesne).Id = 0;
+         //        ((EditButton)nesne).Text = "";
+         //    }
+         //}));
         }
 
         #endregion
@@ -636,33 +692,44 @@ namespace PowerScada
 
         public static void SetGridStyle(DevExpress.XtraTreeList.TreeList treelist)
         {
-
+           
 
             for (int i = 0; i < treelist.Columns.Count; i++)
             {
-                if (treelist.Columns[i].Name.Contains("Aktif") ||
-                    treelist.Columns[i].Name.Contains("EklemeTarihi") ||
-                    treelist.Columns[i].Name.Contains("DegistirmeTarihi") ||
-                    treelist.Columns[i].Name.Contains("EkleyenMakAdres") ||
-                    treelist.Columns[i].Name.Contains("EkleyenKullanici") ||
-                    treelist.Columns[i].Name.Contains("DegistirenKullanici") ||
-                    treelist.Columns[i].Name.Contains("DegistirenMakAdres") ||
-                    treelist.Columns[i].Name.Contains("Id") ||
-                    treelist.Columns[i].Name.Contains("RowVersion") ||
-                    treelist.Columns[i].Name.Contains("TransferDurumu") ||
-                    treelist.Columns[i].Name.Contains("TransferMesaj") ||
-                    treelist.Columns[i].Name.Contains("TransferSonuc") ||
-                    treelist.Columns[i].Name.Contains("TransferTarihi") ||
-                    treelist.Columns[i].Name.Contains("_"))
-                {
+                //if (treelist.Columns[i].Name.Contains("colAdi") ||
+                //    treelist.Columns[i].Name.Contains("colKodu")) 
+                //    //|| treelist.Columns[i].Name.Contains("DegistirmeTarihi") ||
+                //    //treelist.Columns[i].Name.Contains("EkleyenMakAdres") ||
+                //    //treelist.Columns[i].Name.Contains("EkleyenKullanici") ||
+                //    //treelist.Columns[i].Name.Contains("DegistirenKullanici") ||
+                //    //treelist.Columns[i].Name.Contains("DegistirenMakAdres") ||
+                //    //treelist.Columns[i].Name.Contains("Id") ||
+                //    //treelist.Columns[i].Name.Contains("RowVersion") ||
+                //    //treelist.Columns[i].Name.Contains("TransferDurumu") ||
+                //    //treelist.Columns[i].Name.Contains("TransferMesaj") ||
+                //    //treelist.Columns[i].Name.Contains("TransferSonuc") ||
+                //    //treelist.Columns[i].Name.Contains("TransferTarihi") ||
+                //    //treelist.Columns[i].Name.Contains("_"))
+                //{
                     treelist.Columns[i].Visible = false;
-                }
+                //}
             }
+
+            treelist.Columns.ColumnByName("colAdi").Visible = true;
+            treelist.Columns.ColumnByName("colKodu").Visible = true;
         }
 
         #endregion
 
 
+        private static Dictionary<string, System.Windows.Forms.Form> openforms = new Dictionary<string, System.Windows.Forms.Form>();
+        public static Dictionary<string, System.Windows.Forms.Form> OpenForms
+        {
+            get { return openforms; }
+            set { openforms = value; }
+        }
+
+        
 
         public static string GetProtokolNo()
         {

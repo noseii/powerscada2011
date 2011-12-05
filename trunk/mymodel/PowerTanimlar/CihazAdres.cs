@@ -97,11 +97,29 @@ namespace mymodel
             Cihaz = new Cihaz();
             Formul = string.Empty;
             Davranis = myenum.Davranis.Oku;
-            AdresTipi = myenum.AdresTipi.CihazAcmaKapamaAdresi;
+            AdresTipi = myenum.AdresTipi.OkunacakAdres;
 
         }
-      
-        
+
+
+        private BindingList<CihazAlarmTanimi> cihazalarmlari;
+
+        [FieldDefinition(MappingType = FieldMappingType.No)]
+        public BindingList<CihazAlarmTanimi> CihazAlarmlari
+        {
+            get
+            {
+                if (cihazalarmlari == null)
+                    cihazalarmlari = new BindingList<CihazAlarmTanimi>();
+
+                return cihazalarmlari;
+            }
+            set
+            {
+                cihazalarmlari = value;
+            }
+        }
+
         //[FieldDefinition(MappingType = FieldMappingType.No)]
         //public string TagAdresi 
         //{
