@@ -174,17 +174,17 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.Designer.cs">
-      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
-    </Compile>
     <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.Designer.cs">
       <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.Designer.cs">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="TanimEkranlari\frmAdresListesi.cs">
@@ -417,11 +417,11 @@
     <EmbeddedResource Include="PowerUserControl\UCBaseControl.resx">
       <DependentUpon>UCBaseControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.resx">
-      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.resx">
       <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.resx">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TanimEkranlari\frmAdresListesi.resx">
       <DependentUpon>frmAdresListesi.cs</DependentUpon>
