@@ -1,0 +1,2149 @@
+#region Datagridview filter örneði kodlarý
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using SharpBullet.OAL;
+using KargoScrumModel;
+using SharpBullet.UI;
+
+namespace SüratScrum
+{
+    public partial class PbiOrderForm : ScrumBaseForm
+    {
+        DataTable listTable;
+
+        public PbiOrderForm()
+        {            
+            InitializeComponent();
+            dataGridView1.DataSource = bindingSource1;
+
+            Commands.Add(new Command() { Name = "Kaydet", ExecuteMethod = CommandKaydet });
+
+            listTable = PbiOrder.GetOrderedList();
+            listTable.RowChanged += new DataRowChangeEventHandler(listTable_RowChanged);
+            bindingSource1.DataSource = listTable;
+            dataGridView1.SetGridStyle(
+                @"<Style>
+                    <Column Name='Pbi_Id' HeaderText='Id' Width='49' DisplayIndex='0' />
+                    <Column Name='OrderNo' HeaderText='Sýra' Width='42' DisplayIndex='1' />
+                    <Column Name='Priority' HeaderText='Acil' Width='60' DisplayIndex='2' />
+                    <Column Name='AssignedTo' HeaderText='Kim' Width='100' DisplayIndex='3' />
+                    <Column Name='CustomerName' HeaderText='Þirket' Width='100' DisplayIndex='4' />
+                    <Column Name='AsAUser' HeaderText='Rol' Width='115' DisplayIndex='5' />
+                    <Column Name='IWantTo' HeaderText='Ýstek' Width='563' DisplayIndex='6' />
+                    <Column Name='SoThat' HeaderText='Fayda' Width='553' DisplayIndex='7' />
+                 
+                </Style>");
+
+            foreach (DataGridViewColumn col in dataGridView1.Columns)
+            {
+                if (col.Name == "IWantTo" || col.Name == "SoThat" || col.Name == "Pbi_Id"
+                    || col.Name == "OrderNo") continue;
+                col.HeaderCell = new
+                    DataGridViewAutoFilter.DataGridViewAutoFilterColumnHeaderCell(col.HeaderCell);
+            }
+
+            dataGridView1.Sort(dataGridView1.Columns["OrderNo"], ListSortDirection.Ascending);
+        }
+
+        public void CommandKaydet(object sender)
+        {
+            progressBar1.Maximum = listTable.Rows.Count;
+            progressBar1.Value = 0;
+
+            foreach (DataRow row in listTable.Rows)
+            {
+                PbiOrder.SetOrder((int)row["Id"], (int)row["OrderNo"]);
+                progressBar1.Value += 1;
+            }
+
+            progressBar1.Value = 0;
+        }
+
+        void listTable_RowChanged(object sender, DataRowChangeEventArgs e)
+        {            
+        }
+
+        private void bindingSource1_CurrentItemChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void bindingSource1_CurrentChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void dataGridView1_CurrentCellChanged(object sender, EventArgs e)
+        {            
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if(dataGridView1.Columns[e.ColumnIndex].Name != "OrderNo") return;
+
+            int oldSiraNo = (int)dataGridView1.Rows[e.RowIndex].Cells["OrderNo"].Value;
+            int newSiraNo = Convert.ToInt32(e.FormattedValue);
+            if (newSiraNo == oldSiraNo) return;
+
+            int id = (int)((DataRowView)dataGridView1.Rows[e.RowIndex].DataBoundItem)["Id"];
+
+            foreach (DataRow row in listTable.Rows)
+            {
+                if(((int)row["Id"])==id) continue;
+                if (((int)row["OrderNo"]) >= newSiraNo)
+                {
+                    row["OrderNo"] = (int)row["OrderNo"] + 1;
+                }
+            }
+        }
+    }
+}
+
+
+
+#endregion
+
+--int alanlarýn long çevrilmesi 
+
+
+
+
+
+--ALTER TABLE dbo.Receteilac ALTER COLUMN MuayeneId bigint NOT NULL
+
+
+--DECLARE @tablename VARCHAR(50) -- database name 
+--DECLARE @Script NVARCHAR(4000) -- path for backup files 
+--DECLARE @fileName VARCHAR(256) -- filename for backup 
+--DECLARE @fileDate VARCHAR(20) -- used for file name
+
+--SET @Script = 'C:\Backup\' 
+
+
+--SELECT top 1 @tablename=sys.tables.name from sys.tables
+
+
+
+
+
+--DECLARE db_cursor CURSOR FOR 
+--SELECT sys.tables.name from sys.tables
+
+--OPEN db_cursor  
+--FETCH NEXT FROM db_cursor INTO @tablename  
+
+--WHILE @@FETCH_STATUS = 0  
+--BEGIN  
+--set @Script ='IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N''[dbo].'+@tablename+''') AND name = N''PK_'+@tablename+'_Id'')
+--ALTER TABLE [dbo].'+@tablename+' DROP CONSTRAINT [PK_'+@tablename+'_Id]
+--ALTER TABLE '+@tablename+' ALTER COLUMN Id bigint NOT NULL
+--ALTER TABLE [dbo].'+@tablename+' ADD  CONSTRAINT [PK_'+@tablename+'_Id] PRIMARY KEY CLUSTERED 
+--(
+--	[Id] ASC
+--)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+--';
+
+--EXEC sp_executesql @Script
+--FETCH NEXT FROM db_cursor INTO @tablename  
+--END  
+
+--CLOSE db_cursor  
+--DEALLOCATE db_curs
+use ahbs2010
+--CREATE TABLE [dbo].[Kullanici](
+--    [Login] [nvarchar](30) NULL,
+--    [Sifre] [nvarchar](60) NULL,
+--    [Adi] [nvarchar](30) NULL,
+--    [SoyAdi] [nvarchar](30) NULL,
+--    [DogumTarihi] [datetime] NULL,
+--    [KullaniciGrup_Id] [int] NULL,
+--    [EvTel] [nvarchar](20) NULL,
+--    [Gsm] [nvarchar](30) NULL,
+--    [EvAdresi] [nvarchar](400) NULL,
+--    [email] [nvarchar](100) NULL,
+--    [GorevTuru] [nvarchar](100) NULL,
+--    [Tipi] [int] NULL,
+--    [TckNo] [bigint] NULL,
+--    [Bolumu] [nvarchar](30) NULL,
+--    [Aktif] [bit] NULL,
+--    [EklemeTarihi] [datetime] NULL,
+--    [DegistirmeTarihi] [datetime] NULL,
+--    [EkleyenKullanici_Id] [int] NULL,
+--    [Degistiren_Kullanici_Id] [int] NULL,
+--    [EkleyenMakAdres] [nvarchar](100) NULL,
+--    [DegistirenMakAdres] [nvarchar](100) NULL,
+--    [Id] [bigint]  NOT NULL,
+--    [RowVersion] [tinyint] NULL,
+-- CONSTRAINT [PK_Kullanici_Id] PRIMARY KEY CLUSTERED 
+--(
+--    [Id] ASC
+--)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+--) ON [PRIMARY]
+
+----delete from kullanici
+---- þifresi a olan kullanýcý
+--insert into kullanici (Id,aktif,adi,login,sifre)values(1,1,'admin','admin','0cc175b9c0f1b6a831c399e269772661')
+
+
+/*==================================================*/
+/*ILAC KODLARI*/
+/*==================================================*/
+TRUNCATE TABLE PowerScada.dbo.ilac
+INSERT INTO PowerScada.dbo.ilac
+(
+PowerScada.dbo.ilac.Id,
+PowerScada.dbo.ilac.Adi,
+PowerScada.dbo.ilac.Aktif,
+PowerScada.dbo.ilac.Barkod
+)
+SELECT 
+AHBSSENTIM.dbo.AHBS_ILACLAR_SBRS.ILAC_NO,
+AHBSSENTIM.dbo.AHBS_ILACLAR_SBRS.ILAC_ADI,
+1,
+AHBSSENTIM.dbo.AHBS_ILACLAR_SBRS.BARKODU
+FROM AHBSSENTIM.dbo.AHBS_ILACLAR_SBRS
+/*==================================================*/
+/*TESHIS(TANI) KODLARI*/
+/*==================================================*/
+TRUNCATE TABLE PowerScada.dbo.Teshis
+INSERT INTO PowerScada.dbo.Teshis
+(
+PowerScada.dbo.Teshis.Id,
+PowerScada.dbo.Teshis.Adi,
+PowerScada.dbo.Teshis.Aktif,
+PowerScada.dbo.Teshis.Kodu,
+PowerScada.dbo.Teshis.BildirimiZorunlumu,
+PowerScada.dbo.Teshis.OlumNedenimi,
+PowerScada.dbo.Teshis.UstTeshis_Id
+)
+sELECT 
+a.ICD_NO,
+a.ICD_AD,
+1,
+a.ICD_KOD,
+case a.BILDIRIMI_ZORUNLU when '1' then 1 when '0' then 0 else null end,
+case a.OLUM_NEDENI when '1' then 1 when '0' then 0 else null end,
+b.ICD_NO
+FROM AHBSSENTIM.dbo.AHBS_ICD a
+left join AHBSSENTIM.dbo.AHBS_ICD b on a.ICD_REFERANS=b.ICD_KOD
+order by b.ICD_KOD,a.ICD_KOD
+/*==================================================*/
+/*asi tanimlari*/
+/*==================================================*/
+TRUNCATE TABLE PowerScada.dbo.AsiTanim
+INSERT INTO PowerScada.dbo.AsiTanim
+(
+PowerScada.dbo.AsiTanim.Id,
+PowerScada.dbo.AsiTanim.Adi,
+PowerScada.dbo.AsiTanim.Aktif,
+
+PowerScada.dbo.AsiTanim.HL7Kodu,
+PowerScada.dbo.AsiTanim.HL7Adi,
+PowerScada.dbo.AsiTanim.SBRSAsiNo,
+PowerScada.dbo.AsiTanim.Zorunlumu
+)
+SELECT 
+AHBSSENTIM.dbo.AHBS_ASI_SBRS.ASI_NO,
+AHBSSENTIM.dbo.AHBS_ASI_SBRS.ASI_AD,
+1,
+AHBSSENTIM.dbo.AHBS_ASI_SBRS.ASI_KOD
+
+HL7_KOD,
+HL7_AD,
+SBRS_ASI_NO,
+case ZORUNLU when '1' then 1 when '0' then 0 else null end
+FROM AHBSSENTIM.dbo.AHBS_ASI_SBRS
+/*==================================================*/
+/*hizmet tür tanimlari*/
+/*==================================================*/
+TRUNCATE TABLE PowerScada.dbo.HizmetTur
+INSERT INTO PowerScada.dbo.HizmetTur
+(
+PowerScada.dbo.HizmetTur.Id,
+PowerScada.dbo.HizmetTur.Adi,
+PowerScada.dbo.HizmetTur.Aktif,
+PowerScada.dbo.HizmetTur.Aciklama
+)
+sELECT 
+a.BUT_TUR_NO,
+a.TUR_ADI,
+1,
+a.ACIKLAMA
+FROM AHBSSENTIM.dbo.AHBS_BUT_TURLERI_SBRS a
+/*==================================================*/
+/*hizmet tanimlari*/
+/*==================================================*/
+TRUNCATE TABLE PowerScada.dbo.Hizmet
+INSERT INTO PowerScada.dbo.Hizmet
+(
+PowerScada.dbo.Hizmet.Id,
+PowerScada.dbo.Hizmet.Adi,
+PowerScada.dbo.Hizmet.Aktif,
+PowerScada.dbo.Hizmet.Kodu,
+PowerScada.dbo.Hizmet.UstHizmet_Id,
+PowerScada.dbo.Hizmet.HizmetTur_Id,
+PowerScada.dbo.Hizmet.Puani
+)
+sELECT 
+a.BUT_NO,
+a.BUT_ADI,
+1,
+a.BUT_KODU,
+b.BUT_NO,
+a.but_tur_no,
+a.puanI
+FROM AHBSSENTIM.dbo.AHBS_BUT_SBRS a
+left join AHBSSENTIM.dbo.AHBS_BUT_SBRS b on a.BUT_UST_NO=b.BUT_NO
+order by b.BUT_NO,a.BUT_NO
+
+ 
+
+
+ create    function [dbo].[fn_Tasiyicimi](@InID int,@tablo varchar(50)) returns bit as
+begin
+    declare    
+    @Container bit, @adet int
+    set @adet=0
+    if (@tablo='Teshis')
+        select @adet=count(UstTeshis_Id) from Teshis where Aktif=1 and UstTeshis_Id=@InID
+        
+    if (@tablo='Hizmet')
+        select @adet=count(UstHizmet_Id) from Hizmet where Aktif=1 and UstHizmet_Id=@InID
+
+    if (@adet>0) set @container=1
+    else set @container=0
+
+    return @Container
+end
+
+
+
+create    function [dbo].[fn_Tasiyicimi](@InID int,@tablo varchar(50)) returns bit as
+begin
+    declare    
+    @Container bit, @adet int
+    set @adet=0
+    if (@tablo='Teshis')
+        select @adet=count(UstTeshis_Id) from Teshis where Aktif=1 and UstTeshis_Id=@InID
+        
+    if (@tablo='Hizmet')
+        select @adet=count(UstHizmet_Id) from Hizmet where Aktif=1 and UstHizmet_Id=@InID
+
+    if (@adet>0) set @container=1
+    else set @container=0
+
+    return @Container
+end
+
+update Teshis set tasiyicimi=dbo.fn_Tasiyicimi(Id,'Teshis') from Teshis
+update Hizmet set tasiyicimi=dbo.fn_Tasiyicimi(Id,'Hizmet') from Hizmet
+
+
+
+
+--Muayene Defteri Ýçin gereken fonksiyonlar
+--USE [PowerScada]
+--GO
+
+--/****** Object:  UserDefinedFunction [dbo].[FN_GETILAC]    Script Date: 03/06/2011 02:47:09 ******/
+--SET ANSI_NULLS ON
+--GO
+
+--SET QUOTED_IDENTIFIER ON
+--GO
+
+--CREATE FUNCTION [dbo].[FN_GETILAC](@MUAYENEID bigint) 
+--RETURNS varchar(max) AS
+--BEGIN
+
+--DECLARE @result varchar(max)
+
+--Set @result=''
+
+--		SELECT 
+--				@result = coalesce(@result + '','') +
+--				(I.Adi+' '+case when len(RI.ilacDozAciklama)>0 then RI.ilacDozAciklama else RI.KullanimPeriyot end)+' , ' 
+--		FROM Receteilac RI 
+--		INNER JOIN iLAC I on I.Id=RI.ILAC_ID AND I.Aktif=1
+--		WHERE
+--			RI.MuayeneId=@MUAYENEID AND RI.Aktif=1 
+ 
+--SET @result=SUBSTRING(@result,0,LEN(@result))
+
+
+
+--RETURN  @result
+
+--END
+--GO
+
+
+--USE [PowerScada]
+--GO
+
+--/****** Object:  UserDefinedFunction [dbo].[FN_GETRAPOR]    Script Date: 03/06/2011 02:47:32 ******/
+--SET ANSI_NULLS ON
+--GO
+
+--SET QUOTED_IDENTIFIER ON
+--GO
+
+--CREATE FUNCTION [dbo].[FN_GETRAPOR](@MUAYENEID bigint) 
+--RETURNS varchar(max) AS
+--BEGIN
+
+--DECLARE @result varchar(max)
+
+--Set @result=''
+
+--		SELECT 
+--				@result = coalesce(@result + '','') +case when isnull(SI.GunSayisi,0)>0 
+--				then STR((SI.GunSayisi))+' GÜN '+SI.RaporTuru+' , '
+--				else SI.RaporTuru+',' end
+				 
+--		FROM SaglikIstirahat SI 
+--		WHERE
+--			SI.Muayene_Id=@MUAYENEID AND SI.Aktif=1 
+ 
+--SET @result=SUBSTRING(@result,0,LEN(@result))
+
+
+
+--RETURN  @result
+
+--END
+--GO
+
+
+--USE [PowerScada]
+--GO
+
+--/****** Object:  UserDefinedFunction [dbo].[FN_GETSEVK]    Script Date: 03/06/2011 02:47:51 ******/
+--SET ANSI_NULLS ON
+--GO
+
+--SET QUOTED_IDENTIFIER ON
+--GO
+
+--CREATE FUNCTION [dbo].[FN_GETSEVK](@MUAYENEID bigint) 
+--RETURNS varchar(max) AS
+--BEGIN
+
+--DECLARE @result varchar(max)
+
+--Set @result=''
+
+--		SELECT 
+--				@result = coalesce(@result + '','') +
+--				isnull((SELECT Adi FROM SevkKurum SK WHERE SK.ID=MS.SevkKurum_Id),0)+' , '+
+--				isnull((SELECT Adi FROM SevkBolum SB WHERE SB.ID=MS.SevkBolum_Id),0)+' , '
+				 
+--		FROM dbo.MuayeneSevk MS
+--		--INNER JOIN SevkKurum SK ON SK.Id=MS.SevkKurum_Id 
+--		--INNER JOIN SevkBolum SB ON SB.Id=MS.SevkBolum_Id 
+--		WHERE
+--			MS.Muayene_Id=@MUAYENEID AND MS.Aktif=1 
+ 
+--SET @result=SUBSTRING(@result,0,LEN(@result))
+
+
+
+--RETURN  @result
+
+--END
+--GO
+
+
+USE [PowerScada]
+GO
+
+/****** Object:  UserDefinedFunction [dbo].[FN_GETTANI]    Script Date: 03/06/2011 02:48:06 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[FN_GETTANI](@MUAYENEID bigint) 
+RETURNS varchar(max) AS
+BEGIN
+
+DECLARE @result varchar(max)
+
+Set @result=''
+
+		SELECT 
+				@result = coalesce(@result + '','') +
+				T.Adi+' , '
+		FROM MuayeneTeshis MT 
+		INNER JOIN Teshis T on T.Id=MT.teshis_Id AND T.Aktif=1
+		WHERE
+			MT.Muayene_Id=@MUAYENEID AND MT.Aktif=1 
+
+RETURN SUBSTRING(@result,0,LEN(@result)) 
+
+END
+GO
+
+
+--USE [PowerScada]
+--GO
+
+--/****** Object:  UserDefinedFunction [dbo].[fn_MuayeneSonucu]    Script Date: 03/06/2011 02:48:23 ******/
+--SET ANSI_NULLS ON
+--GO
+
+--SET QUOTED_IDENTIFIER ON
+--GO
+
+
+--CREATE    function [dbo].[fn_MuayeneSonucu](@MuayeneID bigint) returns varchar(4000) as
+--begin
+    
+--    DECLARE @COUNT int
+--    DECLARE @Sonuc varchar(max)
+--    SET @COUNT=0;
+--	SET @Sonuc='';
+	
+--	Select @COUNT=count(Id) from MuayeneTeshis where MuayeneTeshis.muayene_Id=@MuayeneID and Aktif=1
+--	if(@COUNT>0)
+--		Set	@Sonuc='Taný,'
+	
+--	SET @COUNT=0;	
+		
+--	Select @COUNT=count(Id) from Receteilac where Receteilac.muayeneId=@MuayeneID and Aktif=1
+--	if(@COUNT>0)
+--	  set @Sonuc=@Sonuc+'Ýlaç,'
+	  
+--	SET @COUNT=0;	
+		
+--	Select @COUNT=count(Id) from MuayeneSevk where MuayeneSevk.muayene_Id=@MuayeneID and Aktif=1
+--	if(@COUNT>0)
+--	  set @Sonuc=@Sonuc+'Sevk,'
+	  
+--	Select @COUNT=count(Id) from SaglikIstirahat where SaglikIstirahat.muayene_Id=@MuayeneID and Aktif=1
+--	if(@COUNT>0)
+--	  set @Sonuc=@Sonuc+'Rapor,'
+    
+    
+  
+--    return SUBSTRING(@Sonuc,0,LEN(@Sonuc))
+--end
+
+--GO
+
+
+
+
+
+
+
+--Muayene Defteri Sql kodlarý
+--SELECT
+--M.SiraNo									AS SIRANO
+--,M.MuayeneTarihi							AS MTARIHI
+--,(SELECT SAAT FROM Takvim T WHERE T.ID=M.RANDEVU_ID) AS MURACATSAATI
+--,convert(nvarchar(5),M.EklemeTarihi,108)	AS MUAYENESAATI
+--,DATEDIFF(YY,ISNULL(H.BeyanDogumTarihi,H.DogumTarihi),GETDATE())		AS YASI
+--,M.ProtokolNo								AS PROTOKOLNO
+--,H.Adi+' '+H.Soyadi							AS ADISOYADI
+--,H.Cinsiyeti								AS CINSIYET 
+--,ISNULL(H.BeyanDogumTarihi,H.DogumTarihi)   AS DOGUMTARIHI
+--,H.KurumTipi								AS KURUMTIPI
+--,dbo.fn_MuayeneSonucu (M.Id)				AS MUAYENESONUCU
+--,dbo.FN_GETTANI(M.Id)						AS TANI
+--,dbo.FN_GETILAC(M.Id)						AS ILAC
+--,dbo.FN_GETRAPOR(M.Id)						AS RAPOR
+--,dbo.FN_GETSEVK(M.Id)						AS SEVK
+--,D.Adi+' '+D.Soyadi							AS DADISOYADI
+--,D.Diplomano								AS DIPLOMANO
+--FROM Muayene M
+--INNER JOIN Hasta  H ON H.Id=M.Hasta_Id 
+--INNER JOIN Doktor D ON D.ID=ISNULL(M.VekilDoktor_Id,M.Doktor_Id) 
+--WHERE
+--M.MuayeneTarihi between @prm0 and @prm1	
+--AND (M.Doktor_Id=@prm2 OR M.VekilDoktor_Id=@prm2)	
+--AND M.MuayeneDurumu='MuayeneEdildi'
+--AND M.Aktif
+
+
+CREATE FUNCTION dbo.iszero(@Value numeric,@Replace int)
+RETURNS int
+AS
+BEGIN
+DECLARE @Result int
+IF @Value = 0
+SET @Result = @Replace
+ELSE
+SET @Result = @Value
+RETURN @Result
+END
+
+
+create procedure [dbo].[SpForm17Raporu] (@BasTarih datetime,@BitTarih datetime,@doktor bigint) as
+begin
+
+--declare @BasTarih datetime
+--declare @BitTarih datetime
+set dateformat ymd;
+--set @BasTarih='01.01.2010'
+--set @BitTarih='01.11.2011'
+
+--select @BasTarih,@BitTarih
+
+Select
+dbo.fn_YasGrubu((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365,'Form17') as YasGrubu,
+Case h.Cinsiyeti
+when 'Erkek' then 'E'
+when 'Kadýn' then 'K' else '' end as Cinsiyeti,
+0  as 'AkutKanlýÝshalvaka',
+sum(case when kesinteshis.Kodu in ('A09') then 1 else 0 end) as 'AkutKanlýÝshalKesin',
+sum(case when olumteshisi.Kodu in ('A09') then 1 else 0 end) as 'AkutKanlýÝshalOlum',
+0  as 'Brucellavaka',
+sum(case when kesinteshis.Kodu in  ('A23', 'A23.0', 'A23.1', 'A23.2', 'A23.3', 'A23.3', 'A23.8', 'A23.9') then 1 else 0 end) as 'BrucellaKesin',
+sum(case when olumteshisi.Kodu in  ('A23', 'A23.0', 'A23.1', 'A23.2', 'A23.3', 'A23.3', 'A23.8', 'A23.9') then 1 else 0 end) as 'BrucellaOlum',
+0  as 'Boðmacavaka',
+sum(case when kesinteshis.Kodu in   ('A37', 'A37.0', 'A37.1',  'A37.8', 'A37.9' ) then 1 else 0 end) as 'BoðmacaKesin',
+sum(case when olumteshisi.Kodu in   ('A37', 'A37.0', 'A37.1',  'A37.8', 'A37.9' ) then 1 else 0 end) as 'BoðmacaOlum',
+0  as 'Difterivaka',
+sum(case when kesinteshis.Kodu in   ('A36', 'A36.0', 'A36.1', 'A36.2', 'A36.3', 'A36.8', 'A36.9' ) then 1 else 0 end) as 'DifteriKesin',
+sum(case when olumteshisi.Kodu in   ('A36', 'A36.0', 'A36.1', 'A36.2', 'A36.3', 'A36.8', 'A36.9' ) then 1 else 0 end) as 'DifteriOlum',
+0  as 'Gonorevaka',
+sum(case when kesinteshis.Kodu in ('A54.0') then 1 else 0 end) as 'GonoreKesin',
+sum(case when olumteshisi.Kodu in ('A54.0') then 1 else 0 end) as 'GonoreOlum',
+0  as 'HepatitAvaka',
+sum(case when kesinteshis.Kodu in ('B15', 'B15.0', 'B15.9') then 1 else 0 end) as 'HepatitAKesin',
+sum(case when olumteshisi.Kodu in ('B15', 'B15.0', 'B15.9') then 1 else 0 end) as 'HepatitAOlum',
+0  as 'HepatitBvaka',
+sum(case when kesinteshis.Kodu in  ('B16', 'B16.0', 'B16.1', 'B16.2', 'B16.9') then 1 else 0 end) as 'HepatitBKesin',
+sum(case when olumteshisi.Kodu in  ('B16', 'B16.0', 'B16.1', 'B16.2', 'B16.9') then 1 else 0 end) as 'HepatitBOlum',
+0  as 'HepatitCvaka',
+sum(case when kesinteshis.Kodu ='B17.1' then 1 else 0 end) as 'HepatitCKesin',
+sum(case when olumteshisi.Kodu ='B17.1' then 1 else 0 end) as 'HepatitCOlum',
+0  as 'HepatitEVaka',
+sum(case when kesinteshis.Kodu ='B17.2' then 1 else 0 end) as 'HepatitEKesin',
+sum(case when olumteshisi.Kodu ='B17.2' then 1 else 0 end) as 'HepatitEOlum',
+0  as 'KabakulakVaka',
+sum(case when kesinteshis.Kodu in ('B26', 'B26.0', 'B26.1', 'B26.2', 'B26.3', 'B26.8', 'B26.9')  then 1 else 0 end) as 'KabakulakKesin',
+sum(case when olumteshisi.Kodu in ('B26', 'B26.0', 'B26.1', 'B26.2', 'B26.3', 'B26.8', 'B26.9')  then 1 else 0 end) as 'KabakulakOlum',
+0  as 'KýzamýkVaka',
+sum(case when kesinteshis.Kodu in ('B05', 'B05.0', 'B05.1', 'B05.2', 'B05.3', 'B05.4', 'B05.8', 'B05.9')  then 1 else 0 end) as 'KýzamýkKesin',
+sum(case when olumteshisi.Kodu in ('B05', 'B05.0', 'B05.1', 'B05.2', 'B05.3', 'B05.4', 'B05.8', 'B05.9')  then 1 else 0 end) as 'KýzamýkOlum',
+0  as 'KýzamýkçýkVaka',
+sum(case when kesinteshis.Kodu in ('B06', 'B06.0', 'B06.8', 'B06.9')  then 1 else 0 end) as 'KýzamýkçýkKesin',
+sum(case when olumteshisi.Kodu in ('B06', 'B06.0', 'B06.8', 'B06.9')  then 1 else 0 end) as 'KýzamýkçýkOlum',
+0  as 'KoleraVaka',
+sum(case when kesinteshis.Kodu in ('A00', 'A00.0', 'A00.9' )  then 1 else 0 end) as 'KoleraKesin',
+sum(case when olumteshisi.Kodu in ('A00', 'A00.0', 'A00.9' )  then 1 else 0 end) as 'KoleraOlum',
+0  as 'KuduzVaka',
+sum(case when kesinteshis.Kodu in  ('A82', 'A82.0', 'A82.9')   then 1 else 0 end) as 'KuduzKesin',
+sum(case when olumteshisi.Kodu in  ('A82', 'A82.0', 'A82.9')   then 1 else 0 end) as 'KuduzOlum',
+0  as 'KuduzRiskliTemasVaka',
+sum(case when kesinteshis.Kodu ='Z20.3'   then 1 else 0 end) as 'KuduzRiskliTemasKesin',
+sum(case when olumteshisi.Kodu ='Z20.3'   then 1 else 0 end) as 'KuduzRiskliTemasOlum',
+0  as 'MeningokokkalHastalýkVaka',
+sum(case when kesinteshis.Kodu in ('A39', 'A39.0', 'A39.1', 'A39.2', 'A39.3', 'A39.4', 'A39.5', 'A39.8', 'A39.9')   then 1 else 0 end) as 'MeningokokkalHastalýkKesin',
+sum(case when olumteshisi.Kodu in ('A39', 'A39.0', 'A39.1', 'A39.2', 'A39.3', 'A39.4', 'A39.5', 'A39.8', 'A39.9')   then 1 else 0 end) as 'MeningokokkalHastalýkOlum',
+0  as 'NeonatalTetenozVaka',
+sum(case when kesinteshis.Kodu='A33'   then 1 else 0 end) as 'NeonatalTetenozKesin',
+sum(case when olumteshisi.Kodu='A33'   then 1 else 0 end) as 'NeonatalTetenozOlum',
+0  as 'PoliomiyelitVaka',
+sum(case when kesinteshis.Kodu in ('A802', 'A80.0', 'A80.1', 'A80.2', 'A80.3', 'A80.4', 'A80.9')   then 1 else 0 end) as 'PoliomiyelitKesin',
+sum(case when olumteshisi.Kodu in ('A802', 'A80.0', 'A80.1', 'A80.2', 'A80.3', 'A80.4', 'A80.9')   then 1 else 0 end) as 'PoliomiyelitOlum',
+0  as 'SýtmaVaka',
+sum(case when kesinteshis.Kodu in ('B53', 'B53.0', 'B53.1', 'B53.8', 'B54')   then 1 else 0 end) as 'SýtmaKesin',
+sum(case when olumteshisi.Kodu in ('B53', 'B53.0', 'B53.1', 'B53.8', 'B54')   then 1 else 0 end) as 'SýtmaOlum',
+0  as 'SifilizVaka',
+sum(case when kesinteshis.Kodu in ('A53', 'A53.0', 'A53.9')   then 1 else 0 end) as 'SifilizKesin',
+sum(case when olumteshisi.Kodu in ('A53', 'A53.0', 'A53.9')   then 1 else 0 end) as 'SifilizOlum',
+0  as 'ÞarbonVaka',
+sum(case when kesinteshis.Kodu in ('A22', 'A22.0', 'A22.1', 'A22.2', 'A22.7', 'A22.8', 'A22.9')   then 1 else 0 end) as 'ÞarbonKesin',
+sum(case when olumteshisi.Kodu in ('A22', 'A22.0', 'A22.1', 'A22.2', 'A22.7', 'A22.8', 'A22.9')   then 1 else 0 end) as 'ÞarbonOlum',
+0  as 'ÞarkçýbanýVaka',
+sum(case when kesinteshis.Kodu in ('B55', 'B55.0', 'B55.1', 'B55.2', 'B55.9')   then 1 else 0 end) as 'ÞarkçýbanýKesin',
+sum(case when olumteshisi.Kodu in ('B55', 'B55.0', 'B55.1', 'B55.2', 'B55.9')   then 1 else 0 end) as 'ÞarkçýbanýOlum',
+0  as 'TetanozVaka',
+sum(case when kesinteshis.Kodu='A35'   then 1 else 0 end) as 'TetanozKesin',
+sum(case when olumteshisi.Kodu='A35'   then 1 else 0 end) as 'TetanozOlum',
+0  as 'TifoVaka',
+sum(case when kesinteshis.Kodu='A01.0'   then 1 else 0 end) as 'TifoKesin',
+sum(case when olumteshisi.Kodu='A01.0'   then 1 else 0 end) as 'TifoOlum',
+0  as 'TüberkülozVaka',
+sum(case when kesinteshis.Kodu in ('A15','A19')   then 1 else 0 end) as 'TüberkülozKesin',
+sum(case when olumteshisi.Kodu in ('A15','A19')   then 1 else 0 end) as 'TüberkülozOlum'
+
+ into  #temptable
+From Hasta h
+inner join Muayene on Muayene.Hasta_Id=h.Id and Muayene.MuayeneKapalimi=1
+inner join MuayeneTeshis on MuayeneTeshis.Hasta_Id=h.Id and MuayeneTeshis.Muayene_Id=Muayene.Id and MuayeneTeshis.Alerjikmi=0 and MuayeneTeshis.Kronikmi=0
+left join Teshis kesinteshis on kesinteshis.Id=MuayeneTeshis.Teshis_Id
+left join OlumBildirimi on OlumBildirimi.Hasta_Id=h.Id and Muayene.Id=OlumBildirimi.Muayene_Id
+left join Teshis olumteshisi on olumteshisi.Id=OlumBildirimi.Teshis3_Id 
+Where 
+Muayene.MuayeneTarihi between @BasTarih and @BitTarih
+and 
+h.Doktor_Id=@doktor
+and h.KayitDurumu='Kayitli'
+and h.Aktif=1 
+group by  dbo.fn_YasGrubu((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365,'Form17'),h.Cinsiyeti--,kesinteshis.Kodu,olumteshisi.Kodu  
+
+--order by  h.YasGrubu ASC
+
+
+
+
+select
+* from 
+(
+
+select * from #temptable
+
+union all
+
+select 
+#temptable.YasGrubu,
+'T' as Cinsiyeti,
+sum(AkutKanlýÝshalvaka) as AkutKanlýÝshalvaka,
+sum(AkutKanlýÝshalKesin)as AkutKanlýÝshalKesin,
+sum(AkutKanlýÝshalOlum) as AkutKanlýÝshalOlum,
+sum(Brucellavaka) as Brucellavaka,
+sum(BrucellaKesin) as BrucellaKesin,
+sum(BrucellaOlum) as BrucellaOlum,
+sum(Boðmacavaka)  as Boðmacavaka,
+sum(BoðmacaKesin) as BoðmacaKesin,
+sum(BoðmacaOlum)  as BoðmacaOlum,
+sum(Difterivaka)  as Difterivaka,
+sum(DifteriKesin) as DifteriKesin,
+sum(DifteriOlum)  as DifteriOlum,
+sum(Gonorevaka)   as Gonorevaka,
+sum(GonoreKesin)  as GonoreKesin,
+sum(GonoreOlum)   as GonoreOlum,
+sum(HepatitAvaka) as HepatitAvaka,
+sum(HepatitAKesin)as HepatitAKesin,
+sum(HepatitAOlum) as HepatitAOlum,
+sum(HepatitBvaka) as HepatitBvaka,
+sum(HepatitBKesin)as HepatitBKesin,
+sum(HepatitBOlum) as HepatitBOlum,
+sum(HepatitCvaka) as HepatitCvaka,
+sum(HepatitCKesin)as HepatitCKesin,
+sum(HepatitCOlum) as HepatitCOlum,
+sum(HepatitEVaka) as HepatitEVaka,
+sum(HepatitEKesin)as HepatitEKesin,
+sum(HepatitEOlum) as HepatitEOlum,
+sum(KabakulakVaka)as KabakulakVaka,
+sum(KabakulakKesin)as KabakulakKesin,
+sum(KabakulakOlum) as KabakulakOlum,
+sum(KýzamýkVaka)   as KýzamýkVaka,
+sum(KýzamýkKesin)  as KýzamýkKesin,
+sum(KýzamýkOlum)   as KýzamýkOlum,
+sum(KýzamýkçýkVaka) as KýzamýkçýkVaka,
+sum(KýzamýkçýkKesin) as KýzamýkçýkKesin,
+sum(KýzamýkçýkOlum)  as KýzamýkçýkOlum,
+sum(KoleraVaka)      as KoleraVaka,
+sum(KoleraKesin)     as KoleraKesin,
+sum(KoleraOlum)      as KoleraOlum,
+sum(KuduzVaka)       as KuduzVaka,
+sum(KuduzKesin)      as KuduzKesin,
+sum(KuduzOlum)       as KuduzOlum,
+sum(KuduzRiskliTemasVaka) as KuduzRiskliTemasVaka,
+sum(KuduzRiskliTemasKesin) as KuduzRiskliTemasKesin,
+sum(KuduzRiskliTemasOlum)  as KuduzRiskliTemasOlum,
+sum(MeningokokkalHastalýkVaka) as MeningokokkalHastalýkVaka,
+sum(MeningokokkalHastalýkKesin) as MeningokokkalHastalýkKesin,
+sum(MeningokokkalHastalýkOlum)  as MeningokokkalHastalýkOlum,
+sum(NeonatalTetenozVaka)        as NeonatalTetenozVaka,
+sum(NeonatalTetenozKesin)       as NeonatalTetenozKesin,
+sum(NeonatalTetenozOlum)        as NeonatalTetenozOlum,
+sum(PoliomiyelitVaka)           as PoliomiyelitVaka,
+sum(PoliomiyelitKesin)          as PoliomiyelitKesin,
+sum(PoliomiyelitOlum)           as PoliomiyelitOlum,
+sum(SýtmaVaka)                  as SýtmaVaka,
+sum(SýtmaKesin)                 as SýtmaKesin,
+sum(SýtmaOlum)                 as SýtmaOlum,
+sum(SifilizVaka)                as SifilizVaka,
+sum(SifilizKesin)               as SifilizKesin,
+sum(SifilizOlum)                as SifilizOlum,
+sum(ÞarbonVaka)                 as ÞarbonVaka,
+sum(ÞarbonKesin)                as ÞarbonKesin,
+sum(ÞarbonOlum)                as ÞarbonOlum,
+sum(ÞarkçýbanýVaka)             as ÞarkçýbanýVaka,
+sum(ÞarkçýbanýKesin)            as ÞarkçýbanýKesin,
+sum(ÞarkçýbanýOlum)            as ÞarkçýbanýOlum,
+sum(TetanozVaka)                as TetanozVaka,
+sum(TetanozKesin)               as TetanozKesin,
+sum(TetanozOlum)                as TetanozOlum,
+sum(TifoVaka)                   as TifoVaka,
+sum(TifoKesin)                  as TifoKesin,
+sum(TifoOlum)                   as TifoOlum,
+sum(TüberkülozVaka)                   as TüberkülozVaka,
+sum(TüberkülozKesin)                  as TüberkülozKesin,
+sum(TüberkülozOlum)                   as TüberkülozOlum
+from #temptable 
+Group by #temptable.YasGrubu
+
+
+
+union all
+--------------Tüm Toplamlarý veriyor----
+
+select 
+
+'TOPLAM' as YasGrubu,
+Cinsiyeti,
+sum(AkutKanlýÝshalvaka) as AkutKanlýÝshalvaka,
+sum(AkutKanlýÝshalKesin)as AkutKanlýÝshalKesin,
+sum(AkutKanlýÝshalOlum) as AkutKanlýÝshalOlum,
+sum(Brucellavaka) as Brucellavaka,
+sum(BrucellaKesin) as BrucellaKesin,
+sum(BrucellaOlum) as BrucellaOlum,
+sum(Boðmacavaka)  as Boðmacavaka,
+sum(BoðmacaKesin) as BoðmacaKesin,
+sum(BoðmacaOlum)  as BoðmacaOlum,
+sum(Difterivaka)  as Difterivaka,
+sum(DifteriKesin) as DifteriKesin,
+sum(DifteriOlum)  as DifteriOlum,
+sum(Gonorevaka)   as Gonorevaka,
+sum(GonoreKesin)  as GonoreKesin,
+sum(GonoreOlum)   as GonoreOlum,
+sum(HepatitAvaka) as HepatitAvaka,
+sum(HepatitAKesin)as HepatitAKesin,
+sum(HepatitAOlum) as HepatitAOlum,
+sum(HepatitBvaka) as HepatitBvaka,
+sum(HepatitBKesin)as HepatitBKesin,
+sum(HepatitBOlum) as HepatitBOlum,
+sum(HepatitCvaka) as HepatitCvaka,
+sum(HepatitCKesin)as HepatitCKesin,
+sum(HepatitCOlum) as HepatitCOlum,
+sum(HepatitEVaka) as HepatitEVaka,
+sum(HepatitEKesin)as HepatitEKesin,
+sum(HepatitEOlum) as HepatitEOlum,
+sum(KabakulakVaka)as KabakulakVaka,
+sum(KabakulakKesin)as KabakulakKesin,
+sum(KabakulakOlum) as KabakulakOlum,
+sum(KýzamýkVaka)   as KýzamýkVaka,
+sum(KýzamýkKesin)  as KýzamýkKesin,
+sum(KýzamýkOlum)   as KýzamýkOlum,
+sum(KýzamýkçýkVaka) as KýzamýkçýkVaka,
+sum(KýzamýkçýkKesin) as KýzamýkçýkKesin,
+sum(KýzamýkçýkOlum)  as KýzamýkçýkOlum,
+sum(KoleraVaka)      as KoleraVaka,
+sum(KoleraKesin)     as KoleraKesin,
+sum(KoleraOlum)      as KoleraOlum,
+sum(KuduzVaka)       as KuduzVaka,
+sum(KuduzKesin)      as KuduzKesin,
+sum(KuduzOlum)       as KuduzOlum,
+sum(KuduzRiskliTemasVaka) as KuduzRiskliTemasVaka,
+sum(KuduzRiskliTemasKesin) as KuduzRiskliTemasKesin,
+sum(KuduzRiskliTemasOlum)  as KuduzRiskliTemasOlum,
+sum(MeningokokkalHastalýkVaka) as MeningokokkalHastalýkVaka,
+sum(MeningokokkalHastalýkKesin) as MeningokokkalHastalýkKesin,
+sum(MeningokokkalHastalýkOlum)  as MeningokokkalHastalýkOlum,
+sum(NeonatalTetenozVaka)        as NeonatalTetenozVaka,
+sum(NeonatalTetenozKesin)       as NeonatalTetenozKesin,
+sum(NeonatalTetenozOlum)        as NeonatalTetenozOlum,
+sum(PoliomiyelitVaka)           as PoliomiyelitVaka,
+sum(PoliomiyelitKesin)          as PoliomiyelitKesin,
+sum(PoliomiyelitOlum)           as PoliomiyelitOlum,
+sum(SýtmaVaka)                  as SýtmaVaka,
+sum(SýtmaKesin)                 as SýtmaKesin,
+sum(SýtmaOlum)                 as SýtmaOlum,
+sum(SifilizVaka)                as SifilizVaka,
+sum(SifilizKesin)               as SifilizKesin,
+sum(SifilizOlum)                as SifilizOlum,
+sum(ÞarbonVaka)                 as ÞarbonVaka,
+sum(ÞarbonKesin)                as ÞarbonKesin,
+sum(ÞarbonOlum)                as ÞarbonOlum,
+sum(ÞarkçýbanýVaka)             as ÞarkçýbanýVaka,
+sum(ÞarkçýbanýKesin)            as ÞarkçýbanýKesin,
+sum(ÞarkçýbanýOlum)            as ÞarkçýbanýOlum,
+sum(TetanozVaka)                as TetanozVaka,
+sum(TetanozKesin)               as TetanozKesin,
+sum(TetanozOlum)                as TetanozOlum,
+sum(TifoVaka)                   as TifoVaka,
+sum(TifoKesin)                  as TifoKesin,
+sum(TifoOlum)                   as TifoOlum,
+sum(TüberkülozVaka)                   as TüberkülozVaka,
+sum(TüberkülozKesin)                  as TüberkülozKesin,
+sum(TüberkülozOlum)                   as TüberkülozOlum
+from #temptable 
+Group by #temptable.Cinsiyeti
+
+union all
+select 
+
+'TOPLAM' as YasGrubu,
+'T'       as Cinsiyeti,
+sum(AkutKanlýÝshalvaka) as AkutKanlýÝshalvaka,
+sum(AkutKanlýÝshalKesin)as AkutKanlýÝshalKesin,
+sum(AkutKanlýÝshalOlum) as AkutKanlýÝshalOlum,
+sum(Brucellavaka) as Brucellavaka,
+sum(BrucellaKesin) as BrucellaKesin,
+sum(BrucellaOlum) as BrucellaOlum,
+sum(Boðmacavaka)  as Boðmacavaka,
+sum(BoðmacaKesin) as BoðmacaKesin,
+sum(BoðmacaOlum)  as BoðmacaOlum,
+sum(Difterivaka)  as Difterivaka,
+sum(DifteriKesin) as DifteriKesin,
+sum(DifteriOlum)  as DifteriOlum,
+sum(Gonorevaka)   as Gonorevaka,
+sum(GonoreKesin)  as GonoreKesin,
+sum(GonoreOlum)   as GonoreOlum,
+sum(HepatitAvaka) as HepatitAvaka,
+sum(HepatitAKesin)as HepatitAKesin,
+sum(HepatitAOlum) as HepatitAOlum,
+sum(HepatitBvaka) as HepatitBvaka,
+sum(HepatitBKesin)as HepatitBKesin,
+sum(HepatitBOlum) as HepatitBOlum,
+sum(HepatitCvaka) as HepatitCvaka,
+sum(HepatitCKesin)as HepatitCKesin,
+sum(HepatitCOlum) as HepatitCOlum,
+sum(HepatitEVaka) as HepatitEVaka,
+sum(HepatitEKesin)as HepatitEKesin,
+sum(HepatitEOlum) as HepatitEOlum,
+sum(KabakulakVaka)as KabakulakVaka,
+sum(KabakulakKesin)as KabakulakKesin,
+sum(KabakulakOlum) as KabakulakOlum,
+sum(KýzamýkVaka)   as KýzamýkVaka,
+sum(KýzamýkKesin)  as KýzamýkKesin,
+sum(KýzamýkOlum)   as KýzamýkOlum,
+sum(KýzamýkçýkVaka) as KýzamýkçýkVaka,
+sum(KýzamýkçýkKesin) as KýzamýkçýkKesin,
+sum(KýzamýkçýkOlum)  as KýzamýkçýkOlum,
+sum(KoleraVaka)      as KoleraVaka,
+sum(KoleraKesin)     as KoleraKesin,
+sum(KoleraOlum)      as KoleraOlum,
+sum(KuduzVaka)       as KuduzVaka,
+sum(KuduzKesin)      as KuduzKesin,
+sum(KuduzOlum)       as KuduzOlum,
+sum(KuduzRiskliTemasVaka) as KuduzRiskliTemasVaka,
+sum(KuduzRiskliTemasKesin) as KuduzRiskliTemasKesin,
+sum(KuduzRiskliTemasOlum)  as KuduzRiskliTemasOlum,
+sum(MeningokokkalHastalýkVaka) as MeningokokkalHastalýkVaka,
+sum(MeningokokkalHastalýkKesin) as MeningokokkalHastalýkKesin,
+sum(MeningokokkalHastalýkOlum)  as MeningokokkalHastalýkOlum,
+sum(NeonatalTetenozVaka)        as NeonatalTetenozVaka,
+sum(NeonatalTetenozKesin)       as NeonatalTetenozKesin,
+sum(NeonatalTetenozOlum)        as NeonatalTetenozOlum,
+sum(PoliomiyelitVaka)           as PoliomiyelitVaka,
+sum(PoliomiyelitKesin)          as PoliomiyelitKesin,
+sum(PoliomiyelitOlum)           as PoliomiyelitOlum,
+sum(SýtmaVaka)                  as SýtmaVaka,
+sum(SýtmaKesin)                 as SýtmaKesin,
+sum(SýtmaOlum)                 as SýtmaOlum,
+sum(SifilizVaka)                as SifilizVaka,
+sum(SifilizKesin)               as SifilizKesin,
+sum(SifilizOlum)                as SifilizOlum,
+sum(ÞarbonVaka)                 as ÞarbonVaka,
+sum(ÞarbonKesin)                as ÞarbonKesin,
+sum(ÞarbonOlum)                as ÞarbonOlum,
+sum(ÞarkçýbanýVaka)             as ÞarkçýbanýVaka,
+sum(ÞarkçýbanýKesin)            as ÞarkçýbanýKesin,
+sum(ÞarkçýbanýOlum)            as ÞarkçýbanýOlum,
+sum(TetanozVaka)                as TetanozVaka,
+sum(TetanozKesin)               as TetanozKesin,
+sum(TetanozOlum)                as TetanozOlum,
+sum(TifoVaka)                   as TifoVaka,
+sum(TifoKesin)                  as TifoKesin,
+sum(TifoOlum)                   as TifoOlum,
+sum(TüberkülozVaka)                   as TüberkülozVaka,
+sum(TüberkülozKesin)                  as TüberkülozKesin,
+sum(TüberkülozOlum)                   as TüberkülozOlum
+from #temptable 
+
+)
+B 
+order by B.yasgrubu,B.Cinsiyeti
+
+drop table #temptable
+
+
+end 
+
+
+
+ CREATE    function [dbo].[fn_YasGrubu](@Yas decimal,@RaporTuru varchar(15)) returns varchar(150) as
+begin
+    declare    
+    @YasGrubu   varchar(150)
+   set @YasGrubu=''
+	
+	   if(@RaporTuru='Form17')
+	   begin
+				   if(@Yas=0)
+				   begin
+						set @YasGrubu='0 - 11 Ay'
+				   end
+				   else
+					if(@Yas>0 and @Yas<5)
+					 begin
+						set @YasGrubu='1 - 4 Yaþ'
+					 end
+					 else
+					 if(@Yas>4 and @Yas<10)
+					 begin
+						set @YasGrubu='5 - 9 Yaþ'
+					 end
+					 else
+					 if(@Yas>9 and @Yas<15)
+					 begin
+						set @YasGrubu='10 - 14 Yaþ'
+					 end
+					 else
+					 if(@Yas>14 and @Yas<20)
+					 begin
+						set @YasGrubu='15 - 19 Yaþ'
+					 end
+					  else
+					 if(@Yas>19 and @Yas<30)
+					 begin
+						set @YasGrubu='20 - 29 Yaþ'
+					 end
+					  else
+					 if(@Yas>29 and @Yas<45)
+					 begin
+						set @YasGrubu='30 - 44 Yaþ'
+					 end
+					   else
+					 if(@Yas>44 and @Yas<65)
+					 begin
+						set @YasGrubu='45 - 64 Yaþ'
+					 end
+					  else
+					 if(@Yas>64 )
+					 begin
+						set @YasGrubu='65 + Yaþ'
+					 end
+        
+		end
+		else
+		if(@RaporTuru='Form18A')
+	    begin
+			 if(@Yas=0)
+				   begin
+						set @YasGrubu='0 - 11 Ay'
+				   end
+				   else
+					if(@Yas>0 and @Yas<5)
+					 begin
+						set @YasGrubu='1 - 4 Yaþ'
+					 end
+					 else
+					 if(@Yas>4 and @Yas<10)
+					 begin
+						set @YasGrubu='5 - 9 Yaþ'
+					 end
+					 else
+					 if(@Yas>9 and @Yas<15)
+					 begin
+						set @YasGrubu='10 - 14 Yaþ'
+					 end
+					 else
+					 if(@Yas>14 and @Yas<25)
+					 begin
+						set @YasGrubu='15 - 24 Yaþ'
+					 end
+					  else
+					 if(@Yas>24 and @Yas<45)
+					 begin
+						set @YasGrubu='25 - 44 Yaþ'
+					 end
+					  else
+					 if(@Yas>44 and @Yas<65)
+					 begin
+						set @YasGrubu='45 - 64 Yaþ'
+					 end
+			         else
+					 if(@Yas>64 )
+					 begin
+						set @YasGrubu='65 + Yaþ'
+					 end
+			
+		end
+    return @YasGrubu
+end
+
+
+
+
+----IslemTurunu getiren fonksiyon hasta listelerinde kullanýlor.
+
+CREATE FUNCTION [dbo].[FN_GETISLEMTURU](@TAKVIMID bigint) 
+RETURNS varchar(max) AS
+BEGIN
+
+DECLARE @result varchar(max)
+
+Set @result=''
+
+		SELECT 
+				@result = coalesce(@result + '','') +
+				CASE WHEN TS.IzlemTuru='0' THEN 'Muayene'+' , ' ELSE TS.IzlemTuru+' , ' END
+		FROM TakvimSatiri TS 
+		WHERE
+			TS.Takvim_Id=@TAKVIMID 
+		Group by IzlemTuru
+
+RETURN SUBSTRING(@result,0,LEN(@result)) 
+
+END
+
+USE [PowerScada]
+GO
+/****** Object:  StoredProcedure [dbo].[SpForm18ARaporu]    Script Date: 06/18/2011 19:55:43 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[SpForm18ARaporu] (@BasTarih datetime,@BitTarih datetime,@doktor bigint) as
+begin
+
+--declare @BasTarih datetime
+--declare @BitTarih datetime
+set dateformat ymd;
+--set @BasTarih='01.01.2010'
+--set @BitTarih='01.11.2011'
+
+--select @BasTarih,@BitTarih
+
+Select
+dbo.fn_YasGrubu(((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365),'Form18A')																as YasGrubu,
+Case h.Cinsiyeti
+when 'Erkek' then 'E'
+when 'Kadýn' then 'K' else '' end																												as Cinsiyeti,
+sum(case when kesinteshis.Kodu in ('J06','J06.0','J06.8','J06.9') then 1 else 0 end)															as 'AkutÜstSolunumYoluEnfeksiyonuVaka',
+sum(case when olumteshisi.Kodu in ('J06','J06.0','J06.8','J06.9') then 1 else 0 end)															as 'AkutÜstSolunumYoluEnfeksiyonuOlum',
+sum(case when kesinteshis.Kodu in  ('J01','J01.0','J01.1','J01.2','J01.3','J01.4','J01.8','J01.9') then 1 else 0 end)							as 'AkutSinüzitVaka',
+sum(case when olumteshisi.Kodu in  ('J01','J01.0','J01.1','J01.2','J01.3','J01.4','J01.8','J01.9') then 1 else 0 end)							as 'AkutSinüzitOlum',
+sum(case when kesinteshis.Kodu in   ('J02','J02.0','J02.8','J02.9') then 1 else 0 end)															as 'AkutFaranjitVaka',
+sum(case when olumteshisi.Kodu in   ('J02','J02.0','J02.8','J02.9') then 1 else 0 end)															as 'AkutFaranjitOlum',
+sum(case when kesinteshis.Kodu in   ('J03','J03.0','J03.8','J03.9') then 1 else 0 end)															as 'AkutTonsilitVaka',
+sum(case when olumteshisi.Kodu in   ('J03','J03.0','J03.8','J03.9') then 1 else 0 end)															as 'AkutTonsilitOlum',
+sum(case when kesinteshis.Kodu in ('J04','J04.0','J04.1','J04.2') then 1 else 0 end)															as 'AkutLarenjitVaka',
+sum(case when olumteshisi.Kodu in ('J04','J04.0','J04.1','J04.2') then 1 else 0 end)															as 'AkutLarenjitOlum',
+sum(case when kesinteshis.Kodu in ('J20','J20.0','J20.1','J20.2','J20.3','J20.4','J20.5','J20.6','J20.7','J20.8','J20.9') then 1 else 0 end)	as 'AkutBronþitVaka',
+sum(case when olumteshisi.Kodu in ('J20','J20.0','J20.1','J20.2','J20.3','J20.4','J20.5','J20.6','J20.7','J20.8','J20.9') then 1 else 0 end)	as 'AkutBronþitOlum',
+sum(case when kesinteshis.Kodu in  ('J21','J21.0','J21.8','J21.9') then 1 else 0 end)															as 'AkutBronþiolitVaka',
+sum(case when olumteshisi.Kodu in  ('J21','J21.0','J21.8','J21.9') then 1 else 0 end)															as 'AkutBronþiolitOlum',
+sum(case when kesinteshis.Kodu in ('J18','J18.0','J18.1','J18.2','J18.8','J18.9') then 1 else 0 end)											as 'AkutPnömoniVaka',
+sum(case when olumteshisi.Kodu in ('J18','J18.0','J18.1','J18.2','J18.8','J18.9') then 1 else 0 end)											as 'AkutPnömoniOlum',
+sum(case when kesinteshis.Kodu in ('J44','J44.0','J44.1','J44.8','J44.9') then 1 else 0 end)													as 'ObstrüktifAkciðerHastalýðýVaka',
+sum(case when olumteshisi.Kodu in ('J44','J44.0','J44.1','J44.8','J44.9') then 1 else 0 end)													as 'ObstrüktifAkciðerHastalýðýOlum',
+sum(case when kesinteshis.Kodu in ('J45','J45.0','J45.1','J45.8','J45.9')  then 1 else 0 end)													as 'AstýmVaka',
+sum(case when olumteshisi.Kodu in ('J45','J45.0','J45.1','J45.8','J45.9')  then 1 else 0 end)													as 'AstýmKesin',
+sum(case when kesinteshis.Kodu in ('H66','H66.0','H66.1','H66.2','H66.3','H66.4','H66.9')  then 1 else 0 end) 									as 'AkutOtitisMediaVaka',
+sum(case when olumteshisi.Kodu in ('H66','H66.0','H66.1','H66.2','H66.3','H66.4','H66.9')  then 1 else 0 end) 									as 'AkutOtitisMediaOlum',
+sum(case when kesinteshis.Kodu in ('I00')  then 1 else 0 end) 																					as 'AkutRomatizmalAteþVaka',
+sum(case when olumteshisi.Kodu in ('I00')  then 1 else 0 end) 																					as 'AkutRomatizmalAteþOlum',
+sum(case when kesinteshis.Kodu in ('R56.0')  then 1 else 0 end) 																				as 'FebrilKonvülsiyonVaka',
+sum(case when olumteshisi.Kodu in ('R56.0')  then 1 else 0 end) 																				as 'FebrilKonvülsiyonOlum',
+sum(case when kesinteshis.Kodu in  ('B01','B01.0','B01.1','B01.2','B01.8','B01.9')   then 1 else 0 end)											as 'SuçiçeðiVaka',
+sum(case when olumteshisi.Kodu in  ('B01','B01.0','B01.1','B01.2','B01.8','B01.9')   then 1 else 0 end)											as 'SuçiçeðiOlum',
+sum(case when kesinteshis.Kodu ='A38'   then 1 else 0 end) 																						as 'KýzýlVaka',
+sum(case when olumteshisi.Kodu ='A38'   then 1 else 0 end) 																						as 'KýzýlOlum',
+sum(case when kesinteshis.Kodu in ('E43')   then 1 else 0 end) 																					as 'ProteinEnerjiMalnitrüsyonuVaka',
+sum(case when olumteshisi.Kodu in ('E43')   then 1 else 0 end) 																					as 'ProteinEnerjiMalnitrüsyonuOlum',
+sum(case when kesinteshis.Kodu='E55.0'   then 1 else 0 end) 																					as 'RaþitizmVaka',
+sum(case when olumteshisi.Kodu='E55.0'   then 1 else 0 end) 																					as 'RaþitizmOlum',
+sum(case when kesinteshis.Kodu in ('D50','D50.0','D50.1','D50.8','D50.9')   then 1 else 0 end) 													as 'DemirEksikliðiAnemisiVaka',
+sum(case when olumteshisi.Kodu in ('D50','D50.0','D50.1','D50.8','D50.9')   then 1 else 0 end) 													as 'DemirEksikliðiAnemisiOlum',
+sum(case when kesinteshis.Kodu in ('A09')   then 1 else 0 end) 																					as 'ÝshallerVaka',
+sum(case when olumteshisi.Kodu in ('A09')   then 1 else 0 end) 																					as 'ÝshallerOlum',
+sum(case when kesinteshis.Kodu in ('N72')   then 1 else 0 end) 																					as 'ServisitVaka',
+sum(case when olumteshisi.Kodu in ('N72')   then 1 else 0 end) 																					as 'ServisitOlum',
+sum(case when kesinteshis.Kodu in ('I10')   then 1 else 0 end) 																					as 'hipertansiyonVaka',
+sum(case when olumteshisi.Kodu in ('I10')   then 1 else 0 end) 																					as 'hipertansiyonOlum',
+sum(case when kesinteshis.Kodu in ('E04','E04.0','E04.1','E04.2','E04.8','E04.9')   then 1 else 0 end) 											as 'GuatrVaka',
+sum(case when olumteshisi.Kodu in ('E04','E04.0','E04.1','E04.2','E04.8','E04.9')   then 1 else 0 end) 											as 'GuatrOlum',
+sum(case when kesinteshis.Kodu in ('E14','E14.0','E14.1','E14.2','E14.3','E14.4','E14.5','E14.6','E14.7','E14.8','E14.9')   then 1 else 0 end)	as 'DiabetVaka',
+sum(case when olumteshisi.Kodu IN ('E14','E14.0','E14.1','E14.2','E14.3','E14.4','E14.5','E14.6','E14.7','E14.8','E14.9')   then 1 else 0 end)	as 'DiabetOlum',
+sum(case when kesinteshis.Kodu in ('E66','E66.0','E66.1','E66.2','E66.8','E66.9')   then 1 else 0 end) 											as 'ObeziteVaka',
+sum(case when olumteshisi.Kodu in ('E66','E66.0','E66.1','E66.2','E66.8','E66.9')   then 1 else 0 end) 											as 'ObeziteKesin',
+sum(case when kesinteshis.Kodu in ('D56','D56.0','D56.1','D56.2','D56.3','D56.4','D56.8','D56.9')   then 1 else 0 end) 							as 'TalassemiVaka',
+sum(case when olumteshisi.Kodu in ('D56','D56.0','D56.1','D56.2','D56.3','D56.4','D56.8','D56.9')   then 1 else 0 end) 							as 'TalassemiOlum',
+sum(case when kesinteshis.Kodu in ('D.58.2')   then 1 else 0 end) 																				as 'DiðerHemoglobinopatilerVaka',
+sum(case when olumteshisi.Kodu in ('D.58.2')   then 1 else 0 end) 																				as 'DiðerHemoglobinopatilerOlum'
+
+into  #temptable
+From Hasta h
+inner join Muayene on Muayene.Hasta_Id=h.Id and Muayene.MuayeneKapalimi=1
+inner join MuayeneTeshis on MuayeneTeshis.Hasta_Id=h.Id and MuayeneTeshis.Muayene_Id=Muayene.Id and MuayeneTeshis.Alerjikmi=0 and MuayeneTeshis.Kronikmi=0
+left join Teshis kesinteshis on kesinteshis.Id=MuayeneTeshis.Teshis_Id
+left join OlumBildirimi on OlumBildirimi.Hasta_Id=h.Id and Muayene.Id=OlumBildirimi.Muayene_Id
+left join Teshis olumteshisi on olumteshisi.Id=OlumBildirimi.Teshis3_Id 
+Where 
+Muayene.MuayeneTarihi between @BasTarih and @BitTarih
+and 
+h.Doktor_Id=@doktor
+and h.KayitDurumu='Kayitli'
+and h.Aktif=1 
+group by  dbo.fn_YasGrubu((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365,'Form18A'),h.Cinsiyeti--,kesinteshis.Kodu,olumteshisi.Kodu  
+
+--order by  h.YasGrubu ASC
+
+
+
+
+select
+* from 
+(
+
+select * from #temptable
+
+union all
+
+select 
+#temptable.YasGrubu,
+'T' as Cinsiyeti,
+sum(AkutÜstSolunumYoluEnfeksiyonuVaka) as 'AkutÜstSolunumYoluEnfeksiyonuVaka',
+sum(AkutÜstSolunumYoluEnfeksiyonuOlum) as 'AkutÜstSolunumYoluEnfeksiyonuOlum',
+sum(AkutSinüzitVaka)	as 'AkutSinüzitVaka',
+sum(AkutSinüzitOlum)	as 'AkutSinüzitOlum',
+sum(AkutFaranjitVaka)	as 'AkutFaranjitVaka',
+sum(AkutFaranjitOlum)   as 'AkutFaranjitOlum',
+sum(AkutTonsilitVaka)   as 'AkutTonsilitVaka',
+sum(AkutTonsilitOlum)	as 'AkutTonsilitOlum',
+sum(AkutLarenjitVaka)	as 'AkutLarenjitVaka',
+sum(AkutLarenjitOlum)	as 'AkutLarenjitOlum',
+sum(AkutBronþitVaka)	as 'AkutBronþitVaka',
+sum(AkutBronþitOlum)	as 'AkutBronþitOlum',
+sum(AkutBronþiolitVaka)	as 'AkutBronþiolitVaka',
+sum(AkutBronþiolitOlum)	as 'AkutBronþiolitOlum',
+sum(AkutPnömoniVaka)	as 'AkutPnömoniVaka',
+sum(AkutPnömoniOlum)	as 'AkutPnömoniOlum',
+sum(ObstrüktifAkciðerHastalýðýVaka)	as 'ObstrüktifAkciðerHastalýðýVaka',
+sum(ObstrüktifAkciðerHastalýðýOlum)	as 'ObstrüktifAkciðerHastalýðýOlum',
+sum(AstýmVaka)			as 'AstýmVaka',
+sum(AstýmKesin)			as 'AstýmKesin',
+sum(AkutOtitisMediaVaka)	as 'AkutOtitisMediaVaka',
+sum(AkutOtitisMediaOlum)	as 'AkutOtitisMediaOlum',
+sum(AkutRomatizmalAteþVaka)	as 'AkutRomatizmalAteþVaka',
+sum(AkutRomatizmalAteþOlum)	as 'AkutRomatizmalAteþOlum',
+sum(FebrilKonvülsiyonVaka)	as 'FebrilKonvülsiyonVaka',
+sum(FebrilKonvülsiyonOlum)	as 'FebrilKonvülsiyonOlum',
+sum(SuçiçeðiVaka)			as 'SuçiçeðiVaka',
+sum(SuçiçeðiOlum)			as 'SuçiçeðiOlum',
+sum(KýzýlVaka)				as 'KýzýlVaka',
+sum(KýzýlOlum)				as 'KýzýlOlum',
+sum(ProteinEnerjiMalnitrüsyonuVaka)	as 'ProteinEnerjiMalnitrüsyonuVaka',
+sum(ProteinEnerjiMalnitrüsyonuOlum)	as 'ProteinEnerjiMalnitrüsyonuOlum',
+sum(RaþitizmVaka)			as 'RaþitizmVaka',
+sum(RaþitizmOlum)			as 'RaþitizmOlum',
+sum(DemirEksikliðiAnemisiVaka)	as 'DemirEksikliðiAnemisiVaka',
+sum(DemirEksikliðiAnemisiOlum)	as 'DemirEksikliðiAnemisiOlum',
+sum(ÝshallerVaka)				as 'ÝshallerVaka',
+sum(ÝshallerOlum)				as 'ÝshallerOlum',
+sum(ServisitVaka)				as 'ServisitVaka',
+sum(ServisitOlum)				as 'ServisitOlum',
+sum(hipertansiyonVaka)			as 'hipertansiyonVaka',
+sum(hipertansiyonOlum)			as 'hipertansiyonOlum',
+sum(GuatrVaka)					as 'GuatrVaka',
+sum(GuatrOlum)					as 'GuatrOlum',
+sum(DiabetVaka)					as 'DiabetVaka',
+sum(DiabetOlum)					as 'DiabetOlum',
+sum(ObeziteVaka)				as 'ObeziteVaka',
+sum(ObeziteKesin)				as 'ObeziteKesin',
+sum(TalassemiVaka)				as 'TalassemiVaka',
+sum(TalassemiOlum)				as 'TalassemiOlum',
+sum(DiðerHemoglobinopatilerVaka)as 'DiðerHemoglobinopatilerVaka',
+sum(DiðerHemoglobinopatilerOlum)as 'DiðerHemoglobinopatilerOlum'
+from #temptable 
+Group by #temptable.YasGrubu
+
+
+
+union all
+--------------Tüm Toplamlarý veriyor----
+
+select 
+
+'TOPLAM' as YasGrubu,
+Cinsiyeti,
+sum(AkutÜstSolunumYoluEnfeksiyonuVaka) as 'AkutÜstSolunumYoluEnfeksiyonuVaka',
+sum(AkutÜstSolunumYoluEnfeksiyonuOlum) as 'AkutÜstSolunumYoluEnfeksiyonuOlum',
+sum(AkutSinüzitVaka)	as 'AkutSinüzitVaka',
+sum(AkutSinüzitOlum)	as 'AkutSinüzitOlum',
+sum(AkutFaranjitVaka)	as 'AkutFaranjitVaka',
+sum(AkutFaranjitOlum)   as 'AkutFaranjitOlum',
+sum(AkutTonsilitVaka)   as 'AkutTonsilitVaka',
+sum(AkutTonsilitOlum)	as 'AkutTonsilitOlum',
+sum(AkutLarenjitVaka)	as 'AkutLarenjitVaka',
+sum(AkutLarenjitOlum)	as 'AkutLarenjitOlum',
+sum(AkutBronþitVaka)	as 'AkutBronþitVaka',
+sum(AkutBronþitOlum)	as 'AkutBronþitOlum',
+sum(AkutBronþiolitVaka)	as 'AkutBronþiolitVaka',
+sum(AkutBronþiolitOlum)	as 'AkutBronþiolitOlum',
+sum(AkutPnömoniVaka)	as 'AkutPnömoniVaka',
+sum(AkutPnömoniOlum)	as 'AkutPnömoniOlum',
+sum(ObstrüktifAkciðerHastalýðýVaka)	as 'ObstrüktifAkciðerHastalýðýVaka',
+sum(ObstrüktifAkciðerHastalýðýOlum)	as 'ObstrüktifAkciðerHastalýðýOlum',
+sum(AstýmVaka)			as 'AstýmVaka',
+sum(AstýmKesin)			as 'AstýmKesin',
+sum(AkutOtitisMediaVaka)	as 'AkutOtitisMediaVaka',
+sum(AkutOtitisMediaOlum)	as 'AkutOtitisMediaOlum',
+sum(AkutRomatizmalAteþVaka)	as 'AkutRomatizmalAteþVaka',
+sum(AkutRomatizmalAteþOlum)	as 'AkutRomatizmalAteþOlum',
+sum(FebrilKonvülsiyonVaka)	as 'FebrilKonvülsiyonVaka',
+sum(FebrilKonvülsiyonOlum)	as 'FebrilKonvülsiyonOlum',
+sum(SuçiçeðiVaka)			as 'SuçiçeðiVaka',
+sum(SuçiçeðiOlum)			as 'SuçiçeðiOlum',
+sum(KýzýlVaka)				as 'KýzýlVaka',
+sum(KýzýlOlum)				as 'KýzýlOlum',
+sum(ProteinEnerjiMalnitrüsyonuVaka)	as 'ProteinEnerjiMalnitrüsyonuVaka',
+sum(ProteinEnerjiMalnitrüsyonuOlum)	as 'ProteinEnerjiMalnitrüsyonuOlum',
+sum(RaþitizmVaka)			as 'RaþitizmVaka',
+sum(RaþitizmOlum)			as 'RaþitizmOlum',
+sum(DemirEksikliðiAnemisiVaka)	as 'DemirEksikliðiAnemisiVaka',
+sum(DemirEksikliðiAnemisiOlum)	as 'DemirEksikliðiAnemisiOlum',
+sum(ÝshallerVaka)				as 'ÝshallerVaka',
+sum(ÝshallerOlum)				as 'ÝshallerOlum',
+sum(ServisitVaka)				as 'ServisitVaka',
+sum(ServisitOlum)				as 'ServisitOlum',
+sum(hipertansiyonVaka)			as 'hipertansiyonVaka',
+sum(hipertansiyonOlum)			as 'hipertansiyonOlum',
+sum(GuatrVaka)					as 'GuatrVaka',
+sum(GuatrOlum)					as 'GuatrOlum',
+sum(DiabetVaka)					as 'DiabetVaka',
+sum(DiabetOlum)					as 'DiabetOlum',
+sum(ObeziteVaka)				as 'ObeziteVaka',
+sum(ObeziteKesin)				as 'ObeziteKesin',
+sum(TalassemiVaka)				as 'TalassemiVaka',
+sum(TalassemiOlum)				as 'TalassemiOlum',
+sum(DiðerHemoglobinopatilerVaka)as 'DiðerHemoglobinopatilerVaka',
+sum(DiðerHemoglobinopatilerOlum)as 'DiðerHemoglobinopatilerOlum'
+from #temptable 
+Group by #temptable.Cinsiyeti
+
+union all
+select 
+
+'TOPLAM' as YasGrubu,
+'T'       as Cinsiyeti,
+sum(AkutÜstSolunumYoluEnfeksiyonuVaka) as 'AkutÜstSolunumYoluEnfeksiyonuVaka',
+sum(AkutÜstSolunumYoluEnfeksiyonuOlum) as 'AkutÜstSolunumYoluEnfeksiyonuOlum',
+sum(AkutSinüzitVaka)	as 'AkutSinüzitVaka',
+sum(AkutSinüzitOlum)	as 'AkutSinüzitOlum',
+sum(AkutFaranjitVaka)	as 'AkutFaranjitVaka',
+sum(AkutFaranjitOlum)   as 'AkutFaranjitOlum',
+sum(AkutTonsilitVaka)   as 'AkutTonsilitVaka',
+sum(AkutTonsilitOlum)	as 'AkutTonsilitOlum',
+sum(AkutLarenjitVaka)	as 'AkutLarenjitVaka',
+sum(AkutLarenjitOlum)	as 'AkutLarenjitOlum',
+sum(AkutBronþitVaka)	as 'AkutBronþitVaka',
+sum(AkutBronþitOlum)	as 'AkutBronþitOlum',
+sum(AkutBronþiolitVaka)	as 'AkutBronþiolitVaka',
+sum(AkutBronþiolitOlum)	as 'AkutBronþiolitOlum',
+sum(AkutPnömoniVaka)	as 'AkutPnömoniVaka',
+sum(AkutPnömoniOlum)	as 'AkutPnömoniOlum',
+sum(ObstrüktifAkciðerHastalýðýVaka)	as 'ObstrüktifAkciðerHastalýðýVaka',
+sum(ObstrüktifAkciðerHastalýðýOlum)	as 'ObstrüktifAkciðerHastalýðýOlum',
+sum(AstýmVaka)			as 'AstýmVaka',
+sum(AstýmKesin)			as 'AstýmKesin',
+sum(AkutOtitisMediaVaka)	as 'AkutOtitisMediaVaka',
+sum(AkutOtitisMediaOlum)	as 'AkutOtitisMediaOlum',
+sum(AkutRomatizmalAteþVaka)	as 'AkutRomatizmalAteþVaka',
+sum(AkutRomatizmalAteþOlum)	as 'AkutRomatizmalAteþOlum',
+sum(FebrilKonvülsiyonVaka)	as 'FebrilKonvülsiyonVaka',
+sum(FebrilKonvülsiyonOlum)	as 'FebrilKonvülsiyonOlum',
+sum(SuçiçeðiVaka)			as 'SuçiçeðiVaka',
+sum(SuçiçeðiOlum)			as 'SuçiçeðiOlum',
+sum(KýzýlVaka)				as 'KýzýlVaka',
+sum(KýzýlOlum)				as 'KýzýlOlum',
+sum(ProteinEnerjiMalnitrüsyonuVaka)	as 'ProteinEnerjiMalnitrüsyonuVaka',
+sum(ProteinEnerjiMalnitrüsyonuOlum)	as 'ProteinEnerjiMalnitrüsyonuOlum',
+sum(RaþitizmVaka)			as 'RaþitizmVaka',
+sum(RaþitizmOlum)			as 'RaþitizmOlum',
+sum(DemirEksikliðiAnemisiVaka)	as 'DemirEksikliðiAnemisiVaka',
+sum(DemirEksikliðiAnemisiOlum)	as 'DemirEksikliðiAnemisiOlum',
+sum(ÝshallerVaka)				as 'ÝshallerVaka',
+sum(ÝshallerOlum)				as 'ÝshallerOlum',
+sum(ServisitVaka)				as 'ServisitVaka',
+sum(ServisitOlum)				as 'ServisitOlum',
+sum(hipertansiyonVaka)			as 'hipertansiyonVaka',
+sum(hipertansiyonOlum)			as 'hipertansiyonOlum',
+sum(GuatrVaka)					as 'GuatrVaka',
+sum(GuatrOlum)					as 'GuatrOlum',
+sum(DiabetVaka)					as 'DiabetVaka',
+sum(DiabetOlum)					as 'DiabetOlum',
+sum(ObeziteVaka)				as 'ObeziteVaka',
+sum(ObeziteKesin)				as 'ObeziteKesin',
+sum(TalassemiVaka)				as 'TalassemiVaka',
+sum(TalassemiOlum)				as 'TalassemiOlum',
+sum(DiðerHemoglobinopatilerVaka)as 'DiðerHemoglobinopatilerVaka',
+sum(DiðerHemoglobinopatilerOlum)as 'DiðerHemoglobinopatilerOlum'
+from #temptable 
+
+)
+B 
+order by B.yasgrubu,B.Cinsiyeti
+
+drop table #temptable
+
+
+end
+
+
+
+create procedure [dbo].[SpForm18BRaporu] (@BasTarih datetime,@BitTarih datetime,@doktor bigint) as
+begin
+
+--declare @BasTarih datetime
+--declare @BitTarih datetime
+set dateformat ymd;
+--set @BasTarih='01.01.2010'
+--set @BitTarih='01.11.2011'
+
+--select @BasTarih,@BitTarih
+
+Select
+dbo.fn_YasGrubu(((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365),'Form18A')																as YasGrubu,
+Case h.Cinsiyeti
+when 'Erkek' then 'E'
+when 'Kadýn' then 'K' else '-1' end																						as Cinsiyeti,
+sum(case when kesinteshis.Kodu in ('B77') then 1 else 0 end)															as 'AskariyazVaka',
+sum(case when olumteshisi.Kodu in ('B77') then 1 else 0 end)															as 'AskariyazOlum',
+sum(case when kesinteshis.Kodu in  ('B75') then 1 else 0 end)															as 'TriþinellozVaka',
+sum(case when olumteshisi.Kodu in  ('B75') then 1 else 0 end)															as 'TriþinellozOlum',
+sum(case when kesinteshis.Kodu in   ('B80') then 1 else 0 end)															as 'EnterobiyazVaka',
+sum(case when olumteshisi.Kodu in   ('B80') then 1 else 0 end)															as 'EnterobiyazOlum',
+sum(case when kesinteshis.Kodu in   ('B76') then 1 else 0 end)															as 'KancalýkurthastalýklarýVaka',
+sum(case when olumteshisi.Kodu in   ('B76') then 1 else 0 end)															as 'KancalýkurthastalýklarýOlum',
+sum(case when kesinteshis.Kodu in ('B78') then 1 else 0 end)															as 'StrongiloidiyazVaka',
+sum(case when olumteshisi.Kodu in ('B78') then 1 else 0 end)															as 'StrongiloidiyazOlum',
+sum(case when kesinteshis.Kodu in ('-1') then 1 else 0 end)																as 'AltiVaka',
+sum(case when olumteshisi.Kodu in ('-1') then 1 else 0 end)																as 'AltiOlum',
+sum(case when kesinteshis.Kodu in  ('B68') then 1 else 0 end)															as 'TenyaVaka',
+sum(case when olumteshisi.Kodu in  ('B68') then 1 else 0 end)															as 'TenyaOlum',
+sum(case when kesinteshis.Kodu in ('-1') then 1 else 0 end)																as 'SekizVaka',
+sum(case when olumteshisi.Kodu in ('-1') then 1 else 0 end)																as 'SekizOlum',
+sum(case when kesinteshis.Kodu in ('-1') then 1 else 0 end)																as 'DokuzVaka',
+sum(case when olumteshisi.Kodu in ('-1') then 1 else 0 end)																as 'DokuzOlum',
+sum(case when kesinteshis.Kodu in ('A59')  then 1 else 0 end)															as 'TrikomoniazVaka',
+sum(case when olumteshisi.Kodu in ('A59')  then 1 else 0 end)															as 'TrikomoniazKesin',
+sum(case when kesinteshis.Kodu in ('B86')  then 1 else 0 end) 															as 'SkabiyezVaka',
+sum(case when olumteshisi.Kodu in ('B86')  then 1 else 0 end) 															as 'SkabiyezOlum',
+sum(case when kesinteshis.Kodu in ('B85')  then 1 else 0 end) 															as 'PedikülozvepithiriyazVaka',
+sum(case when olumteshisi.Kodu in ('B85')  then 1 else 0 end) 															as 'PedikülozvepithiriyazOlum',
+sum(case when kesinteshis.Kodu in ('-1')  then 1 else 0 end) 															as 'OnucVaka',
+sum(case when olumteshisi.Kodu in ('-1')  then 1 else 0 end) 															as 'OnucOlum'
+
+into  #temptable
+From Hasta h
+join Muayene on Muayene.Hasta_Id=h.Id and Muayene.MuayeneKapalimi=1
+join MuayeneTeshis on MuayeneTeshis.Hasta_Id=h.Id and MuayeneTeshis.Muayene_Id=Muayene.Id and MuayeneTeshis.Alerjikmi=0 and MuayeneTeshis.Kronikmi=0
+join Teshis kesinteshis on kesinteshis.Id=MuayeneTeshis.Teshis_Id
+left join OlumBildirimi on OlumBildirimi.Hasta_Id=h.Id and Muayene.Id=OlumBildirimi.Muayene_Id
+left join Teshis olumteshisi on olumteshisi.Id=OlumBildirimi.Teshis3_Id 
+Where 
+Muayene.MuayeneTarihi between @BasTarih and @BitTarih
+and Muayene.IsAutoImport=0 and MuayeneTeshis.IsAutoImport=0 and
+and 
+h.Doktor_Id=@doktor
+and h.Aktif=1 
+group by  dbo.fn_YasGrubu((DATEDIFF(DD,isnull(BeyanDogumTarihi,DogumTarihi),getdate()))/365,'Form18A'),h.Cinsiyeti--,kesinteshis.Kodu,olumteshisi.Kodu  
+
+--order by  h.YasGrubu ASC
+
+
+
+
+select
+* from 
+(
+
+select * from #temptable
+
+union all
+
+select 
+#temptable.YasGrubu,
+'T' as Cinsiyeti,
+sum(AskariyazVaka) as 'AskariyazVaka',
+sum(AskariyazOlum) as 'AskariyazOlum',
+sum(TriþinellozVaka)	as 'TriþinellozVaka',
+sum(TriþinellozOlum)	as 'TriþinellozOlum',
+sum(EnterobiyazVaka)	as 'EnterobiyazVaka',
+sum(EnterobiyazOlum)   as 'EnterobiyazOlum',
+sum(KancalýkurthastalýklarýVaka)   as 'KancalýkurthastalýklarýVaka',
+sum(KancalýkurthastalýklarýOlum)	as 'KancalýkurthastalýklarýOlum',
+sum(StrongiloidiyazVaka)	as 'StrongiloidiyazVaka',
+sum(StrongiloidiyazOlum)	as 'StrongiloidiyazOlum',
+sum(AltiVaka)	as 'AltiVaka',
+sum(AltiOlum)	as 'AltiOlum',
+sum(TenyaVaka)	as 'TenyaVaka',
+sum(TenyaOlum)	as 'TenyaOlum',
+sum(SekizVaka)	as 'SekizVaka',
+sum(SekizOlum)	as 'SekizOlum',
+sum(DokuzVaka)	as 'DokuzVaka',
+sum(DokuzOlum)	as 'DokuzOlum',
+sum(TrikomoniazVaka)			as 'TrikomoniazVaka',
+sum(TrikomoniazKesin)			as 'TrikomoniazKesin',
+sum(SkabiyezVaka)	as 'SkabiyezVaka',
+sum(SkabiyezOlum)	as 'SkabiyezOlum',
+sum(PedikülozvepithiriyazVaka)	as 'PedikülozvepithiriyazVaka',
+sum(PedikülozvepithiriyazOlum)	as 'PedikülozvepithiriyazOlum',
+sum(OnucVaka)	as 'OnucVaka',
+sum(OnucOlum)	as 'OnucOlum'
+from #temptable 
+Group by #temptable.YasGrubu
+
+
+
+union all
+--------------Tüm Toplamlarý veriyor----
+
+select 
+
+'TOPLAM' as YasGrubu,
+Cinsiyeti,
+sum(AskariyazVaka) as 'AskariyazVaka',
+sum(AskariyazOlum) as 'AskariyazOlum',
+sum(TriþinellozVaka)	as 'TriþinellozVaka',
+sum(TriþinellozOlum)	as 'TriþinellozOlum',
+sum(EnterobiyazVaka)	as 'EnterobiyazVaka',
+sum(EnterobiyazOlum)   as 'EnterobiyazOlum',
+sum(KancalýkurthastalýklarýVaka)   as 'KancalýkurthastalýklarýVaka',
+sum(KancalýkurthastalýklarýOlum)	as 'KancalýkurthastalýklarýOlum',
+sum(StrongiloidiyazVaka)	as 'StrongiloidiyazVaka',
+sum(StrongiloidiyazOlum)	as 'StrongiloidiyazOlum',
+sum(AltiVaka)	as 'AltiVaka',
+sum(AltiOlum)	as 'AltiOlum',
+sum(TenyaVaka)	as 'TenyaVaka',
+sum(TenyaOlum)	as 'TenyaOlum',
+sum(SekizVaka)	as 'SekizVaka',
+sum(SekizOlum)	as 'SekizOlum',
+sum(DokuzVaka)	as 'DokuzVaka',
+sum(DokuzOlum)	as 'DokuzOlum',
+sum(TrikomoniazVaka)			as 'TrikomoniazVaka',
+sum(TrikomoniazKesin)			as 'TrikomoniazKesin',
+sum(SkabiyezVaka)	as 'SkabiyezVaka',
+sum(SkabiyezOlum)	as 'SkabiyezOlum',
+sum(PedikülozvepithiriyazVaka)	as 'PedikülozvepithiriyazVaka',
+sum(PedikülozvepithiriyazOlum)	as 'PedikülozvepithiriyazOlum',
+sum(OnucVaka)	as 'OnucVaka',
+sum(OnucOlum)	as 'OnucOlum'
+from #temptable 
+Group by #temptable.Cinsiyeti
+
+union all
+select 
+
+'TOPLAM' as YasGrubu,
+'T'       as Cinsiyeti,
+sum(AskariyazVaka) as 'AskariyazVaka',
+sum(AskariyazOlum) as 'AskariyazOlum',
+sum(TriþinellozVaka)	as 'TriþinellozVaka',
+sum(TriþinellozOlum)	as 'TriþinellozOlum',
+sum(EnterobiyazVaka)	as 'EnterobiyazVaka',
+sum(EnterobiyazOlum)   as 'EnterobiyazOlum',
+sum(KancalýkurthastalýklarýVaka)   as 'KancalýkurthastalýklarýVaka',
+sum(KancalýkurthastalýklarýOlum)	as 'KancalýkurthastalýklarýOlum',
+sum(StrongiloidiyazVaka)	as 'StrongiloidiyazVaka',
+sum(StrongiloidiyazOlum)	as 'StrongiloidiyazOlum',
+sum(AltiVaka)	as 'AltiVaka',
+sum(AltiOlum)	as 'AltiOlum',
+sum(TenyaVaka)	as 'TenyaVaka',
+sum(TenyaOlum)	as 'TenyaOlum',
+sum(SekizVaka)	as 'SekizVaka',
+sum(SekizOlum)	as 'SekizOlum',
+sum(DokuzVaka)	as 'DokuzVaka',
+sum(DokuzOlum)	as 'DokuzOlum',
+sum(TrikomoniazVaka)			as 'TrikomoniazVaka',
+sum(TrikomoniazKesin)			as 'TrikomoniazKesin',
+sum(SkabiyezVaka)	as 'SkabiyezVaka',
+sum(SkabiyezOlum)	as 'SkabiyezOlum',
+sum(PedikülozvepithiriyazVaka)	as 'PedikülozvepithiriyazVaka',
+sum(PedikülozvepithiriyazOlum)	as 'PedikülozvepithiriyazOlum',
+sum(OnucVaka)	as 'OnucVaka',
+sum(OnucOlum)	as 'OnucOlum'
+from #temptable 
+
+)
+B 
+order by B.yasgrubu,B.Cinsiyeti
+
+drop table #temptable
+
+
+end
+
+
+
+
+USE [PowerScada]
+GO
+
+/****** Object:  StoredProcedure [dbo].[SpForm23Raporu]    Script Date: 08/16/2011 01:12:40 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[SpForm23Raporu] (@BasTarih datetime,@BitTarih datetime,@doktor bigint) as
+begin
+set dateformat ymd;
+--declare @bastarih datetime
+--declare @bittarih datetime
+--declare @doktor bigint
+--set @bastarih='01.01.2011'
+--set @bittarih='01.01.2012'
+--set @doktor=1
+
+declare @MuayeneSayisi int
+declare @SevkSayisi int
+declare @BinBesYuzAlti int
+declare @BinBesYuzIkiBinbesYuzArasi int
+
+
+set @MuayeneSayisi=0;
+set @SevkSayisi=0;
+set @BinBesYuzAlti=0;
+set @BinBesYuzIkiBinbesYuzArasi=0;
+
+
+Select
+@MuayeneSayisi=COUNT(Id)
+From
+Muayene M
+Where
+dbo.iszero(M.VekilDoktor_Id,M.doktor_Id)=@doktor
+and M.MuayeneTarihi Between @bastarih and @bittarih
+and M.MuayeneKapalimi=1
+and M.Aktif=1
+
+
+Select
+@SevkSayisi=COUNT(Id)
+From
+Muayene M
+Where
+dbo.iszero(M.VekilDoktor_Id,M.doktor_Id)=@doktor
+and M.MuayeneTarihi Between @bastarih and @bittarih
+and M.MuayeneDurumu='SevkEdildi'
+and M.MuayeneKapalimi=1
+and M.Aktif=1
+
+
+
+
+
+Select
+@BinBesYuzAlti=
+isnull(sum(Case When  1500>GBS.Agirligi Then 1 Else 0 End),0),
+@BinBesYuzIkiBinbesYuzArasi=
+isnull(sum(Case When  GBS.Agirligi Between 1500 and 2500 Then 1 Else 0  End),0)
+From GebeSonuc GBS
+Where
+dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+and GBS.IzlemTarihi  Between @bastarih and @bittarih
+and GBS.GebelikSonucu='BasariliDogum'
+and GBS.Aktif=1
+
+---------------------------------------------------Çoðul Doðumlar Baþladý--------------------------------------------------------------------------
+-----sadece canlý doðanlar mý sayýlacak. Ölü doðanlar ya da Gebelik sonucu ne olanlar sayýlacak...
+declare @Ikiz		int			set @Ikiz	=0
+declare @Ucuz		int			set @Ucuz	=0
+declare @Dorduz		int			set @Dorduz	=0
+declare @Besiz		int			set @Besiz	=0
+declare @Altiz		int			set @Altiz	=0
+
+
+Select
+@Ikiz	=Sum(Case When GBS.CogulDogummu=1 and GBS.CanliDogumAdedi=2 then 1 else 0 end),
+@Ucuz	=Sum(Case When GBS.CogulDogummu=1 and GBS.CanliDogumAdedi=3 then 1 else 0 end) ,
+@Dorduz	=Sum(Case When GBS.CogulDogummu=1 and GBS.CanliDogumAdedi=4 then 1 else 0 end) ,
+@Besiz	=Sum(Case When GBS.CogulDogummu=1 and GBS.CanliDogumAdedi=5 then 1 else 0 end) ,
+@Altiz	=Sum(Case When GBS.CogulDogummu=1 and GBS.CanliDogumAdedi=6 then 1 else 0 end) 
+
+From GebeSonuc GBS
+Where
+dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+and GBS.IzlemTarihi  Between @bastarih and @bittarih
+and GBS.GebelikSonucu='BasariliDogum'
+and GBS.Aktif=1
+-----------------------------------------------------Çoðul Doðumlar Bitti--------------------------------------------------------------------------
+
+
+----------------------------------------------------Ýzlem Sayýlarý---------------------------------------------------------------------------------
+declare @GebeIzlemAdeti int
+declare @LohusaIzleme	int
+declare @BebekIzleme	int
+declare @CocukIzleme	int
+declare @KadinIzleme	int
+
+set @KadinIzleme=0;
+set @CocukIzleme=0;
+set @BebekIzleme=0;
+set @LohusaIzleme=0;
+set @GebeIzlemAdeti=0;
+
+Select
+@GebeIzlemAdeti=COUNT(Id)
+From 
+GebeIzleme as GBI
+where
+dbo.iszero(GBI.VekilDoktor_Id,GBI.doktor_Id)=@doktor
+and GBI.IzlemTarihi  Between @bastarih and @bittarih
+and GBI.Aktif=1
+
+
+Select
+@LohusaIzleme=COUNT(Id)
+From 
+LohusaIzleme as LI
+where
+dbo.iszero(LI.VekilDoktor_Id,LI.doktor_Id)=@doktor
+and LI.IzlemTarihi  Between @bastarih and @bittarih
+and LI.Aktif=1
+
+
+
+
+Select
+@BebekIzleme=COUNT(Id)
+From 
+BebekIzleme as BI
+where
+dbo.iszero(BI.VekilDoktor_Id,BI.doktor_Id)=@doktor
+and BI.IzlemTarihi  Between @bastarih and @bittarih
+and BI.Aktif=1
+
+
+Select
+@CocukIzleme=COUNT(Id)
+From 
+BebekIzleme as CI
+where
+dbo.iszero(CI.VekilDoktor_Id,CI.doktor_Id)=@doktor
+and CI.IzlemTarihi  Between @bastarih and @bittarih
+and CI.Aktif=1
+
+
+
+Select
+@KadinIzleme=COUNT(Id)
+From 
+KadinIzleme as KI
+where
+dbo.iszero(KI.VekilDoktor_Id,KI.doktor_Id)=@doktor
+and KI.IzlemTarihi  Between @bastarih and @bittarih
+and KI.Aktif=1
+----------------------------------------------------Ýzlem Sayýlarý Bitti---------------------------------------------------------------------------------
+
+
+-------------------------------------------------Gebe Durumu-----------------------------------------------
+declare @GecenAydanDevredenGebe int
+declare @BuAyIcindeTespitEdilenGebe int
+declare @BuAyIcindeDusukYapanlarGebe int
+declare @BuAyIcindeDoguranGebe int
+declare @BuAyIcindeOlenGebe int
+declare @AySonuGebeMevcuduGebe int
+
+
+
+set @GecenAydanDevredenGebe=0;
+set @BuAyIcindeTespitEdilenGebe=0;
+set @BuAyIcindeDusukYapanlarGebe=0;
+set @BuAyIcindeDoguranGebe=0;
+set @BuAyIcindeOlenGebe=0;
+set @AySonuGebeMevcuduGebe=0;
+
+
+Select 
+@GecenAydanDevredenGebe=count(GebeBaslangic.Id)
+From GebeBaslangic
+where
+dbo.iszero(GebeBaslangic.VekilDoktor_Id,GebeBaslangic.doktor_Id)=@doktor
+and GebeBaslangic.IzlemTarihi  Between dateadd(mm,-1,@bastarih) and dateadd(mm,-1,@bittarih)
+and isnull(GebeBaslangic.GebelikSonuclanmaTarihi,getdate())>dateadd(mm,-1,@bittarih)
+and GebeBaslangic.Aktif=1
+ 
+
+Select 
+@BuAyIcindeTespitEdilenGebe=count(GebeBaslangic.Id)
+From GebeBaslangic
+where
+dbo.iszero(GebeBaslangic.VekilDoktor_Id,GebeBaslangic.doktor_Id)=@doktor
+and GebeBaslangic.IzlemTarihi  Between @bastarih and @bittarih
+--and GebeBaslangic.GebelikDurumu='Basladi'
+and GebeBaslangic.Aktif=1
+
+
+
+
+
+Select
+@BuAyIcindeDusukYapanlarGebe=COUNT(GBS.Id)
+From GebeSonuc GBS
+Where
+dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+and GBS.IzlemTarihi  Between @bastarih and @bittarih
+and GBS.GebelikSonucu='Dusuk'
+and GBS.Aktif=1
+
+
+
+
+
+Select
+@BuAyIcindeDoguranGebe=COUNT(GBS.Id)
+From GebeSonuc GBS
+Where
+dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+and GBS.IzlemTarihi  Between @bastarih and @bittarih
+and GBS.GebelikSonucu='BasariliDogum'
+and GBS.Aktif=1
+
+
+
+Select
+@BuAyIcindeOlenGebe=COUNT(GBS.Id)
+From GebeBaslangic GBS
+inner join OlumBildirimi on OlumBildirimi.Hasta_Id=GBS.Hasta_Id
+Where
+dbo.iszero(OlumBildirimi.VekilDoktor_Id,OlumBildirimi.doktor_Id)=@doktor
+and OlumBildirimi.OlumTarihi  Between @bastarih and @bittarih
+and dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+and GBS.Aktif=1
+
+
+
+set @AySonuGebeMevcuduGebe=(ISNULL(@GecenAydanDevredenGebe,0)+ISNULL(@BuAyIcindeTespitEdilenGebe,0))
+- (ISNULL(@BuAyIcindeDusukYapanlarGebe,0)+ISNULL(@BuAyIcindeDoguranGebe,0)+ISNULL(@BuAyIcindeOlenGebe,0))
+-------------------------------------------------Gebe Durumu Bitti-----------------------------------------------
+
+
+
+
+-------------------------------------------------Bebek Durumu-----------------------------------------------
+declare @GecenAydanDevredenBebek int
+declare @BuAyIcindeTespitEdilenBebek int
+declare @BuAyIcindeCanlýDoganBebek int
+declare @BuAyIcindeOlenBebek int
+declare @BuAyBebekliktenCikan int
+declare @AySonuBebekMevcudu int
+declare @OluDoganBebekSayisi int
+
+
+
+
+set @GecenAydanDevredenBebek=0;
+set @BuAyIcindeTespitEdilenBebek=0;
+set @BuAyIcindeCanlýDoganBebek=0;
+set @BuAyIcindeOlenBebek=0;
+set @BuAyBebekliktenCikan=0;
+set @AySonuBebekMevcudu=0;
+set @OluDoganBebekSayisi=0;
+
+Select 
+@GecenAydanDevredenBebek=count(H.Id)
+From Hasta H
+where
+H.Doktor_Id=@doktor
+and isnull(H.BeyanDogumTarihi,H.DogumTarihi)  Between dateadd(mm,-1,@bastarih) and dateadd(mm,-1,@bittarih)
+and 365>datepart(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))
+and H.Aktif=1
+ 
+
+Select 
+@BuAyIcindeTespitEdilenBebek=count(H.Id)
+From Hasta H
+where
+H.Doktor_Id=@doktor
+and isnull(H.BeyanDogumTarihi,H.DogumTarihi)  Between @bastarih and @bittarih
+and 365>datepart(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))
+and H.Aktif=1
+
+
+
+
+
+Select
+@BuAyIcindeCanlýDoganBebek=COUNT(H.Id)
+From Hasta H
+left join OlumBildirimi on OlumBildirimi.Hasta_Id=H.Id
+where
+H.Doktor_Id=@doktor
+and isnull(H.BeyanDogumTarihi,H.DogumTarihi)  Between @bastarih and @bittarih
+and 365>datepart(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))
+and H.Aktif=1
+and OlumBildirimi.Id is null
+
+
+
+
+
+Select
+@BuAyIcindeOlenBebek=COUNT(H.Id)
+From Hasta H
+inner join OlumBildirimi on OlumBildirimi.Hasta_Id=H.Id
+where
+H.Doktor_Id=@doktor
+and OlumBildirimi.OlumTarihi  Between @bastarih and @bittarih
+and 365>datepart(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))
+and H.Aktif=1
+
+
+
+
+Select
+@BuAyBebekliktenCikan=COUNT(H.Id)
+From Hasta H
+where
+H.Doktor_Id=@doktor
+and isnull(H.BeyanDogumTarihi,H.DogumTarihi)  Between @bastarih and @bittarih
+and 395>datepart(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))
+and H.Aktif=1
+
+Select
+@OluDoganBebekSayisi=COUNT(GBS.Id)
+From GebeSonuc GBS
+Where
+dbo.iszero(GBS.VekilDoktor_Id,GBS.doktor_Id)=@doktor
+--and GBS.IzlemTarihi  Between @bastarih and @bittarih
+and GBS.GebelikSonucu='OluDogum'
+and GBS.Aktif=1
+
+
+set @AySonuBebekMevcudu=(ISNULL(@GecenAydanDevredenBebek,0)+ISNULL(@BuAyIcindeTespitEdilenBebek,0)+ISNULL(@BuAyIcindeCanlýDoganBebek,0))
+- (ISNULL(@BuAyIcindeOlenBebek,0)+ISNULL(@BuAyBebekliktenCikan,0))
+-------------------------------------------------Bebek Durumu Bitti-----------------------------------------------
+
+
+
+----------------------------------------------Lohusa Durumu Baþladý--------------------------------------------------
+
+
+declare @GecenAydanDevredenLohusa int
+declare @BuAyIcindeTespitEdilenLohusa int
+declare @BuAyLohusaligaGecen int
+declare @BuAyIcindeOlenLohusa int
+declare @BuAyLohusaliktanCikan int
+declare @AySonuLohusaMevcudu int
+
+
+
+set @GecenAydanDevredenLohusa=0;
+set @BuAyIcindeTespitEdilenLohusa=0;
+set @BuAyLohusaligaGecen=0;
+set @BuAyIcindeOlenLohusa=0;
+set @BuAyLohusaliktanCikan=0;
+set @AySonuLohusaMevcudu=0;
+
+
+Select 
+@GecenAydanDevredenLohusa=count(GB.Id)
+From GebeBaslangic GB
+where
+dbo.iszero(GB.VekilDoktor_Id,GB.doktor_Id)=@doktor
+and GB.GebelikSonuclanmaTarihi  Between dateadd(mm,-1,@bastarih) and dateadd(mm,-1,@bittarih)
+and GB.GebelikDurumu='Bitti'
+and DATEDIFF(dd,GB.GebelikSonuclanmaTarihi,GETDATE())<43
+and GB.Aktif=1
+
+
+
+ 
+            
+          
+
+
+Select 
+@BuAyIcindeTespitEdilenLohusa=count(GB.Id)
+From GebeBaslangic GB
+where
+dbo.iszero(GB.VekilDoktor_Id,GB.doktor_Id)=@doktor
+and GB.GebelikSonuclanmaTarihi  Between @bastarih and @bittarih
+and GB.GebelikDurumu='Bitti'
+and DATEDIFF(dd,GB.GebelikSonuclanmaTarihi,GETDATE())<43
+and GB.Aktif=1
+
+
+
+
+
+Select
+@BuAyLohusaligaGecen=COUNT(GB.Id)
+From GebeBaslangic GB
+where
+dbo.iszero(GB.VekilDoktor_Id,GB.doktor_Id)=@doktor
+and GB.GebelikSonuclanmaTarihi  Between @bastarih and @bittarih
+and GB.GebelikDurumu='Bitti'
+and DATEDIFF(dd,GB.GebelikSonuclanmaTarihi,GETDATE())<43
+and GB.Aktif=1
+
+
+
+
+
+Select
+@BuAyIcindeOlenLohusa=COUNT(distinct GB.Hasta_Id)
+From GebeBaslangic GB 
+inner join OlumBildirimi on OlumBildirimi.Hasta_Id=GB.Hasta_Id
+where
+dbo.iszero(GB.VekilDoktor_Id,GB.doktor_Id)=@doktor
+and GB.GebelikSonuclanmaTarihi  Between @bastarih and @bittarih
+and GB.GebelikDurumu='Bitti'
+and DATEDIFF(dd,GB.GebelikSonuclanmaTarihi,GETDATE())<43
+and GB.Aktif=1
+
+
+
+
+Select
+@BuAyLohusaliktanCikan=COUNT(GB.Id)
+From GebeBaslangic GB
+where
+dbo.iszero(GB.VekilDoktor_Id,GB.doktor_Id)=@doktor
+and GB.GebelikSonuclanmaTarihi  Between dateadd(mm,-1,@bastarih) and dateadd(mm,-1,@bittarih)
+and GB.GebelikDurumu='Bitti'
+and DATEDIFF(dd,GB.GebelikSonuclanmaTarihi,GETDATE())>43
+and GB.Aktif=1
+
+
+
+
+set @AySonuLohusaMevcudu=(ISNULL(@GecenAydanDevredenLohusa,0)+ISNULL(@BuAyIcindeTespitEdilenLohusa,0)+ISNULL(@BuAyLohusaligaGecen,0))
+- (ISNULL(@BuAyIcindeOlenLohusa,0)+ISNULL(@BuAyLohusaliktanCikan,0))
+
+----------------------------------------------Lohusa Durumu Bitti----------------------------------------------------
+
+
+-------------------------------------------------Çocuk Durumu Baþladý-----------------------------------------------
+declare @GecenAydanDevredenCocuk int
+declare @BuAyIcindeTespitEdilenCocuk int
+declare @BuAyCocuklugaGecen int
+declare @BuAyIcindeOlenCocuk int
+declare @BuAyCocukluktanCikan int
+declare @AySonuCocukMevcudu int
+
+
+
+set @GecenAydanDevredenCocuk=0;
+set @BuAyIcindeTespitEdilenCocuk=0;
+set @BuAyCocuklugaGecen=0;
+set @BuAyIcindeOlenCocuk=0;
+set @BuAyCocukluktanCikan=0;
+set @AySonuCocukMevcudu=0;
+
+
+Select 
+@GecenAydanDevredenCocuk=count(H.Id)
+From Hasta H
+where
+H.doktor_Id=@doktor
+and DATEPART(dd,dateadd(mm,-1,isnull(H.BeyanDogumTarihi,H.DogumTarihi)))>=365 
+and H.Aktif=1
+
+
+
+Select 
+@BuAyIcindeTespitEdilenCocuk=count(H.Id)
+From Hasta H
+where
+H.doktor_Id=@doktor
+and DATEPART(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))>=365 
+and H.Aktif=1
+
+
+
+
+
+Select
+@BuAyCocuklugaGecen=COUNT(H.Id)
+From Hasta H
+where
+H.doktor_Id=@doktor
+and DATEPART(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))>=365 
+and H.Aktif=1
+
+
+
+
+
+Select
+@BuAyIcindeOlenCocuk=COUNT(distinct H.Id)
+From Hasta H 
+inner join OlumBildirimi on OlumBildirimi.Hasta_Id=H.Id
+where
+H.doktor_Id=@doktor
+and DATEPART(dd,isnull(H.BeyanDogumTarihi,H.DogumTarihi))>=365 
+and OlumBildirimi.OlumTarihi Between @bastarih and @bittarih
+and H.Aktif=1
+
+
+
+
+Select
+@BuAyCocukluktanCikan=COUNT(H.Id)
+From Hasta H
+where
+H.doktor_Id=@doktor
+and datepart(dd,dateadd(dd,30,isnull(H.BeyanDogumTarihi,H.DogumTarihi)))>=365 
+and H.Aktif=1
+
+
+
+
+
+set @AySonuCocukMevcudu=(ISNULL(@GecenAydanDevredenCocuk,0)+ISNULL(@BuAyIcindeTespitEdilenCocuk,0)+ISNULL(@BuAyCocuklugaGecen,0))
+- (ISNULL(@BuAyIcindeOlenCocuk,0)+ISNULL(@BuAyCocukluktanCikan,0))
+-------------------------------------------------Çocuk Durumu Bitti-----------------------------------------------
+
+declare @CerrahiMudahale 				int	set @CerrahiMudahale				=0
+declare @OtopsiSayisi	 				int	set @OtopsiSayisi					=0
+declare @AdliRaporSayisi 				int	set @AdliRaporSayisi				=0
+declare @AdliToplam		 				int	set @AdliToplam						=@OtopsiSayisi + @AdliRaporSayisi
+declare @DefinRuhsatiSayisi				int	set @DefinRuhsatiSayisi				=0
+
+declare @PrematureBebekSayisi			int	set	@PrematureBebekSayisi			=0
+declare @Hastahanede					int	set	@Hastahanede		 			=0
+declare @Hekim							int set	@Hekim							=0
+declare @Ebe							int set	@Ebe							=0
+declare @DigerSP						int set	@DigerSP						=0
+declare @SPYOlmadan						int set	@SPYOlmadan						=0
+declare @Toplam							int set	@Toplam							=@Hekim + @Ebe + @DigerSP + @SPYOlmadan 
+----------------------------------Tahlil Tanýmlamalarý-------------------------------------------------------------------
+declare @Idrar							int set	@Idrar							=0
+declare @Kan							int set	@Kan							=0
+declare @Diski							int set	@Diski							=0
+declare @Seroloji						int set	@Seroloji						=0
+declare @SitmaKani						int set	@SitmaKani						=0
+declare @GebelikTesti					int set	@GebelikTesti					=0
+declare @Diger							int	set	@Diger							=0 	
+
+Select
+-------------- Muayene bilgileri-----------------------
+@MuayeneSayisi as MuayeneSayisi,@SevkSayisi as SevkSayisi ,@CerrahiMudahale as CerrahiMudahale,@OtopsiSayisi as OtopsiSayisi,@AdliRaporSayisi as AdliRaporSayisi,@AdliToplam as AdliToplam,@DefinRuhsatiSayisi as DefinRuhsatiSayisi,
+-------------- Bebek------------------------
+@BinBesYuzAlti as BinBesYuzAlti,@BinBesYuzIkiBinbesYuzArasi as BinBesYuzIkiBinbesYuzArasi,@PrematureBebekSayisi as PrematureBebekSayisi,@Hastahanede as Hastahanede,@Hekim as Hekim,@Ebe as Ebe,@DigerSP as DigerSP,@SPYOlmadan as SPYOlmadan,@Toplam as Toplam,
+-------------- Tahlil------------------------
+@Idrar as Idrar,@Kan as Kan,@Diski as Diski,@Seroloji as Seroloji,@SitmaKani as SitmaKani,@GebelikTesti as GebelikTesti,@Diger as Diger,
+-------------- Ýzlem Sayýlarý-------------------------
+@GebeIzlemAdeti as GebeIzlemAdeti,@LohusaIzleme as LohusaIzleme,@BebekIzleme as BebekIzleme,@CocukIzleme as CocukIzleme,@KadinIzleme as KadinIzleme,
+---------------Gebe Durumu----------------------------
+@GecenAydanDevredenGebe as GecenAydanDevredenGebe,@BuAyIcindeTespitEdilenGebe as BuAyIcindeTespitEdilenGebe,@BuAyIcindeDusukYapanlarGebe as BuAyIcindeDusukYapanlarGebe ,@BuAyIcindeDoguranGebe as BuAyIcindeDoguranGebe,@BuAyIcindeOlenGebe as BuAyIcindeOlenGebe,@AySonuGebeMevcuduGebe as AySonuGebeMevcuduGebe,
+----------------Bebek Durumu--------------------------
+@GecenAydanDevredenBebek as GecenAydanDevredenBebek,@BuAyIcindeTespitEdilenBebek as BuAyIcindeTespitEdilenBebek,@BuAyIcindeCanlýDoganBebek as BuAyIcindeCanlýDoganBebek,@BuAyIcindeOlenBebek as BuAyIcindeOlenBebek,@BuAyBebekliktenCikan as BuAyBebekliktenCikan,@AySonuBebekMevcudu as AySonuBebekMevcudu,@OluDoganBebekSayisi as OluDoganBebekSayisi,
+----------------Lohusa Durumu------------------------- 
+@GecenAydanDevredenLohusa as GecenAydanDevredenLohusa,@BuAyIcindeTespitEdilenLohusa as BuAyIcindeTespitEdilenLohusa,@BuAyLohusaligaGecen as BuAyLohusaligaGecen,@BuAyIcindeOlenLohusa as BuAyIcindeOlenLohusa,@BuAyLohusaliktanCikan as BuAyLohusaliktanCikan,@AySonuLohusaMevcudu as AySonuLohusaMevcudu,
+----------------Çocuk Durumu--------------------------
+@GecenAydanDevredenCocuk as GecenAydanDevredenCocuk,@BuAyIcindeTespitEdilenCocuk as BuAyIcindeTespitEdilenCocuk,@BuAyCocuklugaGecen as BuAyCocuklugaGecen,@BuAyIcindeOlenCocuk as BuAyIcindeOlenCocuk,@BuAyCocukluktanCikan as BuAyCocukluktanCikan,@AySonuCocukMevcudu as AySonuCocukMevcudu,
+
+------Çoðul Doðumlar----------------------------------
+@Ikiz as Ikiz,@Ucuz as Ucuz,@Dorduz as Dorduz,@Besiz as Besiz,@Altiz as Altiz	
+
+
+
+
+
+
+
+end 
+GO
+ 

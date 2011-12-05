@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ICD10HastaDetayDataSet" targetNamespace="http://tempuri.org/ICD10HastaDetayDataSet.xsd" xmlns:mstns="http://tempuri.org/ICD10HastaDetayDataSet.xsd" xmlns="http://tempuri.org/ICD10HastaDetayDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ICD10HastaDetayDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="ICD10HastaDetayDataSet" msprop:Generator_UserDSName="ICD10HastaDetayDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="HastaDetayDataTable" msprop:Generator_TableClassName="HastaDetayDataTableDataTable" msprop:Generator_TableVarName="tableHastaDetayDataTable" msprop:Generator_TablePropName="HastaDetayDataTable" msprop:Generator_RowDeletingName="HastaDetayDataTableRowDeleting" msprop:Generator_UserTableName="HastaDetayDataTable" msprop:Generator_RowChangingName="HastaDetayDataTableRowChanging" msprop:Generator_RowEvHandlerName="HastaDetayDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="HastaDetayDataTableRowDeleted" msprop:Generator_RowEvArgName="HastaDetayDataTableRowChangeEvent" msprop:Generator_RowChangedName="HastaDetayDataTableRowChanged" msprop:Generator_RowClassName="HastaDetayDataTableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Teşhis_x0020_Kodu" msprop:Generator_ColumnVarNameInTable="columnTeşhis_Kodu" msprop:Generator_ColumnPropNameInRow="Teşhis_Kodu" msprop:Generator_ColumnPropNameInTable="Teşhis_KoduColumn" msprop:Generator_UserColumnName="Teşhis Kodu" type="xs:string" minOccurs="0" />
+              <xs:element name="Teşhis_x0020_Adı" msprop:Generator_ColumnVarNameInTable="columnTeşhis_Adı" msprop:Generator_ColumnPropNameInRow="Teşhis_Adı" msprop:Generator_ColumnPropNameInTable="Teşhis_AdıColumn" msprop:Generator_UserColumnName="Teşhis Adı" type="xs:string" minOccurs="0" />
+              <xs:element name="Tc_x0020_Kimlik_x0020_No" msprop:Generator_ColumnVarNameInTable="columnTc_Kimlik_No" msprop:Generator_ColumnPropNameInRow="Tc_Kimlik_No" msprop:Generator_ColumnPropNameInTable="Tc_Kimlik_NoColumn" msprop:Generator_UserColumnName="Tc Kimlik No" type="xs:string" minOccurs="0" />
+              <xs:element name="Adı" msprop:Generator_ColumnVarNameInTable="columnAdı" msprop:Generator_ColumnPropNameInRow="Adı" msprop:Generator_ColumnPropNameInTable="AdıColumn" msprop:Generator_UserColumnName="Adı" type="xs:string" minOccurs="0" />
+              <xs:element name="Soyadı" msprop:Generator_ColumnVarNameInTable="columnSoyadı" msprop:Generator_ColumnPropNameInRow="Soyadı" msprop:Generator_ColumnPropNameInTable="SoyadıColumn" msprop:Generator_UserColumnName="Soyadı" type="xs:string" minOccurs="0" />
+              <xs:element name="Cinsiyeti" msprop:Generator_ColumnVarNameInTable="columnCinsiyeti" msprop:Generator_ColumnPropNameInRow="Cinsiyeti" msprop:Generator_ColumnPropNameInTable="CinsiyetiColumn" msprop:Generator_UserColumnName="Cinsiyeti" type="xs:string" minOccurs="0" />
+              <xs:element name="Doğum_x0020__x0020_Tarihi" msprop:Generator_ColumnVarNameInTable="columnDoğum__Tarihi" msprop:Generator_ColumnPropNameInRow="Doğum__Tarihi" msprop:Generator_ColumnPropNameInTable="Doğum__TarihiColumn" msprop:Generator_UserColumnName="Doğum  Tarihi" type="xs:string" minOccurs="0" />
+              <xs:element name="Teşhis_x0020_Tarihi" msprop:Generator_ColumnVarNameInTable="columnTeşhis_Tarihi" msprop:Generator_ColumnPropNameInRow="Teşhis_Tarihi" msprop:Generator_ColumnPropNameInTable="Teşhis_TarihiColumn" msprop:Generator_UserColumnName="Teşhis Tarihi" type="xs:string" minOccurs="0" />
+              <xs:element name="Doktor_x0020_Adı" msprop:Generator_ColumnVarNameInTable="columnDoktor_Adı" msprop:Generator_ColumnPropNameInRow="Doktor_Adı" msprop:Generator_ColumnPropNameInTable="Doktor_AdıColumn" msprop:Generator_UserColumnName="Doktor Adı" type="xs:string" minOccurs="0" />
+              <xs:element name="Tarih" msprop:Generator_ColumnVarNameInTable="columnTarih" msprop:Generator_ColumnPropNameInRow="Tarih" msprop:Generator_ColumnPropNameInTable="TarihColumn" msprop:Generator_UserColumnName="Tarih" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
