@@ -1,7 +1,0 @@
-D:\PowerScada\mymodel\obj\Debug\ResolveAssemblyReference.cache
-D:\PowerScada\mymodel\bin\Debug\mymodel.dll
-D:\PowerScada\mymodel\bin\Debug\mymodel.pdb
-D:\PowerScada\mymodel\bin\Debug\SharpBullet.dll
-D:\PowerScada\mymodel\bin\Debug\SharpBullet.pdb
-D:\PowerScada\mymodel\obj\Debug\mymodel.dll
-D:\PowerScada\mymodel\obj\Debug\mymodel.pdb
