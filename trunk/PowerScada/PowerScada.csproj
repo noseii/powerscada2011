@@ -1,0 +1,711 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{791E2B08-1847-4EC7-81F1-5466EA7258C1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PowerScada</RootNamespace>
+    <AssemblyName>PowerScada</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>false</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>http://88.248.115.115/ahbs2010/</UpdateUrl>
+    <ProductName>Tıpart Aile Hekimliği Bilgi Sistemi</ProductName>
+    <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>4AEE94EE9CEABBF356BF5A0C319BF53770C9A3F2</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>AHBS2010_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Charts.v10.1.Core, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v10.1.Extensions, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v10.1.Core, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGauges.v10.1.Win, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v10.1.Design, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPivotGrid.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPivotGrid.v10.1.Core, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraRichEdit.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraRichEdit.v10.1.Extensions, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraRichEdit.v10.1.Printing, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraTreeList.v10.1, Version=10.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="Interop.OPCAutomation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>Dokuman\Interop.OPCAutomation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Visio, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="XPExplorerBar">
+      <HintPath>..\sharpbullet\ExtraDLL\XPExplorerBar.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ekranlar\frmIzlemEkrani.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ekranlar\frmIzlemEkrani.Designer.cs">
+      <DependentUpon>frmIzlemEkrani.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ekranlar\frmOpcServer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ekranlar\frmOpcServer.Designer.cs">
+      <DependentUpon>frmOpcServer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ekranlar\frmCihazIzlem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ekranlar\frmCihazIzlem.Designer.cs">
+      <DependentUpon>frmCihazIzlem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ekranlar\frmOpcServerIzle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ekranlar\frmOpcServerIzle.Designer.cs">
+      <DependentUpon>frmOpcServerIzle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IlkKurulum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OPCSiniflari\OpcItems.cs" />
+    <Compile Include="PowerUserControl\UCKlima.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PowerUserControl\UCKlima.Designer.cs">
+      <DependentUpon>UCKlima.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PowerUserControl\UCModem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PowerUserControl\UCModem.Designer.cs">
+      <DependentUpon>UCModem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PowerUserControl\UCTermoKupul.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PowerUserControl\UCBaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.Designer.cs">
+      <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.Designer.cs">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="TanimEkranlari\frmAdresListesi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmAdresListesi.Designer.cs">
+      <DependentUpon>frmAdresListesi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLookupTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLookupTable.Designer.cs">
+      <DependentUpon>frmLookupTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLookupTableListesi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLookupTableListesi.Designer.cs">
+      <DependentUpon>frmLookupTableListesi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmCihazTanim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmCihazTanim.Designer.cs">
+      <DependentUpon>frmCihazTanim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmCihazTanimListesi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmCihazTanimListesi.Designer.cs">
+      <DependentUpon>frmCihazTanimListesi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLokasyonListesi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLokasyonListesi.Designer.cs">
+      <DependentUpon>frmLokasyonListesi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLokasyon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmLokasyon.Designer.cs">
+      <DependentUpon>frmLokasyon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmAdres.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TanimEkranlari\frmAdres.Designer.cs">
+      <DependentUpon>frmAdres.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tanimlar\frmIlce.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tanimlar\frmIlce.Designer.cs">
+      <DependentUpon>frmIlce.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tanimlar\frmSehir.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tanimlar\frmSehir.Designer.cs">
+      <DependentUpon>frmSehir.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YardımcıSınıflar\BindingMap.cs" />
+    <Compile Include="YardımcıSınıflar\ActionBase.cs" />
+    <Compile Include="YardımcıSınıflar\Actions.cs" />
+    <Compile Include="YardımcıSınıflar\ISelectionForm.cs" />
+    <Compile Include="YardımcıSınıflar\GridEditButtonManager.cs" />
+    <Compile Include="YardımcıSınıflar\IButtonAction.cs" />
+    <Compile Include="YardımcıSınıflar\DataGridViewAutoFilterTextBoxColumn.cs" />
+    <Compile Include="YardımcıSınıflar\DataGridViewAutoFilterColumnHeaderCell.cs" />
+    <Compile Include="YardımcıSınıflar\Current.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="YardımcıSınıflar\EditbuttonCommand.cs" />
+    <Compile Include="YardımcıSınıflar\Extension.cs" />
+    <Compile Include="OPCSiniflari\OpcManager.cs" />
+    <Compile Include="YardımcıSınıflar\Result.cs" />
+    <Compile Include="YardımcıSınıflar\sqlclientUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="YardımcıSınıflar\Utility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmBase.Designer.cs">
+      <DependentUpon>frmBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\frmDialogBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmDialogBase.Designer.cs">
+      <DependentUpon>frmDialogBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\frmInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmRaporBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmRaporBase.Designer.cs">
+      <DependentUpon>frmRaporBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\frmSistemBilgileriniGoster.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\frmSistemBilgileriniGoster.Designer.cs">
+      <DependentUpon>frmSistemBilgileriniGoster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\Splash\frmSplash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\Splash\frmSplash.Designer.cs">
+      <DependentUpon>frmSplash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\Splash\SplashManager.cs" />
+    <Compile Include="_formbase\_controls\MyControls\MyListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SimpleTreeLookup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SimpleTreeLookup.Designer.cs">
+      <DependentUpon>SimpleTreeLookup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\EditButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\EditButton.Designer.cs">
+      <DependentUpon>EditButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\MyCombo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\MyCombo.Designer.cs">
+      <DependentUpon>MyCombo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\ParaTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SimpleLookup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SimpleLookup.Designer.cs">
+      <DependentUpon>SimpleLookup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SuperTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyControls\SuperTextBox.Designer.cs">
+      <DependentUpon>SuperTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_formbase\_controls\MyTimeEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\UcEnumGoster.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="_formbase\_controls\UcEnumGoster.Designer.cs">
+      <DependentUpon>UcEnumGoster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_yonetim\frmProgramDegisiklikler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_yonetim\frmProgramDegisiklikler.Designer.cs">
+      <DependentUpon>frmProgramDegisiklikler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_yonetim\frmRolIsHakki.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_yonetim\frmRolIsHakki.Designer.cs">
+      <DependentUpon>frmRolIsHakki.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_yonetim\frmKullaniciAyarlari.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_yonetim\frmKullaniciAyarlari.Designer.cs">
+      <DependentUpon>frmKullaniciAyarlari.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_yonetim\frmRolEkranHakki.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_yonetim\frmRolEkranHakki.Designer.cs">
+      <DependentUpon>frmRolEkranHakki.cs</DependentUpon>
+    </Compile>
+    <Compile Include="_yonetim\frmKullanici.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_yonetim\frmKullanici.Designer.cs">
+      <DependentUpon>frmKullanici.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Ekranlar\frmIzlemEkrani.resx">
+      <DependentUpon>frmIzlemEkrani.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ekranlar\frmOpcServer.resx">
+      <DependentUpon>frmOpcServer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ekranlar\frmCihazIzlem.resx">
+      <DependentUpon>frmCihazIzlem.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ekranlar\frmOpcServerIzle.resx">
+      <DependentUpon>frmOpcServerIzle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCKlima.resx">
+      <DependentUpon>UCKlima.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCModem.resx">
+      <DependentUpon>UCModem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCTermoKupul.resx">
+      <DependentUpon>UCTermoKupul.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PowerUserControl\UCBaseControl.resx">
+      <DependentUpon>UCBaseControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rapor\CihazAlarmTarihceRaporu\frmCihazAlarmTarihceRaporu.resx">
+      <DependentUpon>frmCihazAlarmTarihceRaporu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rapor\CihazTarihceRaporu\frmCihazTarihceRaporu.resx">
+      <DependentUpon>frmCihazTarihceRaporu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmAdresListesi.resx">
+      <DependentUpon>frmAdresListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmLookupTable.resx">
+      <DependentUpon>frmLookupTable.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmLookupTableListesi.resx">
+      <DependentUpon>frmLookupTableListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmCihazTanim.resx">
+      <DependentUpon>frmCihazTanim.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmCihazTanimListesi.resx">
+      <DependentUpon>frmCihazTanimListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmLokasyonListesi.resx">
+      <DependentUpon>frmLokasyonListesi.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmLokasyon.resx">
+      <DependentUpon>frmLokasyon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TanimEkranlari\frmAdres.resx">
+      <DependentUpon>frmAdres.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tanimlar\frmIlce.resx">
+      <DependentUpon>frmIlce.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tanimlar\frmSehir.resx">
+      <DependentUpon>frmSehir.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmBase.resx">
+      <DependentUpon>frmBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmBaseDialog.resx" />
+    <EmbeddedResource Include="_formbase\frmDialogBase.resx">
+      <DependentUpon>frmDialogBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmInfoForm.resx">
+      <DependentUpon>frmInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmListForm.resx">
+      <DependentUpon>frmListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmRaporBase.resx">
+      <DependentUpon>frmRaporBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\frmSistemBilgileriniGoster.resx">
+      <DependentUpon>frmSistemBilgileriniGoster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\Splash\frmSplash.resx">
+      <DependentUpon>frmSplash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\MyControls\EditButton.resx">
+      <DependentUpon>EditButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\MyControls\MyCombo.resx">
+      <DependentUpon>MyCombo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\MyControls\SimpleLookup.resx">
+      <DependentUpon>SimpleLookup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\MyControls\SimpleTreeLookup.resx">
+      <DependentUpon>SimpleTreeLookup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\MyControls\SuperTextBox.resx">
+      <DependentUpon>SuperTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_formbase\_controls\UcEnumGoster.resx">
+      <DependentUpon>UcEnumGoster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="_yonetim\frmProgramDegisiklikler.resx">
+      <DependentUpon>frmProgramDegisiklikler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_yonetim\frmRolIsHakki.resx">
+      <DependentUpon>frmRolIsHakki.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_yonetim\frmKullaniciAyarlari.resx">
+      <DependentUpon>frmKullaniciAyarlari.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_yonetim\frmRolEkranHakki.resx">
+      <DependentUpon>frmRolEkranHakki.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_yonetim\frmKullanici.resx">
+      <DependentUpon>frmKullanici.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyModel\mymodel.csproj">
+      <Project>{FA40D5B1-851C-47CE-A2B8-756588C0DDA9}</Project>
+      <Name>mymodel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\sharpbullet\SharpBullet.csproj">
+      <Project>{72207DE7-36A8-44F0-9136-38EA45364B8E}</Project>
+      <Name>SharpBullet</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dokuman\Interop.OPCAutomation.dll" />
+    <Content Include="_yonetim\ProgramDegisiklikleri.xml" />
+    <None Include="Resimler\bayan.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resimler\bebek.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resimler\cocuk.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Dokuman\Script.txt" />
+    <None Include="Resimler\erkek.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resimler\001_01.png" />
+    <Content Include="Resimler\001_02.png" />
+    <Content Include="Resimler\001_03.png" />
+    <Content Include="Resimler\001_04.png" />
+    <Content Include="Resimler\001_05.png" />
+    <Content Include="Resimler\001_06.png" />
+    <Content Include="Resimler\001_07.png" />
+    <Content Include="Resimler\001_08.png" />
+    <Content Include="Resimler\001_09.png" />
+    <Content Include="Resimler\001_10.png" />
+    <Content Include="Resimler\001_11.png" />
+    <Content Include="Resimler\001_12.png" />
+    <Content Include="Resimler\001_13.png" />
+    <Content Include="Resimler\001_14.png" />
+    <Content Include="Resimler\001_15.png" />
+    <Content Include="Resimler\001_16.png" />
+    <Content Include="Resimler\001_17.png" />
+    <Content Include="Resimler\001_18.png" />
+    <Content Include="Resimler\001_19.png" />
+    <Content Include="Resimler\001_20.png" />
+    <Content Include="Resimler\001_21.png" />
+    <Content Include="Resimler\001_22.png" />
+    <Content Include="Resimler\001_23.png" />
+    <Content Include="Resimler\001_24.png" />
+    <Content Include="Resimler\001_25.png" />
+    <Content Include="Resimler\001_26.png" />
+    <Content Include="Resimler\001_27.png" />
+    <Content Include="Resimler\001_28.png" />
+    <Content Include="Resimler\001_29.png" />
+    <Content Include="Resimler\001_30.png" />
+    <Content Include="Resimler\001_31.png" />
+    <Content Include="Resimler\001_32.png" />
+    <Content Include="Resimler\001_33.png" />
+    <Content Include="Resimler\001_34.png" />
+    <Content Include="Resimler\001_35.png" />
+    <Content Include="Resimler\001_36.png" />
+    <Content Include="Resimler\001_37.png" />
+    <Content Include="Resimler\001_38.png" />
+    <Content Include="Resimler\001_39.png" />
+    <Content Include="Resimler\001_40.png" />
+    <Content Include="Resimler\001_41.png" />
+    <Content Include="Resimler\001_42.png" />
+    <Content Include="Resimler\001_43.png" />
+    <Content Include="Resimler\001_44.png" />
+    <Content Include="Resimler\001_45.png" />
+    <Content Include="Resimler\001_46.png" />
+    <Content Include="Resimler\001_47.png" />
+    <Content Include="Resimler\001_48.png" />
+    <Content Include="Resimler\001_49.png" />
+    <Content Include="Resimler\001_50.png" />
+    <Content Include="Resimler\001_51.png" />
+    <Content Include="Resimler\001_52.png" />
+    <Content Include="Resimler\001_53.png" />
+    <Content Include="Resimler\001_54.png" />
+    <Content Include="Resimler\001_55.png" />
+    <Content Include="Resimler\001_56.png" />
+    <Content Include="Resimler\001_57.png" />
+    <Content Include="Resimler\001_58.png" />
+    <Content Include="Resimler\001_59.png" />
+    <Content Include="Resimler\001_60.png" />
+    <Content Include="Resimler\DingDong.wav" />
+    <Content Include="Resimler\doktor.png" />
+    <Content Include="Resimler\doktor2.png" />
+    <Content Include="Resimler\giris.jpg" />
+    <Content Include="_formbase\pnlMain.BackgroundImage.png" />
+    <None Include="_formbase\Splash\ysonortamenu2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AcroPDFLib">
+      <Guid>{05BFD3F1-6319-4F30-B752-C7A22889BCC4}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="AxAcroPDFLib">
+      <Guid>{05BFD3F1-6319-4F30-B752-C7A22889BCC4}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="AxWMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

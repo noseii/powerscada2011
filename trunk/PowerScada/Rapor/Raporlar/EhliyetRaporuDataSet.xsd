@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="EhliyetRaporuDataSet" targetNamespace="http://tempuri.org/EhliyetRaporuDataSet.xsd" xmlns:mstns="http://tempuri.org/EhliyetRaporuDataSet.xsd" xmlns="http://tempuri.org/EhliyetRaporuDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="EhliyetRaporuDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="EhliyetRaporuDataSet" msprop:Generator_UserDSName="EhliyetRaporuDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="EhliyetRaporuDt" msprop:Generator_TableClassName="EhliyetRaporuDtDataTable" msprop:Generator_TableVarName="tableEhliyetRaporuDt" msprop:Generator_TablePropName="EhliyetRaporuDt" msprop:Generator_RowDeletingName="EhliyetRaporuDtRowDeleting" msprop:Generator_UserTableName="EhliyetRaporuDt" msprop:Generator_RowChangingName="EhliyetRaporuDtRowChanging" msprop:Generator_RowEvHandlerName="EhliyetRaporuDtRowChangeEventHandler" msprop:Generator_RowDeletedName="EhliyetRaporuDtRowDeleted" msprop:Generator_RowEvArgName="EhliyetRaporuDtRowChangeEvent" msprop:Generator_RowChangedName="EhliyetRaporuDtRowChanged" msprop:Generator_RowClassName="EhliyetRaporuDtRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="AdiSoyadi" msprop:Generator_ColumnVarNameInTable="columnAdiSoyadi" msprop:Generator_ColumnPropNameInRow="AdiSoyadi" msprop:Generator_ColumnPropNameInTable="AdiSoyadiColumn" msprop:Generator_UserColumnName="AdiSoyadi" type="xs:string" minOccurs="0" />
+              <xs:element name="BabaAdi" msprop:Generator_ColumnVarNameInTable="columnBabaAdi" msprop:Generator_ColumnPropNameInRow="BabaAdi" msprop:Generator_ColumnPropNameInTable="BabaAdiColumn" msprop:Generator_UserColumnName="BabaAdi" type="xs:string" minOccurs="0" />
+              <xs:element name="AnneAdi" msprop:Generator_ColumnVarNameInTable="columnAnneAdi" msprop:Generator_ColumnPropNameInRow="AnneAdi" msprop:Generator_ColumnPropNameInTable="AnneAdiColumn" msprop:Generator_UserColumnName="AnneAdi" type="xs:string" minOccurs="0" />
+              <xs:element name="DogumTarihi" msprop:Generator_ColumnVarNameInTable="columnDogumTarihi" msprop:Generator_ColumnPropNameInRow="DogumTarihi" msprop:Generator_ColumnPropNameInTable="DogumTarihiColumn" msprop:Generator_UserColumnName="DogumTarihi" type="xs:string" minOccurs="0" />
+              <xs:element name="DogumYeri" msprop:Generator_ColumnVarNameInTable="columnDogumYeri" msprop:Generator_ColumnPropNameInRow="DogumYeri" msprop:Generator_ColumnPropNameInTable="DogumYeriColumn" msprop:Generator_UserColumnName="DogumYeri" type="xs:string" minOccurs="0" />
+              <xs:element name="BeyanAdresi" msprop:Generator_ColumnVarNameInTable="columnBeyanAdresi" msprop:Generator_ColumnPropNameInRow="BeyanAdresi" msprop:Generator_ColumnPropNameInTable="BeyanAdresiColumn" msprop:Generator_UserColumnName="BeyanAdresi" type="xs:string" minOccurs="0" />
+              <xs:element name="DAdiSoyadi" msprop:Generator_ColumnVarNameInTable="columnDAdiSoyadi" msprop:Generator_ColumnPropNameInRow="DAdiSoyadi" msprop:Generator_ColumnPropNameInTable="DAdiSoyadiColumn" msprop:Generator_UserColumnName="DAdiSoyadi" type="xs:string" minOccurs="0" />
+              <xs:element name="Diplomano" msprop:Generator_ColumnVarNameInTable="columnDiplomano" msprop:Generator_ColumnPropNameInRow="Diplomano" msprop:Generator_ColumnPropNameInTable="DiplomanoColumn" msprop:Generator_UserColumnName="Diplomano" type="xs:string" minOccurs="0" />
+              <xs:element name="SiraNo" msprop:Generator_ColumnVarNameInTable="columnSiraNo" msprop:Generator_ColumnPropNameInRow="SiraNo" msprop:Generator_ColumnPropNameInTable="SiraNoColumn" msprop:Generator_UserColumnName="SiraNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Kelime" msprop:Generator_ColumnVarNameInTable="columnKelime" msprop:Generator_ColumnPropNameInRow="Kelime" msprop:Generator_ColumnPropNameInTable="KelimeColumn" msprop:Generator_UserColumnName="Kelime" type="xs:string" minOccurs="0" />
+              <xs:element name="MTarih" msprop:Generator_ColumnVarNameInTable="columnMTarih" msprop:Generator_ColumnPropNameInRow="MTarih" msprop:Generator_ColumnPropNameInTable="MTarihColumn" msprop:Generator_UserColumnName="MTarih" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

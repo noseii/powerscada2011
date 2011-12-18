@@ -1,0 +1,12 @@
+﻿
+Ms Sql -> SharpBullet.OAL.Configuration.SetValue("DbType", "System.Data.SqlClient");
+MySql  -> SharpBullet.OAL.Configuration.SetValue("DbType", "MySql.Data.MySqlClient");
+
+//Connection String
+SharpBullet.OAL.Configuration.SetValue("Connection", "Server=localhost;Database=bereket;Uid=root;Pwd=..;");
+
+//Initialize Metadata, replace 'SampleEntityTypeName' with an entity of yours
+SharpBullet.OAL.Metadata.DataDictionary.Instance.AddEntities(typeof(SampleEntityTypeName).Assembly.GetTypes());
+
+//Creates tables and columns for new entity and fields
+SharpBullet.OAL.Schema.SchemaHelper.Syncronize(typeof(BaseEntity));
